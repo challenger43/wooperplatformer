@@ -1,7 +1,7 @@
 const config = {
     type: Phaser.AUTO,
-    width: 800,
-    height: 600,
+    width: window.innerWidth,
+    height: window.innerHeight,
     physics: {
         default: 'arcade',
         arcade: {
@@ -36,22 +36,25 @@ function create () {
 
     platforms = this.physics.add.staticGroup() //these groups are not affected by gravity 
 
-    platforms.create(400, 568, 'ground').setScale(2).refreshBody();
-
+    platforms.create(window.innerWidth / 2, window.innerHeight * 0.9, 'ground').setScale(2).refreshBody();
     platforms.create(600, 400, 'ground');
 
     platforms.create(50, 250, 'ground');
 
     platforms.create(750, 220, 'ground');
 
-    player = this.physics.add.sprite(100,450,'dude') //creates a sprite called player positioned at 100 * 450 pixels 
+    player = this.physics.add.sprite(300, window.innerHeight * 0.8, 'dude');
+    //creates a sprite called player positioned at 100 * 450 pixels 
     //it is part of the physics group meaning that it will follow all the follow the rules set in the physics
     //a sprite sheet vs an image: sprite sheets have animation frames, they are not just one image. 
+
+    player.setDragX(500);
 
     player.setBounce(0.2);
     //makes it bounce every time it lands from a jump
     player.setCollideWorldBounds(true);
     //will collide with the world boundaries, i.e if I set the perimeter to be 800*600 the sprite would not be able to exit this region
+    player.body.setGravityY(12200);  // Player falls faster
 
     this.anims.create({
         key:'left',
@@ -99,7 +102,7 @@ function create () {
     function collectStar (player, star){ //if a player is touching a star, it calls the function collectStar which makes it disappear, losing its 'body'
           star.disableBody(true, true);
     }
-    cursors = cursors.this.input.keyboard.createCursorKeys(); //due to phasers built in stuff, you dont have to figure out how to add an event listener
+    cursors = this.input.keyboard.createCursorKeys(); //due to phasers built in stuff, you dont have to figure out how to add an event listener
 }
 
 function update () {
@@ -117,7 +120,7 @@ function update () {
         player.anims.play('turn')
     }
     if (cursors.up.isDown && player.body.touching.down){ //tests the ability to jump. if player is touching ground and cursor up is activated, then it will jump.
-        player.setVelocityY(-330)
+        player.setVelocityY(-1930)
     }
 
 }
