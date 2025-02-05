@@ -99,14 +99,13 @@ function create () {
     function collectStar (player, star){ //if a player is touching a star, it calls the function collectStar which makes it disappear, losing its 'body'
           star.disableBody(true, true);
     }
+    cursors = cursors.this.input.keyboard.createCursorKeys(); //due to phasers built in stuff, you dont have to figure out how to add an event listener
 }
 
 function update () {
-    cursors.this.input.keyboard.createCursorKeys(); //due to phasers built in stuff, you dont have to figure out how to add an event listener
-
     if (cursors.left.isDown){ //if the left key is being held down, it applies a negative horizontal velocity and starts the left running animation
         player.setVelocityX(-160);
-        players.anims.play('left',true);
+        player.anims.play('left',true);
     }
     else if (cursors.right.isDown){ //does the same thing as above but with the right direction.
         player.setVelocityX(160);
@@ -117,7 +116,7 @@ function update () {
         player.setVelocity(0);
         player.anims.play('turn')
     }
-    if (cursor.up.isDown && player.body.touching.down){ //tests the ability to jump. if player is touching ground and cursor up is activated, then it will jump.
+    if (cursors.up.isDown && player.body.touching.down){ //tests the ability to jump. if player is touching ground and cursor up is activated, then it will jump.
         player.setVelocityY(-330)
     }
 
