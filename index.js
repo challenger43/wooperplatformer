@@ -1,7 +1,7 @@
 const config = {
     type: Phaser.AUTO,
-    width: window.innerWidth,
-    height: window.innerHeight,
+    width: 800,
+    height: 600,
     physics: {
         default: 'arcade',
         arcade: {
@@ -30,20 +30,29 @@ function preload ()
     );
 }
 
+let platforms;
 function create () {
     this.add.image(400,300, 'sky');
     this.add.image(400,300, 'star');
 
-    platforms = this.physics.add.staticGroup() //these groups are not affected by gravity 
+    // platforms = this.physics.add.staticGroup() //these groups are not affected by gravity 
 
-    platforms.create(window.innerWidth / 2, window.innerHeight * 0.9, 'ground').setScale(2).refreshBody();
+    // platforms.create(window.innerWidth / 2, window.innerHeight * 0.9, 'ground').setScale(2).refreshBody();
+    // platforms.create(600, 400, 'ground');
+
+    // platforms.create(50, 250, 'ground');
+
+    // platforms.create(750, 220, 'ground');var platforms;
+
+    platforms = this.physics.add.staticGroup();
+
+    platforms.create(400, 568, 'ground').setScale(2).refreshBody();
+
     platforms.create(600, 400, 'ground');
-
     platforms.create(50, 250, 'ground');
-
     platforms.create(750, 220, 'ground');
 
-    player = this.physics.add.sprite(300, window.innerHeight * 0.8, 'dude');
+    player = this.physics.add.sprite(100,450, 'dude');
     //creates a sprite called player positioned at 100 * 450 pixels 
     //it is part of the physics group meaning that it will follow all the follow the rules set in the physics
     //a sprite sheet vs an image: sprite sheets have animation frames, they are not just one image. 
@@ -54,7 +63,7 @@ function create () {
     //makes it bounce every time it lands from a jump
     player.setCollideWorldBounds(true);
     //will collide with the world boundaries, i.e if I set the perimeter to be 800*600 the sprite would not be able to exit this region
-    player.body.setGravityY(12200);  // Player falls faster
+    player.body.setGravityY(300);  // Player falls faster
 
     this.anims.create({
         key:'left',
@@ -101,27 +110,82 @@ function create () {
 
     function collectStar (player, star){ //if a player is touching a star, it calls the function collectStar which makes it disappear, losing its 'body'
           star.disableBody(true, true);
+          score += 10;
+          scoreText.setText('Score: ' + score);
+
+          if (stars.countActive(true) ===0){
+            stars.children.iterate(function (child)){
+                child.enableBody(true, child.x, 0, true, true)
+            }
+            let x = (player.x < 400) ?  Phaser.Math.Between(400,800) : Phaser.Math.Between(0,400)
+            let bomb= bombs.create(x,16,'bomb');
+            bomb.setBounce(1)
+            bomb.collideWorldBounds(true)
+            bomb.setVelocity(Phaser.Math.Between(-200,200), 20)
+          }
     }
     cursors = this.input.keyboard.createCursorKeys(); //due to phasers built in stuff, you dont have to figure out how to add an event listener
+
+    scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
+    
+    bombs = this.physics.add.group()
+    this.physics.add.collider(bombs, platforms)
+    this.physics.add.collider(players,bombs, hitBomb, null, this)
+
+    function hitBomb (player, bomb){
+        this.physics.pause();
+        player.setTint(0xff0000)
+        player.anims.play('turn')
+        gameOver=true
+    }
+
+
 }
 
 function update () {
-    if (cursors.left.isDown){ //if the left key is being held down, it applies a negative horizontal velocity and starts the left running animation
-        player.setVelocityX(-160);
-        player.anims.play('left',true);
-    }
-    else if (cursors.right.isDown){ //does the same thing as above but with the right direction.
-        player.setVelocityX(160);
-        player.anims.play('right', true);
-    }
+    // if (cursors.left.isDown){ //if the left key is being held down, it applies a negative horizontal velocity and starts the left running animation
+    //     player.setVelocityX(-160);
+    //     player.anims.play('left',true);
+    // }
+    // else if (cursors.right.isDown){ //does the same thing as above but with the right direction.
+    //     player.setVelocityX(160);
+    //     player.anims.play('right', true);
+    // }
 
-    else {
-        player.setVelocity(0);
-        player.anims.play('turn')
-    }
-    if (cursors.up.isDown && player.body.touching.down){ //tests the ability to jump. if player is touching ground and cursor up is activated, then it will jump.
-        player.setVelocityY(-1930)
-    }
+    // else {
+    //     player.setVelocity(0);
+    //     player.anims.play('turn')
+    // }
+    // if (cursors.up.isDown && player.body.touching.down){ //tests the ability to jump. if player is touching ground and cursor up is activated, then it will jump.
+    //     player.setVelocityY(-2130)
+    // }
+    if (cursors.left.isDown)
+        {
+            player.setVelocityX(-160);
+        
+            player.anims.play('left', true);
+        }
+        else if (cursors.right.isDown)
+        {
+            player.setVelocityX(160);
+        
+            player.anims.play('right', true);
+        }
+        else
+        {
+            player.setVelocityX(0);
+        
+            player.anims.play('turn');
+        }
+        
+        if (cursors.up.isDown && player.body.touching.down)
+        {
+            player.setVelocityY(-480);
+        }
 
 }
+
+let score = 0
+let scoreText = "";
+
 
