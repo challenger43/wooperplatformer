@@ -2,7 +2,7 @@ const config = {
     type: Phaser.AUTO,
     width: 800,
     height: 600,
-    physics: {
+    physics: { //sets up the physics system
         default: 'arcade',
         arcade: {
             gravity: { y: 300 },
@@ -16,176 +16,167 @@ const config = {
     }
 };
 
+let player; //cannot use const for these
+let stars;
+let bombs;
+let platforms;
+let cursors;
+let score = 0;
+let gameOver = false;
+let scoreText;
+
 const game = new Phaser.Game(config);
 
 function preload ()
 {
-    this.load.image('sky', 'assets/sky.png');
+    this.load.image('sky', 'assets/sky.png'); //the assets/ takes an object from a folder--in this case the folder is assets, the id is sky.png
     this.load.image('ground', 'assets/platform.png');
     this.load.image('star', 'assets/star.png');
     this.load.image('bomb', 'assets/bomb.png');
-    this.load.spritesheet('dude', 
-        'assets/dude.png',
-        { frameWidth: 32, frameHeight: 48 }
-    );
+    this.load.spritesheet('dude', 'assets/dude.png', { frameWidth: 32, frameHeight: 48 }); //sets the height of sprite
+    //use a sprite sheet for easier animations--with a sprite you download not just one image but a bunch of images all in one file that it can switch in between
 }
 
-let platforms;
-function create () {
-    this.add.image(400,300, 'sky');
-    this.add.image(400,300, 'star');
-
-    // platforms = this.physics.add.staticGroup() //these groups are not affected by gravity 
-
-    // platforms.create(window.innerWidth / 2, window.innerHeight * 0.9, 'ground').setScale(2).refreshBody();
-    // platforms.create(600, 400, 'ground');
-
-    // platforms.create(50, 250, 'ground');
-
-    // platforms.create(750, 220, 'ground');var platforms;
-
+function create ()
+{
+    this.add.image(400, 300, 'sky'); //adds images to things-the preload function loads them, this thing makes it actually happen
+    //when drawing images, make sure to put it in order--if I loaded the ground before the sky, the sky would cover the ground 
+    //  The platforms group contains the ground and the 2 ledges
     platforms = this.physics.add.staticGroup();
-
-    platforms.create(400, 568, 'ground').setScale(2).refreshBody();
-
-    platforms.create(600, 400, 'ground');
+    platforms.create(400, 568, 'ground').setScale(2).refreshBody();//static, can't move but can interact
+    //makes ledges
+    platforms.create(600, 400, 'ground');  //the numerical values scale the stuff
     platforms.create(50, 250, 'ground');
     platforms.create(750, 220, 'ground');
 
-    player = this.physics.add.sprite(100,450, 'dude');
-    //creates a sprite called player positioned at 100 * 450 pixels 
-    //it is part of the physics group meaning that it will follow all the follow the rules set in the physics
-    //a sprite sheet vs an image: sprite sheets have animation frames, they are not just one image. 
+    // The player and its settings
+    player = this.physics.add.sprite(100, 450, 'dude');    //use a sprite sheet for easier animations--with a sprite you download not just one image but a bunch of images all in one file that it can switch in between
 
-    player.setDragX(500);
 
+    //  Player physics properties.
     player.setBounce(0.2);
-    //makes it bounce every time it lands from a jump
     player.setCollideWorldBounds(true);
-    //will collide with the world boundaries, i.e if I set the perimeter to be 800*600 the sprite would not be able to exit this region
-    player.body.setGravityY(300);  // Player falls faster
 
+    // animates player walking left/right
     this.anims.create({
-        key:'left',
-        frames: this.anims.generateFrameNumbers('dude', {start: 0, end: 3}),
-        repeat: -1,
-    })
-    //this tells it to use the animations--it uses the variants of the sprite that are facing left. 
-    //it will use values from 0 -3 (4 images) and runs at 10 frames per second, repeat -1 makes it loop.
+        key: 'left',
+        frames: this.anims.generateFrameNumbers('dude', { start: 0, end: 3 }),
+        frameRate: 10,
+        repeat: -1
+    });
 
     this.anims.create({
         key: 'turn',
-        frames: [{ key: 'dude', frame: 4}],
+        frames: [ { key: 'dude', frame: 4 } ],
         frameRate: 20
     });
 
     this.anims.create({
         key: 'right',
-        frames: this.anims.generateFrameNumbers('dude', {start: 5, end: 8}),
+        frames: this.anims.generateFrameNumbers('dude', { start: 5, end: 8 }),
         frameRate: 10,
-        repeat: -1,
-    })
-    //up to this point in the code, since the platforms are static if you were to run the code, you would only
-    //fall through the platform. This is because the collision values only work for dynamic things-and since
-    //the platforms are set to a static property, you have to test for collisions with that as well. 
+        repeat: -1
+    });
 
-    this.physics.add.collider(player,platforms);
-    //a collider object is created-and it monitors two objects within the physics group
-    //takes parameters of the player and all items within platforms(static). It runs collision against all Group Members
-    //so now if I jump onto a platform it will actually be stable!
 
+    cursors = this.input.keyboard.createCursorKeys();
     stars = this.physics.add.group({
-        key: 'star', //give the same star texture
-        repeat: 11, //creates 12 children- it automatically already creates 1, so repeating it 11 times would make 11 more
-        setXY: {x:12, y:0, stepX: 70},  //first child is placed at (12,0), the next one is 70 pixels at (82,0), ect to space them out
-    })
+        key: 'star',
+        repeat: 11,
+        setXY: { x: 12, y: 0, stepX: 70 }
+    });
 
     stars.children.iterate(function (child) {
 
-        child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8)); //gives them bounce- but if you run it like this the stars would fall straight through the bottom of the screen 
-    
+        //  Give each star a slightly different bounce
+        child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
+
     });
-    this.physics.add.collider(stars, platforms); //checks to make sure that stars will collide with platforms
-    this.physics.add.overlap(player, stars, collectStar, null, this);//makes sure player doesn't overlap with star
 
-    function collectStar (player, star){ //if a player is touching a star, it calls the function collectStar which makes it disappear, losing its 'body'
-          star.disableBody(true, true);
-          score += 10;
-          scoreText.setText('Score: ' + score);
+    bombs = this.physics.add.group(); //adds another item to the group of physics
 
-          if (stars.countActive(true) ===0){
-            stars.children.iterate(function (child)){
-                child.enableBody(true, child.x, 0, true, true)
-            }
-            let x = (player.x < 400) ?  Phaser.Math.Between(400,800) : Phaser.Math.Between(0,400)
-            let bomb= bombs.create(x,16,'bomb');
-            bomb.setBounce(1)
-            bomb.collideWorldBounds(true)
-            bomb.setVelocity(Phaser.Math.Between(-200,200), 20)
-          }
-    }
-    cursors = this.input.keyboard.createCursorKeys(); //due to phasers built in stuff, you dont have to figure out how to add an event listener
-
+    //  The score
     scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
-    
-    bombs = this.physics.add.group()
-    this.physics.add.collider(bombs, platforms)
-    this.physics.add.collider(players,bombs, hitBomb, null, this)
 
-    function hitBomb (player, bomb){
-        this.physics.pause();
-        player.setTint(0xff0000)
-        player.anims.play('turn')
-        gameOver=true
+    //  Collide the player and the stars with the platforms--since collision code is so hard to write we can just use phaser's built in systems
+    this.physics.add.collider(player, platforms); //these are the things you want to collide with--the first code takes parameters player and platforms, so then player and platforms will collide
+    this.physics.add.collider(stars, platforms);//parameters are stars and platforms, so adds a collide rule to the relationship between stars and platforms 
+    this.physics.add.collider(bombs, platforms);
+
+    //  Checks to see if the player overlaps with any of the stars, if it does it will call the collectStar function
+    this.physics.add.overlap(player, stars, collectStar, null, this);
+
+    this.physics.add.collider(player, bombs, hitBomb, null, this);
+}
+
+function update ()
+{
+    if (gameOver)
+    {
+        return;
     }
-
-
-}
-
-function update () {
-    // if (cursors.left.isDown){ //if the left key is being held down, it applies a negative horizontal velocity and starts the left running animation
-    //     player.setVelocityX(-160);
-    //     player.anims.play('left',true);
-    // }
-    // else if (cursors.right.isDown){ //does the same thing as above but with the right direction.
-    //     player.setVelocityX(160);
-    //     player.anims.play('right', true);
-    // }
-
-    // else {
-    //     player.setVelocity(0);
-    //     player.anims.play('turn')
-    // }
-    // if (cursors.up.isDown && player.body.touching.down){ //tests the ability to jump. if player is touching ground and cursor up is activated, then it will jump.
-    //     player.setVelocityY(-2130)
-    // }
+//controls the movement, since phaser has built in stuff no need to bother with all the event listeners 
     if (cursors.left.isDown)
-        {
-            player.setVelocityX(-160);
-        
-            player.anims.play('left', true);
-        }
-        else if (cursors.right.isDown)
-        {
-            player.setVelocityX(160);
-        
-            player.anims.play('right', true);
-        }
-        else
-        {
-            player.setVelocityX(0);
-        
-            player.anims.play('turn');
-        }
-        
-        if (cursors.up.isDown && player.body.touching.down)
-        {
-            player.setVelocityY(-480);
-        }
+    {
+        player.setVelocityX(-160);
 
+        player.anims.play('left', true);
+    }
+    else if (cursors.right.isDown)
+    {
+        player.setVelocityX(160); 
+
+        player.anims.play('right', true);
+    }
+    else
+    {//if no key is being pressed the sprite will face forward
+        player.setVelocityX(0);
+
+        player.anims.play('turn');
+    }
+//checks if you can jump--the up arrow has to be pushed and the player body has to be touching
+    if (cursors.up.isDown && player.body.touching.down)
+    {
+        player.setVelocityY(-330); //change this to whatever speed you want
+    }
 }
 
-let score = 0
-let scoreText = "";
+function collectStar (player, star)
+{
+    star.disableBody(true, true); //the star no longer has a 'physical body'
 
+    //  Add and update the score
+    score += 10;
+    scoreText.setText('Score: ' + score);
+
+    if (stars.countActive(true) === 0)
+    {
+        //  A new batch of stars to collect
+        stars.children.iterate(function (child) {
+
+            child.enableBody(true, child.x, 0, true, true);
+
+        });
+
+        const x = (player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
+
+        const bomb = bombs.create(x, 16, 'bomb');
+        bomb.setBounce(1);
+        bomb.setCollideWorldBounds(true);
+        bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
+        bomb.allowGravity = false;
+
+    }
+}
+
+function hitBomb (player, bomb)
+{
+    this.physics.pause(); //stops the physics mechanism
+
+    player.setTint(0xff0000);
+
+    player.anims.play('turn');
+
+    gameOver = true; //boolean value 
+}
 
