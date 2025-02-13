@@ -2,14 +2,15 @@ const config = {
     type: Phaser.AUTO,
     width: 800,
     height: 600,
+    parent: 'game',
     physics: { //sets up the physics system
         default: 'arcade',
-        arcade: {
+        arcade: { //arcade is object
             gravity: { y: 300 },
             debug: false
         }
     },
-    scene: {
+    scene: { //another object yay
         preload: preload,
         create: create,
         update: update
@@ -27,8 +28,8 @@ let scoreText;
 
 const game = new Phaser.Game(config);
 
-function preload ()
-{
+function preload() {
+
     this.load.image('sky', 'assets/sky.png'); //the assets/ takes an object from a folder--in this case the folder is assets, the id is sky.png
     this.load.image('ground', 'assets/platform.png');
     this.load.image('star', 'assets/star.png');
@@ -37,8 +38,7 @@ function preload ()
     //use a sprite sheet for easier animations--with a sprite you download not just one image but a bunch of images all in one file that it can switch in between
 }
 let keys;
-function create ()
-{
+function create() {
     keys = this.input.keyboard.addKeys("W,A,S,D,SPACE,")
 
     //an object is a collection of properties and values--properties are like labels
@@ -55,7 +55,7 @@ function create ()
 
     // The player and its settings
     player = this.physics.add.sprite(100, 450, 'dude');    //use a sprite sheet for easier animations--with a sprite you download not just one image but a bunch of images all in one file that it can switch in between
-
+    this.cameras.cameras[0].startFollow(player)
 
     //  Player physics properties.
     player.setBounce(0.2);
@@ -71,7 +71,7 @@ function create ()
 
     this.anims.create({
         key: 'turn',
-        frames: [ { key: 'dude', frame: 4 } ],
+        frames: [{ key: 'dude', frame: 4 }],
         frameRate: 20
     });
 
@@ -113,69 +113,37 @@ function create ()
 }
 
 
-function update ()
-{
-    if (gameOver)
-    {
+function update() {
+    if (gameOver) {
         return;
     }
-    if (keys.A.isDown){
+    if (keys.A.isDown) {
         player.setVelocityX(-160);
         player.anims.play('left', true);
-        } 
-    else if(keys.D.isDown){
+    }
+    else if (keys.D.isDown) {
         player.setVelocityX(160);
         player.anims.play('right', true);
     }
-    else{
-         player.setVelocityX(0)
-         player.anims.play('turn');
-        }
+    else { //if no key is pressed, will face forwards
+        player.setVelocityX(0)
+        player.anims.play('turn');
+    }
 
-if((keys.W.isDown || keys.SPACE.isDown) && player.body.touching.down){
-    player.setVelocity(-330);
-    
-}
-//controls the movement, since phaser has built in stuff no need to bother with all the event listeners 
-//     if (cursors.left.isDown)
-//     {
-//         player.setVelocityX(-160);
+    if ((keys.W.isDown || keys.SPACE.isDown) && player.body.touching.down) { //checks if you can jump--the space/w key has to be pushed and the player body has to be touching
+        player.setVelocity(-330);
+    }
 
-//         player.anims.play('left', true);
-//     }
-//     else if (cursors.right.isDown)
-//     {
-//         player.setVelocityX(160); 
-
-//         player.anims.play('right', true);
-//     }
-//     else
-//     {//if no key is being pressed the sprite will face forward
-//         player.setVelocityX(0);
-
-//         player.anims.play('turn');
-//     }
-// //checks if you can jump--the up arrow has to be pushed and the player body has to be touching
-//     if (cursors.up.isDown && player.body.touching.down)
-//     {
-//         player.setVelocityY(-330); //change this to whatever speed you want
-//     }
-
-// let keyObject = scene.input.keyboard.addKey("W")
-// let isDown = keyObject.isDown;
-// let isUp = keyObject.isUp;
 }
 
-function collectStar (player, star)
-{
+function collectStar(player, star) {
     star.disableBody(true, true); //the star no longer has a 'physical body'
 
     //  Add and update the score
     score += 10;
     scoreText.setText('Score: ' + score);
 
-    if (stars.countActive(true) === 0)
-    {
+    if (stars.countActive(true) === 0) {
         //  A new batch of stars to collect
         stars.children.iterate(function (child) {
 
@@ -194,8 +162,7 @@ function collectStar (player, star)
     }
 }
 
-function hitBomb (player, bomb)
-{
+function hitBomb(player, bomb) {
     this.physics.pause(); //stops the physics mechanism
 
     player.setTint(0xff0000);
