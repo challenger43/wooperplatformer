@@ -36,9 +36,13 @@ function preload ()
     this.load.spritesheet('dude', 'assets/dude.png', { frameWidth: 32, frameHeight: 48 }); //sets the height of sprite
     //use a sprite sheet for easier animations--with a sprite you download not just one image but a bunch of images all in one file that it can switch in between
 }
-
+let keys;
 function create ()
 {
+    keys = this.input.keyboard.addKeys("W,A,S,D,SPACE,")
+
+    //an object is a collection of properties and values--properties are like labels
+
     this.add.image(400, 300, 'sky'); //adds images to things-the preload function loads them, this thing makes it actually happen
     //when drawing images, make sure to put it in order--if I loaded the ground before the sky, the sky would cover the ground 
     //  The platforms group contains the ground and the 2 ledges
@@ -83,14 +87,13 @@ function create ()
     stars = this.physics.add.group({
         key: 'star',
         repeat: 11,
-        setXY: { x: 12, y: 0, stepX: 70 }
+        setXY: { x: 12, y: 0, stepX: 70 } //tells how far away each one will be incremented- the first star will spawn in at coords 12,0 then 82,0, ect. 
     });
 
     stars.children.iterate(function (child) {
-
         //  Give each star a slightly different bounce
         child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
-
+        return null;
     });
 
     bombs = this.physics.add.group(); //adds another item to the group of physics
@@ -109,36 +112,58 @@ function create ()
     this.physics.add.collider(player, bombs, hitBomb, null, this);
 }
 
+
 function update ()
 {
     if (gameOver)
     {
         return;
     }
-//controls the movement, since phaser has built in stuff no need to bother with all the event listeners 
-    if (cursors.left.isDown)
-    {
+    if (keys.A.isDown){
         player.setVelocityX(-160);
-
         player.anims.play('left', true);
-    }
-    else if (cursors.right.isDown)
-    {
-        player.setVelocityX(160); 
-
+        } 
+    else if(keys.D.isDown){
+        player.setVelocityX(160);
         player.anims.play('right', true);
     }
-    else
-    {//if no key is being pressed the sprite will face forward
-        player.setVelocityX(0);
+    else{
+         player.setVelocityX(0)
+         player.anims.play('turn');
+        }
 
-        player.anims.play('turn');
-    }
-//checks if you can jump--the up arrow has to be pushed and the player body has to be touching
-    if (cursors.up.isDown && player.body.touching.down)
-    {
-        player.setVelocityY(-330); //change this to whatever speed you want
-    }
+if((keys.W.isDown || keys.SPACE.isDown) && player.body.touching.down){
+    player.setVelocity(-330);
+    
+}
+//controls the movement, since phaser has built in stuff no need to bother with all the event listeners 
+//     if (cursors.left.isDown)
+//     {
+//         player.setVelocityX(-160);
+
+//         player.anims.play('left', true);
+//     }
+//     else if (cursors.right.isDown)
+//     {
+//         player.setVelocityX(160); 
+
+//         player.anims.play('right', true);
+//     }
+//     else
+//     {//if no key is being pressed the sprite will face forward
+//         player.setVelocityX(0);
+
+//         player.anims.play('turn');
+//     }
+// //checks if you can jump--the up arrow has to be pushed and the player body has to be touching
+//     if (cursors.up.isDown && player.body.touching.down)
+//     {
+//         player.setVelocityY(-330); //change this to whatever speed you want
+//     }
+
+// let keyObject = scene.input.keyboard.addKey("W")
+// let isDown = keyObject.isDown;
+// let isUp = keyObject.isUp;
 }
 
 function collectStar (player, star)
