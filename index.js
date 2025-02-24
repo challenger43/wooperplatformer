@@ -1,7 +1,7 @@
 const config = {
     type: Phaser.AUTO,
-    width: 800,
-    height: 600,
+    width: 1400,
+    height: 1100,
     parent: 'game',
     physics: { //sets up the physics system
         default: 'arcade',
@@ -48,18 +48,26 @@ function create() {
     //  The platforms group contains the ground and the 2 ledges
     platforms = this.physics.add.staticGroup();
     platforms.create(400, 568, 'ground').setScale(2).refreshBody();//static, can't move but can interact
-    //makes ledges
-    platforms.create(600, 400, 'ground');  //the numerical values scale the stuff
-    platforms.create(50, 250, 'ground');
+    platforms.create(1000, 568, 'ground').setScale(2).refreshBody();
+        //makes ledges
+    // platforms.create(900, 400, 'ground');  //the numerical values scale the stuff
+    platforms.create(200, 250, 'ground').setScale(0.5, 1).refreshBody();
     platforms.create(750, 220, 'ground');
+    platforms.create(1400, 340, 'ground');
+    platforms.create (450, 400, 'ground');
+    platforms.create(1100, 450, 'ground');
+;    
 
     // The player and its settings
     player = this.physics.add.sprite(100, 450, 'dude');    //use a sprite sheet for easier animations--with a sprite you download not just one image but a bunch of images all in one file that it can switch in between
     this.cameras.cameras[0].startFollow(player)
+    // // this.cameras.cameras[0].startFollow(scoreText)
+    this.cameras.add(1);
+    this.cameras.cameras[1].setBounds(-1000,-1000,config.width, config.height);
 
     //  Player physics properties.
     player.setBounce(0.2);
-    player.setCollideWorldBounds(true);
+    // player.setCollideWorldBounds(true);
 
     // animates player walking left/right
     this.anims.create({
@@ -99,7 +107,7 @@ function create() {
     bombs = this.physics.add.group(); //adds another item to the group of physics
 
     //  The score
-    scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
+    scoreText = this.add.text(0, 0, 'score: 0', { fontSize: '32px', fill: '#FFF' });
 
     //  Collide the player and the stars with the platforms--since collision code is so hard to write we can just use phaser's built in systems
     this.physics.add.collider(player, platforms); //these are the things you want to collide with--the first code takes parameters player and platforms, so then player and platforms will collide
