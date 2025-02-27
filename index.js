@@ -26,7 +26,7 @@ class LevelOne extends Phaser.Scene {
 
         this.load.image('sky', 'assets/sky.png'); //the assets/ takes an object from a folder--in this case the folder is assets, the id is sky.png
         this.load.image('ground', 'assets/platform.png');
-        this.load.image('star', 'assets/star.png');
+        this.load.image('star', 'WooperBall.png');
         this.load.image('bomb', 'assets/bomb.png');
         this.load.spritesheet('dude', 'assets/dude.png', { frameWidth: 32, frameHeight: 48 }); //sets the height of sprite
         //use a sprite sheet for easier animations--with a sprite you download not just one image but a bunch of images all in one file that it can switch in between
@@ -80,23 +80,23 @@ class LevelOne extends Phaser.Scene {
 
         cursors = this.input.keyboard.createCursorKeys();
         stars = this.physics.add.group();
-        stars.create(30,0, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6));
-        stars.create(206, 0, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6));
-        stars.create(449, 0, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6));
-        stars.create(372, 0, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6));
-        stars.create(688, 0, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6));
-        stars.create(738, 0, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6));
-        stars.create(1516, 0, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6));
-        stars.create(1116, 512, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6));
+        stars.create(30,0, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6)).setScale(0.05,0.05);
+        stars.create(206, 0, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6)).setScale(0.05,0.05);
+        stars.create(449, 0, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6)).setScale(0.05,0.05);
+        stars.create(372, 0, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6)).setScale(0.05,0.05);
+        stars.create(688, 0, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6)).setScale(0.05,0.05);
+        stars.create(738, 0, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6)).setScale(0.05,0.05);
+        stars.create(1516, 0, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6)).setScale(0.05,0.05);
+        stars.create(1116, 512, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6)).setScale(0.05,0.05);
 
         let floatingStars = this.physics.add.group({ //need to ask Mr. SF about this. 
             allowGravity: false
     });
-        floatingStars.create(100, 290, 'star');
-        floatingStars.create(460, 200, 'star');
-        floatingStars.create(326, 50, 'star');
-        floatingStars.create(787, 290, 'star');
-        floatingStars.create(1728, 180, 'star');
+        floatingStars.create(100, 290, 'star').setScale(0.05,0.05);
+        floatingStars.create(460, 200, 'star').setScale(0.05,0.05);
+        floatingStars.create(326, 50, 'star').setScale(0.05,0.05);
+        floatingStars.create(787, 290, 'star').setScale(0.05,0.05);
+        floatingStars.create(1728, 180, 'star').setScale(0.05,0.05);
         
         bombs = this.physics.add.group(); //adds another item to the group of physics
 
