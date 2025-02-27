@@ -49,15 +49,13 @@ class LevelOne extends Phaser.Scene {
         platforms.create(1100, 450, 'ground');
         platforms.create(-20, 300, 'ground').setScale(0.1, 21).setTint(0x3C6529).refreshBody();
         platforms.create(450, 100, 'ground').setScale(0.1, 1).refreshBody();
-        ;
+        platforms.create(1500, 568, 'ground').setScale(2).refreshBody();
 
         // The player and its settings
         player = this.physics.add.sprite(100, 450, 'dude');    //use a sprite sheet for easier animations--with a sprite you download not just one image but a bunch of images all in one file that it can switch in between
 
 
-        //  Player physics properties.
-        player.setBounce(0.2);
-        // player.setCollideWorldBounds(true);
+        //  Player physics properties
         // animates player walking left/right
         this.anims.create({
             key: 'left',
@@ -81,11 +79,7 @@ class LevelOne extends Phaser.Scene {
 
 
         cursors = this.input.keyboard.createCursorKeys();
-        stars = this.physics.add.group(
-            // key: 'star',
-            // repeat: 12,
-            // setXY: { x: 12, y: 0, stepX: 90 } //tells how far away each one will be incremented- the first star will spawn in at coords 12,0 then 82,0, ect. 
-        );
+        stars = this.physics.add.group();
         stars.create(30,0, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6));
         stars.create(206, 0, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6));
         stars.create(449, 0, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6));
@@ -95,13 +89,15 @@ class LevelOne extends Phaser.Scene {
         stars.create(1516, 0, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6));
         stars.create(1116, 512, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6));
 
-
-        // stars.children.iterate(function (child) {
-        //     //  Give each star a slightly different bounce
-        //     child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
-        //     return null;
-        // });
-
+        let floatingStars = this.physics.add.group({ //need to ask Mr. SF about this. 
+            allowGravity: false
+    });
+        floatingStars.create(100, 290, 'star');
+        floatingStars.create(460, 200, 'star');
+        floatingStars.create(326, 50, 'star');
+        floatingStars.create(787, 290, 'star');
+        floatingStars.create(1728, 180, 'star');
+        
         bombs = this.physics.add.group(); //adds another item to the group of physics
 
         //  The score
@@ -124,22 +120,12 @@ class LevelOne extends Phaser.Scene {
             //  Add and update the score
             score += 10;
             scoreText.setText('Score: ' + score);
-            // if (stars.countActive(true) === 0) {
-            //     //  A new batch of stars to collect
-            //     stars.children.iterate(function (child) {
-    
-            //         child.enableBody(true, child.x, 0, true, true);
-    
-            //     });
-    
-            //     const x = (player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
-    
-            //     const bomb = bombs.create(x, 16, 'bomb');
-            //     bomb.setBounce(1);
-            //     bomb.setCollideWorldBounds(true);
-            //     bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
-            //     bomb.allowGravity = false;
-            //}
+        }
+
+
+        function collectFloatingStar(player, floatingStar){
+            floatingStar.disableBody(true,true);
+            score += 10;
         }
     
         function hitBomb(player, bomb) {
@@ -153,6 +139,7 @@ class LevelOne extends Phaser.Scene {
         }
         //  Checks to see if the player overlaps with any of the stars, if it does it will call the collectStar function
         this.physics.add.overlap(player, stars, collectStar, null, this);
+        this.physics.add.overlap(player, floatingStars, collectFloatingStar, null, this)
 
         this.physics.add.collider(player, bombs, hitBomb, null, this);
     }
@@ -176,7 +163,7 @@ class LevelOne extends Phaser.Scene {
         }
 
         if ((keys.W.isDown || keys.SPACE.isDown) && player.body.touching.down) { //checks if you can jump--the space/w key has to be pushed and the player body has to be touching
-            player.setVelocity(-330);
+            player.setVelocityY(-330);
             // this.scene.start('testScene'); -- a tester code, in this if the player jumps it moves you to another scene called Test Scene
         }
 
