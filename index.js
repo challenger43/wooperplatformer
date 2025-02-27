@@ -47,9 +47,10 @@ class LevelOne extends Phaser.Scene {
         platforms.create(1400, 340, 'ground');
         platforms.create(450, 400, 'ground');
         platforms.create(1100, 450, 'ground');
-        platforms.create(-20, 300, 'ground').setScale(0.1, 21).setTint(0x3C6529).refreshBody();
         platforms.create(450, 100, 'ground').setScale(0.1, 1).refreshBody();
         platforms.create(1500, 568, 'ground').setScale(2).refreshBody();
+        platforms.create(-20, 300, 'ground').setScale(0.1, 21).setTint(0x3C6529).refreshBody();
+        platforms.create(1910, 300, 'ground').setScale(0.1, 21).setTint(0x3C6529).refreshBody();
 
         // The player and its settings
         player = this.physics.add.sprite(100, 450, 'dude');    //use a sprite sheet for easier animations--with a sprite you download not just one image but a bunch of images all in one file that it can switch in between
@@ -109,6 +110,7 @@ class LevelOne extends Phaser.Scene {
         this.cameras.cameras[1].ignore(platforms.getChildren());
         this.cameras.cameras[1].ignore(stars.getChildren());
         this.cameras.cameras[1].ignore(sky); //we had to make a sky a variable. 
+        // this.cameras.main.roundPixels = true; //should in theory make the graphics a lil better 
 
         //  Collide the player and the stars with the platforms--since collision code is so hard to write we can just use phaser's built in systems
         this.physics.add.collider(player, platforms); //these are the things you want to collide with--the first code takes parameters player and platforms, so then player and platforms will collide
