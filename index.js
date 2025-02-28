@@ -1,14 +1,4 @@
-let player; //cannot use const for these because will need to change them later
-let stars;
-let floatingStars;
-let bombs;
-let platforms;
-let portal;
-let cursors;
-let score = 0;
-let gameOver = false;
-let scoreText;
-let keys;
+
 
 
 // class TestScene extends Phaser.Scene a tester scene, may use later
@@ -19,14 +9,37 @@ let keys;
 //     }
 // }
 class MenuScene extends Phaser.Scene{
-    //code a menu, is there any way to make a button in html that opens up class LevelOne
-}
-
-class LevelOne extends Phaser.Scene {
-    portalSpawned = false;
     constructor()
     {
-        super({ key: 'LevelOne' });
+        super({ key: 'MainMenu' });
+    }
+    create(){
+        this.scene.start("LevelOne");
+    }
+    update(){
+        // this.input.on('keydown', ()=>{
+        // })
+    }
+}
+
+class Level extends Phaser.Scene {
+    player; //cannot use const for these because will need to change them later
+    stars;
+    floatingStars;
+    bombs;
+    platforms;
+    portal;
+    cursors;
+    score = 0;
+    gameOver = false;
+    scoreText;
+    keys;
+    portalSpawned = false;
+    level;
+    constructor(key, level)
+    {
+        super({ key: key });
+        this.level = level;
     }
     preload() {
 
@@ -41,55 +54,50 @@ class LevelOne extends Phaser.Scene {
     collectStar(player, star) {
         star.disableBody(true, true); //the star no longer has a 'physical body'
         //  Add and update the score
-        score += 10;
-        scoreText.setText('Score: ' + score);
-        console.log(score)
+        this.score += 10;
+        this.scoreText.setText('Score: ' + this.score);
+        console.log(this.score)
     }
     
     
     collectFloatingStar(player, floatingStar){
         floatingStar.disableBody(true,true);
-        score += 10;
+        this.score += 10;
     }
 
     spawnPortal(){
             
         console.log('portal spawned')
-        portal.enableBody(false,0,0,true,true);
+        this.portal.enableBody(false,0,0,true,true);
         //false tells them we don't want to change position, 0,0 are coords, true true is invisible and active. 
     }
 
     enterPortal(){
         console.log("portal entered ")
-        this.scene.launch('LevelTwo');
-        this.scene.pause('LevelOne')
+        this.scene.start("LevelTwo");
     }
 
     create() {
 
-        keys = this.input.keyboard.addKeys("W,A,S,D,Q,SPACE,")
+        this.keys = this.input.keyboard.addKeys("W,A,S,D,Q,SPACE,")
 
         //an object is a collection of properties and values--properties are like labels
         let sky = this.add.image(400, 300, 'sky'); //adds images to things-the preload function loads them, this thing makes it actually happen
         //when drawing images, make sure to put it in order--if I loaded the ground before the sky, the sky would cover the ground 
         //  The platforms group contains the ground and the 2 ledges
-        platforms = this.physics.add.staticGroup();
-        platforms.create(400, 568, 'ground').setScale(2).refreshBody();//static, can't move but can interact
-        platforms.create(1000, 568, 'ground').setScale(2).refreshBody();
-        platforms.create(200, 250, 'ground').setScale(0.5, 1).refreshBody();
-        platforms.create(750, 220, 'ground');
-        platforms.create(1400, 340, 'ground');
-        platforms.create(450, 400, 'ground');
-        platforms.create(1100, 450, 'ground');
-        platforms.create(450, 100, 'ground').setScale(0.1, 1).refreshBody();
-        platforms.create(1500, 568, 'ground').setScale(2).refreshBody();
-        platforms.create(-20, 300, 'ground').setScale(0.1, 21).setTint(0x3C6529).refreshBody();
-        platforms.create(1910, 300, 'ground').setScale(0.1, 21).setTint(0x3C6529).refreshBody();
-        portal = this.physics.add.sprite(50,450, 'portal').setScale(0.3, 0.3);
-        portal.disableBody(true,true);
+        this.platforms = this.physics.add.staticGroup();
+        // add platforms
+        for (let platformData of this.level.platforms){
+            this.platforms.create(platformData.x, platformData.y, 'ground')
+                .setScale(platformData.scaleX ?? 1, platformData.scaleY ?? 1)
+                .setTint(platformData.tint ?? 0xffffff)
+                .refreshBody();
+        }
+        this.portal = this.physics.add.sprite(50,450, 'portal').setScale(0.3, 0.3);
+        this.portal.disableBody(true,true);
 
         // The player and its settings
-        player = this.physics.add.sprite(100, 450, 'dude');    //use a sprite sheet for easier animations--with a sprite you download not just one image but a bunch of images all in one file that it can switch in between
+        this.player = this.physics.add.sprite(100, 450, 'dude');    //use a sprite sheet for easier animations--with a sprite you download not just one image but a bunch of images all in one file that it can switch in between
 
 
         //  Player physics properties
@@ -115,49 +123,55 @@ class LevelOne extends Phaser.Scene {
         });
 
 
-        cursors = this.input.keyboard.createCursorKeys();
-        stars = this.physics.add.group();
-        stars.create(30,0, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6)).setScale(0.05,0.05);
-        stars.create(206, 0, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6)).setScale(0.05,0.05);
-        stars.create(449, 0, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6)).setScale(0.05,0.05);
-        stars.create(372, 0, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6)).setScale(0.05,0.05);
-        stars.create(688, 0, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6)).setScale(0.05,0.05);
-        stars.create(738, 0, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6)).setScale(0.05,0.05);
-        stars.create(1516, 0, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6)).setScale(0.05,0.05);
-        stars.create(1116, 512, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6)).setScale(0.05,0.05);
+        this.cursors = this.input.keyboard.createCursorKeys();
+        this.stars = this.physics.add.group();
+        for (let starData of this.level.stars){
+            this.stars.create(starData.x, starData.y, 'star')
+                .setBounceY(Phaser.Math.FloatBetween(0.2,0.6))
+                // .setImmovable(!starData.gravity ?? false)
+                .setScale(0.05,0.05);
+        }
+        // stars.create(30,0, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6)).setScale(0.05,0.05);
+        // stars.create(206, 0, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6)).setScale(0.05,0.05);
+        // stars.create(449, 0, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6)).setScale(0.05,0.05);
+        // stars.create(372, 0, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6)).setScale(0.05,0.05);
+        // stars.create(688, 0, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6)).setScale(0.05,0.05);
+        // stars.create(738, 0, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6)).setScale(0.05,0.05);
+        // stars.create(1516, 0, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6)).setScale(0.05,0.05);
+        // stars.create(1116, 512, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6)).setScale(0.05,0.05);
 
-        floatingStars = this.physics.add.group({ //need to ask Mr. SF about this. 
+        this.floatingStars = this.physics.add.group({ //need to ask Mr. SF about this. 
             allowGravity: false
-    });
-        floatingStars.create(100, 290, 'star').setScale(0.05,0.05);
-        floatingStars.create(460, 200, 'star').setScale(0.05,0.05);
-        floatingStars.create(326, 50, 'star').setScale(0.05,0.05);
-        floatingStars.create(787, 290, 'star').setScale(0.05,0.05);
-        floatingStars.create(1728, 180, 'star').setScale(0.05,0.05);
+        });
+        this.floatingStars.create(100, 290, 'star').setScale(0.05,0.05);
+        this.floatingStars.create(460, 200, 'star').setScale(0.05,0.05);
+        this.floatingStars.create(326, 50, 'star').setScale(0.05,0.05);
+        this.floatingStars.create(787, 290, 'star').setScale(0.05,0.05);
+        this.floatingStars.create(1728, 180, 'star').setScale(0.05,0.05);
         
-        bombs = this.physics.add.group(); //adds another item to the group of physics
+        this.bombs = this.physics.add.group(); //adds another item to the group of physics
 
         //  The score
-        scoreText = this.add.text(600, 300, 'score: 0', { fontSize: '32px', fill: '#FFF' });
+        this.scoreText = this.add.text(600, 300, 'score: 0', { fontSize: '32px', fill: '#FFF' });
 
         //all the cameras!
-        this.cameras.cameras[0].startFollow(player)
-        this.cameras.cameras[0].ignore(scoreText); //manually ignores the scoreText Variable, so it doesn't move, only for camera 0
+        this.cameras.cameras[0].startFollow(this.player)
+        this.cameras.cameras[0].ignore(this.scoreText); //manually ignores the scoreText Variable, so it doesn't move, only for camera 0
         this.cameras.add(1); //makes another camera, camera 1
-        this.cameras.cameras[1].ignore(player); //camera 1 ignores player, platforms.getChildre(the get children part gets all the platform variants as well)
-        this.cameras.cameras[1].ignore(platforms.getChildren());
-        this.cameras.cameras[1].ignore(stars.getChildren());
-        this.cameras.cameras[1].ignore(floatingStars.getChildren());
+        this.cameras.cameras[1].ignore(this.player); //camera 1 ignores player, platforms.getChildre(the get children part gets all the platform variants as well)
+        this.cameras.cameras[1].ignore(this.platforms.getChildren());
+        this.cameras.cameras[1].ignore(this.stars.getChildren());
+        this.cameras.cameras[1].ignore(this.floatingStars.getChildren());
         this.cameras.cameras[1].ignore(sky); //we had to make a sky a variable. 
-        this.cameras.cameras[1].ignore(portal);
+        this.cameras.cameras[1].ignore(this.portal);
         
         // this.cameras.main.roundPixels = true; //should in theory make the graphics a lil better 
 
         //  Collide the player and the stars with the platforms--since collision code is so hard to write we can just use phaser's built in systems
-        this.physics.add.collider(player, platforms); //these are the things you want to collide with--the first code takes parameters player and platforms, so then player and platforms will collide
-        this.physics.add.collider(stars, platforms);//parameters are stars and platforms, so adds a collide rule to the relationship between stars and platforms 
-        this.physics.add.collider(bombs, platforms);
-        this.physics.add.collider(portal, platforms);
+        this.physics.add.collider(this.player, this.platforms); //these are the things you want to collide with--the first code takes parameters player and platforms, so then player and platforms will collide
+        this.physics.add.collider(this.stars, this.platforms);//parameters are stars and platforms, so adds a collide rule to the relationship between stars and platforms 
+        this.physics.add.collider(this.bombs, this.platforms);
+        this.physics.add.collider(this.portal, this.platforms);
 
 
         
@@ -172,45 +186,45 @@ class LevelOne extends Phaser.Scene {
         //     gameOver = true; //boolean value 
         // }
         //  Checks to see if the player overlaps with any of the stars, if it does it will call the collectStar function
-        this.physics.add.overlap(player, stars, this.collectStar, null, this);
-        this.physics.add.overlap(player, floatingStars, this.collectFloatingStar, null, this)
-        this.physics.add.overlap(player, portal, this.enterPortal, null, this)
+        this.physics.add.overlap(this.player, this.stars, this.collectStar, null, this);
+        this.physics.add.overlap(this.player, this.floatingStars, this.collectFloatingStar, null, this)
+        this.physics.add.overlap(this.player, this.portal, this.enterPortal, null, this)
         // this.physics.add.collider(player, bombs, hitBomb, null, this); //don't need this code cause no bomb
         
     }
 
     update() {
-        if (gameOver) {
+        if (this.gameOver) {
             return;
         }
-        if (keys.Q.isDown){
-            stars.children.iterate( (star) => this.collectStar(player,star));
-            floatingStars.children.iterate( (star) => this.collectFloatingStar(player,star));
+        if (this.keys.Q.isDown){
+            this.stars.children.iterate( (star) => this.collectStar(this.player,star));
+            this.floatingStars.children.iterate( (star) => this.collectFloatingStar(this.player,star));
         }
-        if (keys.A.isDown) {
-            player.setVelocityX(-160);
-            player.anims.play('left', true);
+        if (this.keys.A.isDown) {
+            this.player.setVelocityX(-160);
+            this.player.anims.play('left', true);
         }
-        else if (keys.D.isDown) {
-            player.setVelocityX(160);
-            player.anims.play('right', true);
+        else if (this.keys.D.isDown) {
+            this.player.setVelocityX(160);
+            this.player.anims.play('right', true);
         }
         else { //if no key is pressed, will face forwards
-            player.setVelocityX(0)
-            player.anims.play('turn');
+            this.player.setVelocityX(0)
+            this.player.anims.play('turn');
         }
 
-        if ((keys.W.isDown || keys.SPACE.isDown) && player.body.touching.down) { //checks if you can jump--the space/w key has to be pushed and the player body has to be touching
-            player.setVelocityY(-330);
+        if ((this.keys.W.isDown || this.keys.SPACE.isDown) && this.player.body.touching.down) { //checks if you can jump--the space/w key has to be pushed and the player body has to be touching
+            this.player.setVelocityY(-330);
             // this.scene.start('testScene'); -- a tester code, in this if the player jumps it moves you to another scene called Test Scene
         }
 
-        if (stars.countActive(true) == 0 && floatingStars.countActive(true) == 0 && !this.portalSpawned){
+        if (this.stars.countActive(true) == 0 && this.floatingStars.countActive(true) == 0 && !this.portalSpawned){
             this.spawnPortal();
             this.portalSpawned = true;
         }
 
-        scoreText.setText("x: " + Math.floor(player.x)  + " y: " + Math.floor(player.y))
+        this.scoreText.setText("x: " + Math.floor(this.player.x)  + " y: " + Math.floor(this.player.y))
 
     }
 
@@ -218,196 +232,143 @@ class LevelOne extends Phaser.Scene {
 
 }
 
-class LevelTwo extends Phaser.Scene{
-    portalSpawned = false;
-    constructor()
-    {
-        super({ key: 'LevelTwo' });
-    }
-    preload() {
-        console.log(player.body)
-        console.log("scene two player", player)
-        
-
-        this.load.image('sky', 'assets/sky.png'); //the assets/ takes an object from a folder--in this case the folder is assets, the id is sky.png
-        this.load.image('ground', 'assets/platform.png');
-        this.load.image('star', 'WooperBall.png'); //they don't actually look like stars in 'real life' 
-        this.load.image('bomb', 'assets/bomb.png');
-        this.load.image('portal', 'Nether-Portal.png');
-        this.load.spritesheet('dude', 'assets/dude.png', { frameWidth: 32, frameHeight: 48 }); //sets the height of sprite
-        //use a sprite sheet for easier animations--with a sprite you download not just one image but a bunch of images all in one file that it can switch in between
-    }
-    collectStar(player, star) {
-        star.disableBody(true, true); //the star no longer has a 'physical body'
-        //  Add and update the score
-        score += 10;
-        scoreText.setText('Score: ' + score);
-        console.log(score)
-    }
-    
-    
-    collectFloatingStar(player, floatingStar){
-        floatingStar.disableBody(true,true);
-        score += 10;
-    }
-
-    spawnPortal(){
+const levels = {
+    LevelOne: {
+        platforms: [
+            {
+                x: 1000,
+                y: 568,
+                scaleX: 2,
+                scaleY: 2
+            },
+            {
+                x: 400,
+                y: 568,
+                scaleX: 2,
+                scaleY: 2
+            },
+            {
+                x: 750,
+                y: 220,
+            },
+            {
+                x: 200,
+                y: 250,
+                scaleX: 0.5,
+                scaleY: 1
+            },
+            {
+                x: 1400,
+                y: 340,
+            },
+            {
+                x: 450,
+                y: 400,
+            },
             
-        console.log('portal spawned')
-        portal.enableBody(true,0,0,true,true);
-        //false tells them we don't want to change position, 0,0 are coords, true true is invisible and active. 
-    }
+            {
+                x: 1100,
+                y: 450,
+            },
+            
+            {
+                x: 450,
+                y: 100,
+                scaleX: 0.1,
+            },
+            
+            {
+                x: 1500,
+                y: 568,
+                scaleX: 2,
+                scaleY: 2,
+            },
+            
+            {
+                x: -20,
+                y: 300,
+                scaleX: 0.1,
+                scaleY: 21,
+                tint: 0x3c6529
+            },
+            {
+                x: 1910,
+                y: 300,
+                scaleX: 0.1,
+                scaleY: 21,
+                tint: 0x3c6529
+            },
+        ],
+        stars: [
+            {
+                x: 30,
+                y: 0,
+                scaleX: 0.05,
+                scaleY: 0.05,
+                gravity: false
+            
+            },
 
-    enterPortal(){
-        console.log("portal entered ")
-    }
-
-    create() {
-
-        keys = this.input.keyboard.addKeys("W,A,S,D,Q,SPACE,")
-
-        //an object is a collection of properties and values--properties are like labels
-        let sky = this.add.image(400, 300, 'sky'); //adds images to things-the preload function loads them, this thing makes it actually happen
-        //when drawing images, make sure to put it in order--if I loaded the ground before the sky, the sky would cover the ground 
-        //  The platforms group contains the ground and the 2 ledges
-        this.platforms = this.physics.add.staticGroup();
-        this.platforms.create(400, 568, 'ground').setScale(2).refreshBody();//static, can't move but can interact
-        this.platforms.create(1000, 568, 'ground').setScale(2).refreshBody();
-        this.platforms.create(200, 250, 'ground').setScale(0.5, 1).refreshBody();
-        this.platforms.create(450, 100, 'ground').setScale(0.1, 1).refreshBody();
-        this.platforms.create(-20, 300, 'ground').setScale(0.1, 21).setTint(0x3C6529).refreshBody();
-        this.platforms.create(1910, 300, 'ground').setScale(0.1, 21).setTint(0x3C6529).refreshBody();
-        this.portal = this.physics.add.sprite(50,450, 'portal').setScale(0.3, 0.3);
-        this.portal.disableBody(true,true);
-
-        // The player and its settings
-        this.player = this.physics.add.sprite(100, 450, 'dude');  
-        this.player.setBounce(0.2);
-        this.player.setCollideWorldBounds(true);
-        this.physics.world.enable(this.player);
-        this.physics.add.collider(this.player, platforms); 
-        if (!this.player) {
-            console.error("PLAYER FAILED TO SPAWN!");
-        } else {
-            console.log("Scene2 Player created:", this.player);
-        }
-        console.log("Player body:", this.player.body);
-
-        //  Player physics properties
-        // animates player walking left/right
-        this.anims.create({
-            key: 'left2',
-            frames: this.anims.generateFrameNumbers('dude', { start: 0, end: 3 }),
-            frameRate: 10,
-            repeat: -1
-        });
-
-        this.anims.create({
-            key: 'turn2',
-            frames: [{ key: 'dude', frame: 4 }],
-            frameRate: 20
-        });
-
-        this.anims.create({
-            key: 'right2',
-            frames: this.anims.generateFrameNumbers('dude', { start: 5, end: 8 }),
-            frameRate: 10,
-            repeat: -1
-        });
-
-
-        cursors = this.input.keyboard.createCursorKeys();
-        this.stars = this.physics.add.group();
-        this.stars.create(30,0, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6)).setScale(0.05,0.05);
-
-        this.floatingStars = this.physics.add.group({ 
-            allowGravity: false
-    });
-        this.floatingStars.create(100, 290, 'star').setScale(0.05,0.05);
-       
-        
-        this.bombs = this.physics.add.group(); //adds another item to the group of physics
-
-        //  The score
-        scoreText = this.add.text(600, 300, 'score: 0', { fontSize: '32px', fill: '#FFF' });
-
-        //all the cameras!
-        this.cameras.cameras[0].startFollow(player)
-        this.cameras.cameras[0].ignore(scoreText); //manually ignores the scoreText Variable, so it doesn't move, only for camera 0
-        this.cameras.add(1); //makes another camera, camera 1
-        this.cameras.cameras[1].ignore(player); //camera 1 ignores player, platforms.getChildre(the get children part gets all the platform variants as well)
-        this.cameras.cameras[1].ignore(platforms.getChildren());
-        this.cameras.cameras[1].ignore(stars.getChildren());
-        this.cameras.cameras[1].ignore(floatingStars.getChildren());
-        this.cameras.cameras[1].ignore(sky); //we had to make a sky a variable. 
-        this.cameras.cameras[1].ignore(portal);
-        
-        // this.cameras.main.roundPixels = true; //should in theory make the graphics a lil better 
-
-        //  Collide the player and the stars with the platforms--since collision code is so hard to write we can just use phaser's built in systems
-        this.physics.add.collider(player, platforms); //these are the things you want to collide with--the first code takes parameters player and platforms, so then player and platforms will collide
-        this.physics.add.collider(stars, platforms);//parameters are stars and platforms, so adds a collide rule to the relationship between stars and platforms 
-        this.physics.add.collider(bombs, platforms);
-        this.physics.add.collider(portal, platforms);
-    
-        function hitBomb(player, bomb) {
-            this.physics.pause(); //stops the physics mechanism
-    
-            player.setTint(0xff0000);
-    
-            player.anims.play('turn');
-    
-            gameOver = true; //boolean value 
-        }
-        //  Checks to see if the player overlaps with any of the stars, if it does it will call the collectStar function
-        this.physics.add.overlap(player, stars, this.collectStar, null, this);
-        this.physics.add.overlap(player, floatingStars, this.collectFloatingStar, null, this)
-        this.physics.add.overlap(player, portal, this.enterPortal, null, this)
-        // this.physics.add.collider(player, bombs, hitBomb, null, this); //don't need this code cause no bomb
-        
-    }
-    
-    update() {
-        this.physics.world.collide(player, platforms, function() {
-            console.log("Player is colliding with platforms!");
-        });
-        
-        if (gameOver) {
-            return;
-        }
-        if (keys.Q.isDown){
-            stars.children.iterate( (star) => this.collectStar(player,star));
-            floatingStars.children.iterate( (star) => this.collectFloatingStar(player,star));
-        }
-        if (keys.A.isDown) {
-            player.setVelocityX(-160);
-            player.anims.play('left2', true);
-        }
-        else if (keys.D.isDown) {
-            player.setVelocityX(160);
-            player.anims.play('right2', true);
-        }
-        else { //if no key is pressed, will face forwards
-            player.setVelocityX(0)
-            player.anims.play('turn2');
-        }
-
-        if ((keys.W.isDown || keys.SPACE.isDown) && player.body.touching.down) { //checks if you can jump--the space/w key has to be pushed and the player body has to be touching
-            player.setVelocityY(-330);
-            // this.scene.start('testScene'); -- a tester code, in this if the player jumps it moves you to another scene called Test Scene
-        }
-
-        if (stars.countActive(true) == 0 && floatingStars.countActive(true) == 0 && !this.portalSpawned){
-            this.spawnPortal();
-            this.portalSpawned = true;
-        }
-
-        scoreText.setText("x: " + Math.floor(player.x)  + " y: " + Math.floor(player.y))
+            {
+                x: 206,
+                y: 0,
+                scaleX: 0.05,
+                scaleY: 0.05
+            },
+            {
+                x: 449,
+                y: 0,
+                scaleX: 0.05,
+                scaleY: 0.05
+            },
+            {
+                x: 372,
+                y: 0,
+                scaleX: 0.05,
+                scaleY: 0.05
+            },
+            {
+                x: 206,
+                y: 688,
+                scaleX: 0.05,
+                scaleY: 0.05
+            },
+            {
+                x: 738,
+                y: 0,
+                scaleX: 0.05,
+                scaleY: 0.05
+            },
+            {
+                x: 1516,
+                y: 0,
+                scaleX: 0.05,
+                scaleY: 0.05
+            },
+            {
+                x: 1116,
+                y: 512,
+                scaleX: 0.05,
+                scaleY: 0.05
+            }
+        ]
+    },
+    LevelTwo: {
+        platforms: [
+            {
+                x: 0, 
+                y: 0,
+            },
+            {
+                x: 0, 
+                y: 100,
+            },
+        ],
+        stars: []
 
     }
-    
-
 }
+
 
 const config = {
     type: Phaser.AUTO,
@@ -421,7 +382,7 @@ const config = {
             debug: false
         }
     },
-    scene:[LevelOne, LevelTwo]
+    scene:[MenuScene, new Level('LevelOne', levels.LevelOne), new Level('LevelTwo', levels.LevelTwo)]
 };
 
 
