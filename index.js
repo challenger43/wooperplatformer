@@ -123,7 +123,7 @@ class LevelOne extends Phaser.Scene {
         stars.create(738, 0, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6)).setScale(0.05,0.05);
         stars.create(1516, 0, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6)).setScale(0.05,0.05);
         stars.create(1116, 512, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6)).setScale(0.05,0.05);
-
+        
         floatingStars = this.physics.add.group({ //need to ask Mr. SF about this. 
             allowGravity: false
     });
@@ -137,6 +137,8 @@ class LevelOne extends Phaser.Scene {
 
         //  The score
         scoreText = this.add.text(600, 300, 'score: 0', { fontSize: '32px', fill: '#FFF' });
+
+        //all the cameras!
         this.cameras.cameras[0].startFollow(player)
         this.cameras.cameras[0].ignore(scoreText); //manually ignores the scoreText Variable, so it doesn't move, only for camera 0
         this.cameras.add(1); //makes another camera, camera 1
@@ -170,6 +172,7 @@ class LevelOne extends Phaser.Scene {
         //  Checks to see if the player overlaps with any of the stars, if it does it will call the collectStar function
         this.physics.add.overlap(player, stars, this.collectStar, null, this);
         this.physics.add.overlap(player, floatingStars, this.collectFloatingStar, null, this)
+        this.physics.add.overlap(player, portal, this.enterPortal, null, this)
         // this.physics.add.collider(player, bombs, hitBomb, null, this); //don't need this code cause no bomb
         
     }
