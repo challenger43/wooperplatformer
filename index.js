@@ -132,15 +132,12 @@ class Level extends Phaser.Scene {
                 .setScale(0.05,0.05);
         }
        
-        this.floatingStars = this.physics.add.group({ //need to ask Mr. SF about this. 
-            allowGravity: false
-        });
-        this.floatingStars.create(100, 290, 'star').setScale(0.05,0.05);
-        this.floatingStars.create(460, 200, 'star').setScale(0.05,0.05);
-        this.floatingStars.create(326, 50, 'star').setScale(0.05,0.05);
-        this.floatingStars.create(787, 290, 'star').setScale(0.05,0.05);
-        this.floatingStars.create(1728, 180, 'star').setScale(0.05,0.05);
-        
+        this.floatingStars = this.physics.add.group();
+        for (let floatingStarData of this.level.floatingStars){
+            this.floatingStars.create(floatingStarData.x, floatingStarData.y, 'star')
+    
+        }
+    
         this.bombs = this.physics.add.group(); //adds another item to the group of physics
 
         //  The score
@@ -351,20 +348,79 @@ const levels = {
                 scaleY: 0.05,
             }
 
+        ],
+        floatingStars: [
+            {
+                x: 100,
+                y: 290,
+                scaleX: 0.05,
+                scaleY: 0.05,
+                allowGravity: false,
+            }
+            //  this.floatingStars.create(100, 290, 'star').setScale(0.05,0.05);
+            // this.floatingStars.create(460, 200, 'star').setScale(0.05,0.05);
+            // this.floatingStars.create(326, 50, 'star').setScale(0.05,0.05);
+            // this.floatingStars.create(787, 290, 'star').setScale(0.05,0.05);
+            // this.floatingStars.create(1728, 180, 'star').setScale(0.05,0.05);
+            
+
+        ],
+
+        portals: [
+            {
+
+            }
         ]
     },
     LevelTwo: {
         platforms: [
             {
-                x: 0, 
-                y: 0,
+                x: 1000,
+                y: 568,
+                scaleX: 2,
+                scaleY: 2
             },
             {
-                x: 0, 
-                y: 100,
+                x: 400,
+                y: 568,
+                scaleX: 2,
+                scaleY: 2
             },
+            {
+                x: 1500,
+                y: 568,
+                scaleX: 2,
+                scaleY: 2,
+            },
+            {
+                x: 454,
+                y: 280,
+                scaleX: 0.5,
+            },
+            {
+                x: 254,
+                y: 380,
+                scaleX: 0.5,
+            },
+            {
+                x: 268,
+                y: 100,
+                scaleX: 0.5,
+            }, 
+            {
+                x: 813,
+                y: 280,
+                scaleX: 0.1,
+            },//need to spawn star at this coord
         ],
-        stars: []
+        stars: [
+            {
+                x: 813,
+                y: 250,
+                scaleX: 0.05,
+                scaleY: 0.05,
+            }
+        ]
 
     }
 }
