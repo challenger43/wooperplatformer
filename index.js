@@ -131,15 +131,7 @@ class Level extends Phaser.Scene {
                 // .setImmovable(!starData.gravity ?? false)
                 .setScale(0.05,0.05);
         }
-        // stars.create(30,0, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6)).setScale(0.05,0.05);
-        // stars.create(206, 0, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6)).setScale(0.05,0.05);
-        // stars.create(449, 0, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6)).setScale(0.05,0.05);
-        // stars.create(372, 0, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6)).setScale(0.05,0.05);
-        // stars.create(688, 0, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6)).setScale(0.05,0.05);
-        // stars.create(738, 0, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6)).setScale(0.05,0.05);
-        // stars.create(1516, 0, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6)).setScale(0.05,0.05);
-        // stars.create(1116, 512, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6)).setScale(0.05,0.05);
-
+       
         this.floatingStars = this.physics.add.group({ //need to ask Mr. SF about this. 
             allowGravity: false
         });
@@ -300,20 +292,21 @@ const levels = {
             },
         ],
         stars: [
+             // stars.create(30,0, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6)).setScale(0.05,0.05);
+        // stars.create(206, 0, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6)).setScale(0.05,0.05);
+        // stars.create(449, 0, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6)).setScale(0.05,0.05);
+        // stars.create(372, 0, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6)).setScale(0.05,0.05);
+        // stars.create(688, 0, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6)).setScale(0.05,0.05);
+        // stars.create(738, 0, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6)).setScale(0.05,0.05);
+        // stars.create(1516, 0, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6)).setScale(0.05,0.05);
+        // stars.create(1116, 512, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6)).setScale(0.05,0.05);
+
             {
                 x: 30,
                 y: 0,
                 scaleX: 0.05,
                 scaleY: 0.05,
-                gravity: false
             
-            },
-
-            {
-                x: 206,
-                y: 0,
-                scaleX: 0.05,
-                scaleY: 0.05
             },
             {
                 x: 449,
@@ -329,7 +322,7 @@ const levels = {
             },
             {
                 x: 206,
-                y: 688,
+                y: 0,
                 scaleX: 0.05,
                 scaleY: 0.05
             },
@@ -350,7 +343,14 @@ const levels = {
                 y: 512,
                 scaleX: 0.05,
                 scaleY: 0.05
+            },
+            {
+                x:688,
+                y: 0,
+                scaleX: 0.05,
+                scaleY: 0.05,
             }
+
         ]
     },
     LevelTwo: {
