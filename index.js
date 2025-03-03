@@ -96,7 +96,7 @@ class Level extends Phaser.Scene {
         this.portal = this.physics.add.sprite(50,450, 'portal').setScale(0.3, 0.3);
         this.portal.disableBody(true,true);
 
-        // The player and its settings
+        // The player and its settings5
         this.player = this.physics.add.sprite(100, 450, 'dude');    //use a sprite sheet for easier animations--with a sprite you download not just one image but a bunch of images all in one file that it can switch in between
 
 
@@ -132,7 +132,7 @@ class Level extends Phaser.Scene {
                 .setScale(0.05,0.05);
         }
        
-        this.floatingStars = this.physics.add.group();
+        this.floatingStars = this.physics.add.group(); //use setIgnoreGravity to make it ignore gravity 
         for (let floatingStarData of this.level.floatingStars){
             this.floatingStars.create(floatingStarData.x, floatingStarData.y, 'star')
     
@@ -368,7 +368,10 @@ const levels = {
 
         portals: [
             {
-
+                x:50,
+                y: 450,
+                scaleX: 0.3,
+                scaleY: 0.3,
             }
         ]
     },
@@ -420,7 +423,8 @@ const levels = {
                 scaleX: 0.05,
                 scaleY: 0.05,
             }
-        ]
+        ],
+        floatingStars: []
 
     }
 }
