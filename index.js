@@ -133,9 +133,18 @@ class Level extends Phaser.Scene {
         }
        
         this.floatingStars = this.physics.add.group(); //use setIgnoreGravity to make it ignore gravity 
-        for (let floatingStarData of this.level.floatingStars){
-            this.floatingStars.create(floatingStarData.x, floatingStarData.y, 'star')
+        // for (let floatingStarData of this.level.floatingStars){
+        //     this.floatingStars.create(floatingStarData.x, floatingStarData.y, 'star')
+        //     .setScale(0.05, 0.05)      
     
+        // }
+        for (let floatingStarData of this.level.floatingStars) {
+            let floatingStar = this.floatingStars.create(floatingStarData.x, floatingStarData.y, 'star')
+                .setScale(0.05, 0.05); // Set the scale of the star
+        
+            // Set gravity to zero for each floating star individually
+            floatingStar.body.setGravity(0, 0);  
+            floatingStar.body.allowGravity = false;
         }
     
         this.bombs = this.physics.add.group(); //adds another item to the group of physics
@@ -161,6 +170,7 @@ class Level extends Phaser.Scene {
         this.physics.add.collider(this.stars, this.platforms);//parameters are stars and platforms, so adds a collide rule to the relationship between stars and platforms 
         this.physics.add.collider(this.bombs, this.platforms);
         this.physics.add.collider(this.portal, this.platforms);
+        this.physics.add.collider(this.floatingStars, this.platforms)
 
 
         
@@ -355,14 +365,46 @@ const levels = {
                 y: 290,
                 scaleX: 0.05,
                 scaleY: 0.05,
-                allowGravity: false,
+                
+                
+            },
+            {
+                x: 460,
+                y: 200,
+                scaleX: 0.05,
+                scaleY: 0.05,
+                
+                
+            },
+            {
+                x: 326,
+                y: 50,
+                scaleX: 0.05,
+                scaleY: 0.05,
+                
+                
+            },
+            {
+                x: 787,
+                y: 290,
+                scaleX: 0.05,
+                scaleY: 0.05,
+                
+                
+            },
+            {
+                x: 1728,
+                y: 180,
+                scaleX: 0.05,
+                scaleY: 0.05,
+                
+                
             }
             //  this.floatingStars.create(100, 290, 'star').setScale(0.05,0.05);
             // this.floatingStars.create(460, 200, 'star').setScale(0.05,0.05);
             // this.floatingStars.create(326, 50, 'star').setScale(0.05,0.05);
             // this.floatingStars.create(787, 290, 'star').setScale(0.05,0.05);
             // this.floatingStars.create(1728, 180, 'star').setScale(0.05,0.05);
-            
 
         ],
 
@@ -414,7 +456,36 @@ const levels = {
                 x: 813,
                 y: 280,
                 scaleX: 0.1,
-            },//need to spawn star at this coord
+            },
+            {
+                x: 1053,
+                y: 280,
+                scaleX: 0.1,
+            },
+            {
+                x: 1289,
+                y: 240,
+                scaleX: 0.1,
+            },
+            {
+                x: 1047,
+                y: 60,
+                scaleX: 0.1,
+            },
+            {
+                x: -20,
+                y: 300,
+                scaleX: 0.1,
+                scaleY: 21,
+                tint: 0x3c6529
+            },
+            {
+                x: 1910,
+                y: 300,
+                scaleX: 0.1,
+                scaleY: 21,
+                tint: 0x3c6529
+            },
         ],
         stars: [
             {
@@ -422,9 +493,65 @@ const levels = {
                 y: 250,
                 scaleX: 0.05,
                 scaleY: 0.05,
-            }
+            },
+            {
+                x: 1050,
+                y: 20,
+                scaleX: 0.05,
+                scaleY: 0.05,
+            },
+            {
+                x: 1050,
+                y: 240,
+                scaleX: 0.05,
+                scaleY: 0.05,
+            },
+            {
+                x: 1285,
+                y: 200,
+                scaleX: 0.05,
+                scaleY: 0.05,
+            },
+            {
+                x: 285,
+                y: 60,
+                scaleX: 0.05,
+                scaleY: 0.05,
+            },
+            
         ],
-        floatingStars: []
+        floatingStars: [
+            {
+                x: 740,
+                y: 80,
+                scaleX: 0.05,
+                scaleY: 0.05,
+            },
+            {
+                x: 660,
+                y: 80,
+                scaleX: 0.05,
+                scaleY: 0.05,
+            },
+            {
+                x: 530,
+                y: 80,
+                scaleX: 0.05,
+                scaleY: 0.05,
+            },
+            {
+                x: 16,
+                y: 160,
+                scaleX: 0.05,
+                scaleY: 0.05,
+            },
+            {
+                x: 90,
+                y: 250,
+                scaleX: 0.05,
+                scaleY: 0.05,
+            }
+        ]
 
     }
 }
