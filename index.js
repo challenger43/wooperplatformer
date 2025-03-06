@@ -5,15 +5,14 @@
 //         super({ key: 'testScene' });
 //     }
 // }
-class MenuScene extends Phaser.Scene{
-    constructor()
-    {
+class MenuScene extends Phaser.Scene {
+    constructor() {
         super({ key: 'MainMenu' });
     }
-    create(){
+    create() {
         this.scene.start("LevelOne");
     }
-    update(){
+    update() {
     }
 }
 
@@ -31,8 +30,8 @@ class Level extends Phaser.Scene {
     keys;
     portalSpawned = false;
     level;
-    constructor(key, level)
-    {
+    waters;
+    constructor(key, level) {
         super({ key: key });
         this.level = level;
     }
@@ -53,27 +52,35 @@ class Level extends Phaser.Scene {
         this.scoreText.setText('Score: ' + this.score);
         console.log(this.score)
     }
-    
-    
-    collectFloatingStar(player, floatingStar){
-        floatingStar.disableBody(true,true);
+
+
+    collectFloatingStar(player, floatingStar) {
+        floatingStar.disableBody(true, true);
         this.score += 10;
     }
 
-    spawnPortal(){
-            
+    spawnPortal() {
+
         console.log('portal spawned')
-        this.portal.enableBody(false,0,0,true,true);
+        this.portals.children.iterate( (portal) => portal.enableBody(false, 0, 0, true, true));
         //false tells them we don't want to change position, 0,0 are coords, true true is invisible and active. 
     }
 
-    enterPortal(){
+    enterPortal(_player, portal) {
         console.log("portal entered ")
-        this.scene.start("LevelTwo");
+        this.scene.start(portal.destination);
     }
 
     create() {
 
+
+        // move this to change when the player is in contact with water
+        // if (this.water) {
+        //     this.physics.config.gravity.y = 250 //when inside water, gravity is set to 250
+        // }
+        // else {
+            this.physics.config.gravity.y = 500
+        // }
         this.keys = this.input.keyboard.addKeys("W,A,S,D,Q,SPACE,")
 
         //an object is a collection of properties and values--properties are like labels
@@ -82,14 +89,31 @@ class Level extends Phaser.Scene {
         //  The platforms group contains the ground and the 2 ledges
         this.platforms = this.physics.add.staticGroup();
         // add platforms
-        for (let platformData of this.level.platforms){
+        for (let platformData of this.level.platforms) {
             this.platforms.create(platformData.x, platformData.y, 'ground')
                 .setScale(platformData.scaleX ?? 1, platformData.scaleY ?? 1)
                 .setTint(platformData.tint ?? 0xffffff)
                 .refreshBody();
         }
-        this.portal = this.physics.add.sprite(50,450, 'portal').setScale(0.3, 0.3);
-        this.portal.disableBody(true,true);
+
+        // Make water
+        this.waters = this.physics.add.staticGroup();
+        for (let waterData of this.level.waters) {
+            this.waters.create(waterData.x, waterData.y, 'ground')
+                .setScale(waterData.scaleX ?? 1, waterData.scaleY ?? 1)
+                .setTint(waterData.tint ?? 0x0000ff)
+                .refreshBody();
+        }
+
+        this.portals = this.physics.add.staticGroup()
+        for (let portalData of this.level.portals){
+        let portal = this.portals.create(portalData.x, portalData.y, 'portal')
+            .setScale(0.3, 0.3)
+            .setTint(portalData.tint ?? 0xffffff)
+            .refreshBody();
+            portal.destination = portalData.destination
+            portal.disableBody(true, true);
+        }
 
         // The player and its settings5
         this.player = this.physics.add.sprite(100, 450, 'dude');    //use a sprite sheet for easier animations--with a sprite you download not just one image but a bunch of images all in one file that it can switch in between
@@ -120,28 +144,28 @@ class Level extends Phaser.Scene {
 
         this.cursors = this.input.keyboard.createCursorKeys();
         this.stars = this.physics.add.group();
-        for (let starData of this.level.stars){
+        for (let starData of this.level.stars) {
             this.stars.create(starData.x, starData.y, 'star')
-                .setBounceY(Phaser.Math.FloatBetween(0.2,0.6))
+                .setBounceY(Phaser.Math.FloatBetween(0.2, 0.6))
                 // .setImmovable(!starData.gravity ?? false)
-                .setScale(0.05,0.05);
+                .setScale(0.05, 0.05);
         }
-       
+
         this.floatingStars = this.physics.add.group(); //use setIgnoreGravity to make it ignore gravity 
         // for (let floatingStarData of this.level.floatingStars){
         //     this.floatingStars.create(floatingStarData.x, floatingStarData.y, 'star')
         //     .setScale(0.05, 0.05)      
-    
+
         // }
         for (let floatingStarData of this.level.floatingStars) {
             let floatingStar = this.floatingStars.create(floatingStarData.x, floatingStarData.y, 'star')
                 .setScale(0.05, 0.05); // Set the scale of the star
-        
+
             // Set gravity to zero for each floating star individually
-            floatingStar.body.setGravity(0, 0);  
+            floatingStar.body.setGravity(0, 0);
             floatingStar.body.allowGravity = false;
         }
-    
+
         this.bombs = this.physics.add.group(); //adds another item to the group of physics
 
         //  The score
@@ -156,44 +180,44 @@ class Level extends Phaser.Scene {
         this.cameras.cameras[1].ignore(this.stars.getChildren());
         this.cameras.cameras[1].ignore(this.floatingStars.getChildren());
         this.cameras.cameras[1].ignore(sky); //we had to make a sky a variable. 
-        this.cameras.cameras[1].ignore(this.portal);
-        
+        this.cameras.cameras[1].ignore(this.portals.getChildren());
+
         // this.cameras.main.roundPixels = true; //should in theory make the graphics a lil better 
 
         //  Collide the player and the stars with the platforms--since collision code is so hard to write we can just use phaser's built in systems
         this.physics.add.collider(this.player, this.platforms); //these are the things you want to collide with--the first code takes parameters player and platforms, so then player and platforms will collide
         this.physics.add.collider(this.stars, this.platforms);//parameters are stars and platforms, so adds a collide rule to the relationship between stars and platforms 
         this.physics.add.collider(this.bombs, this.platforms);
-        this.physics.add.collider(this.portal, this.platforms);
+        this.physics.add.collider(this.portals, this.platforms);
         this.physics.add.collider(this.floatingStars, this.platforms)
 
 
-        
-    
+
+
         // function hitBomb(player, bomb) {
         //     this.physics.pause(); //stops the physics mechanism
-    
+
         //     player.setTint(0xff0000);
-    
+
         //     player.anims.play('turn');
-    
+
         //     gameOver = true; //boolean value 
         // }
         //  Checks to see if the player overlaps with any of the stars, if it does it will call the collectStar function
         this.physics.add.overlap(this.player, this.stars, this.collectStar, null, this);
         this.physics.add.overlap(this.player, this.floatingStars, this.collectFloatingStar, null, this)
-        this.physics.add.overlap(this.player, this.portal, this.enterPortal, null, this)
+        this.physics.add.overlap(this.player, this.portals, this.enterPortal, null, this)
         // this.physics.add.collider(player, bombs, hitBomb, null, this); //don't need this code cause no bomb
-        
+
     }
 
     update() {
         if (this.gameOver) {
             return;
         }
-        if (this.keys.Q.isDown){
-            this.stars.children.iterate( (star) => this.collectStar(this.player,star));
-            this.floatingStars.children.iterate( (star) => this.collectFloatingStar(this.player,star));
+        if (this.keys.Q.isDown) {
+            this.stars.children.iterate((star) => this.collectStar(this.player, star));
+            this.floatingStars.children.iterate((star) => this.collectFloatingStar(this.player, star));
         }
         if (this.keys.A.isDown) {
             this.player.setVelocityX(-160);
@@ -208,21 +232,32 @@ class Level extends Phaser.Scene {
             this.player.anims.play('turn');
         }
 
-        if ((this.keys.W.isDown || this.keys.SPACE.isDown) && this.player.body.touching.down) { //checks if you can jump--the space/w key has to be pushed and the player body has to be touching
-            this.player.setVelocityY(-430);
+        if (
+            (this.keys.W.isDown || this.keys.SPACE.isDown) && (
+            (this.water || this.player.body.touching.down)
+        )
+        ) { //checks if you can jump--the space/w key has to be pushed and the player body has to be touching
+            this.player.setVelocityY(this.water ? -200 : -430);
             // this.scene.start('testScene'); -- a tester code, in this if the player jumps it moves you to another scene called Test Scene
         }
 
-        if (this.stars.countActive(true) == 0 && this.floatingStars.countActive(true) == 0 && !this.portalSpawned){
+        if (this.stars.countActive(true) == 0 && this.floatingStars.countActive(true) == 0 && !this.portalSpawned) {
             this.spawnPortal();
             this.portalSpawned = true;
         }
 
-        this.scoreText.setText("x: " + Math.floor(this.player.x)  + " y: " + Math.floor(this.player.y))
+        this.scoreText.setText("x: " + Math.floor(this.player.x) + " y: " + Math.floor(this.player.y))
+        let xVel = this.water ? 100 : 150; //the '?' shortens an if -else into one line
+        let yVel = this.water ? -250 : -400
+        let jumpFrames = this.water ? 26 : 31
+
+        if (this.keys.S.isDown) {
+
+        }
 
     }
 
-    
+
 
 }
 
@@ -259,25 +294,25 @@ const levels = {
                 x: 450,
                 y: 400,
             },
-            
+
             {
                 x: 1100,
                 y: 450,
             },
-            
+
             {
                 x: 450,
                 y: 100,
                 scaleX: 0.1,
             },
-            
+
             {
                 x: 1500,
                 y: 568,
                 scaleX: 2,
                 scaleY: 2,
             },
-            
+
             {
                 x: -20,
                 y: 300,
@@ -293,22 +328,23 @@ const levels = {
                 tint: 0x3c6529
             },
         ],
+        waters: [],
         stars: [
-             // stars.create(30,0, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6)).setScale(0.05,0.05);
-        // stars.create(206, 0, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6)).setScale(0.05,0.05);
-        // stars.create(449, 0, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6)).setScale(0.05,0.05);
-        // stars.create(372, 0, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6)).setScale(0.05,0.05);
-        // stars.create(688, 0, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6)).setScale(0.05,0.05);
-        // stars.create(738, 0, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6)).setScale(0.05,0.05);
-        // stars.create(1516, 0, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6)).setScale(0.05,0.05);
-        // stars.create(1116, 512, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6)).setScale(0.05,0.05);
+            // stars.create(30,0, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6)).setScale(0.05,0.05);
+            // stars.create(206, 0, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6)).setScale(0.05,0.05);
+            // stars.create(449, 0, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6)).setScale(0.05,0.05);
+            // stars.create(372, 0, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6)).setScale(0.05,0.05);
+            // stars.create(688, 0, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6)).setScale(0.05,0.05);
+            // stars.create(738, 0, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6)).setScale(0.05,0.05);
+            // stars.create(1516, 0, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6)).setScale(0.05,0.05);
+            // stars.create(1116, 512, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6)).setScale(0.05,0.05);
 
             {
                 x: 30,
                 y: 0,
                 scaleX: 0.05,
                 scaleY: 0.05,
-            
+
             },
             {
                 x: 449,
@@ -347,7 +383,7 @@ const levels = {
                 scaleY: 0.05
             },
             {
-                x:688,
+                x: 688,
                 y: 0,
                 scaleX: 0.05,
                 scaleY: 0.05,
@@ -360,40 +396,40 @@ const levels = {
                 y: 290,
                 scaleX: 0.05,
                 scaleY: 0.05,
-                
-                
+
+
             },
             {
                 x: 460,
                 y: 200,
                 scaleX: 0.05,
                 scaleY: 0.05,
-                
-                
+
+
             },
             {
                 x: 326,
                 y: 50,
                 scaleX: 0.05,
                 scaleY: 0.05,
-                
-                
+
+
             },
             {
                 x: 787,
                 y: 290,
                 scaleX: 0.05,
                 scaleY: 0.05,
-                
-                
+
+
             },
             {
                 x: 1728,
                 y: 180,
                 scaleX: 0.05,
                 scaleY: 0.05,
-                
-                
+
+
             }
             //  this.floatingStars.create(100, 290, 'star').setScale(0.05,0.05);
             // this.floatingStars.create(460, 200, 'star').setScale(0.05,0.05);
@@ -403,13 +439,22 @@ const levels = {
 
         ],
 
-        portals: [
+        portals:[
             {
                 x: 50,
                 y: 450,
                 scaleX: 0.3,
                 scaleY: 0.3,
-            }
+                destination: "LevelTwo",
+            },
+            // { omnious testing portal 
+            //     x: 550,
+            //     y: 450,
+            //     scaleX: 0.3,
+            //     scaleY: 0.3,
+            //     tint: 0xff0000,
+            //     destination: "LevelThree",
+            // },
         ]
     },
     LevelTwo: {
@@ -446,7 +491,7 @@ const levels = {
                 x: 268,
                 y: 100,
                 scaleX: 0.5,
-            }, 
+            },
             {
                 x: 813,
                 y: 280,
@@ -505,8 +550,9 @@ const levels = {
                 y: 200,
                 scaleX: 0.1,
             },
-          
+
         ],
+        waters: [],
         stars: [
             {
                 x: 813,
@@ -562,7 +608,7 @@ const levels = {
                 scaleX: 0.05,
                 scaleY: 0.05,
             }
-            
+
         ],
         floatingStars: [
             {
@@ -619,14 +665,29 @@ const levels = {
                 scaleX: 0.05,
                 scaleY: 0.05,
             }
+        ],
+        portals: [
+            {
+                x: 50,
+                y: 450,
+                scaleX: 0.3,
+                scaleY: 0.3,
+                destination: "LevelThree",
+            },
         ]
-
     },
-    LevelThree:{
+    LevelThree: {
         platforms: [],
-        water:[],
+        waters: [
+            {
+                x: 1000,
+                y: 568,
+                scaleX: 2,
+                scaleY: 2
+            },],
         stars: [],
         floatingStars: [],
+        portals: []
     }
 }
 
@@ -643,7 +704,7 @@ const config = {
             debug: false
         }
     },
-    scene:[MenuScene, new Level('LevelOne', levels.LevelOne), new Level('LevelTwo', levels.LevelTwo), new Level('LevelThree', levels.LevelThree),]
+    scene: [MenuScene, new Level('LevelOne', levels.LevelOne), new Level('LevelTwo', levels.LevelTwo), new Level('LevelThree', levels.LevelThree),]
 };
 
 
