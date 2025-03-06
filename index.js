@@ -1,6 +1,3 @@
-
-
-
 // class TestScene extends Phaser.Scene a tester scene, may use later
 // {
 //     constructor ()
@@ -17,8 +14,6 @@ class MenuScene extends Phaser.Scene{
         this.scene.start("LevelOne");
     }
     update(){
-        // this.input.on('keydown', ()=>{
-        // })
     }
 }
 
@@ -214,7 +209,7 @@ class Level extends Phaser.Scene {
         }
 
         if ((this.keys.W.isDown || this.keys.SPACE.isDown) && this.player.body.touching.down) { //checks if you can jump--the space/w key has to be pushed and the player body has to be touching
-            this.player.setVelocityY(-330);
+            this.player.setVelocityY(-430);
             // this.scene.start('testScene'); -- a tester code, in this if the player jumps it moves you to another scene called Test Scene
         }
 
@@ -410,7 +405,7 @@ const levels = {
 
         portals: [
             {
-                x:50,
+                x: 50,
                 y: 450,
                 scaleX: 0.3,
                 scaleY: 0.3,
@@ -480,12 +475,37 @@ const levels = {
                 tint: 0x3c6529
             },
             {
+                x: -20,
+                y: -350,
+                scaleX: 0.1,
+                scaleY: 21,
+                tint: 0x3c6529
+            },
+            {
                 x: 1910,
                 y: 300,
                 scaleX: 0.1,
                 scaleY: 21,
                 tint: 0x3c6529
             },
+            {
+                x: 1910,
+                y: -350,
+                scaleX: 0.1,
+                scaleY: 21,
+                tint: 0x3c6529,
+            },
+            {
+                x: 1580,
+                y: 200,
+                scaleX: 0.05,
+            },
+            {
+                x: 1847,
+                y: 200,
+                scaleX: 0.1,
+            },
+          
         ],
         stars: [
             {
@@ -518,6 +538,30 @@ const levels = {
                 scaleX: 0.05,
                 scaleY: 0.05,
             },
+            {
+                x: 1584,
+                y: 160,
+                scaleX: 0.05,
+                scaleY: 0.05,
+            },
+            {
+                x: 1696,
+                y: 0,
+                scaleX: 0.05,
+                scaleY: 0.05,
+            },
+            {
+                x: 603,
+                y: 0,
+                scaleX: 0.05,
+                scaleY: 0.05,
+            },
+            {
+                x: 702,
+                y: 0,
+                scaleX: 0.05,
+                scaleY: 0.05,
+            }
             
         ],
         floatingStars: [
@@ -550,9 +594,39 @@ const levels = {
                 y: 250,
                 scaleX: 0.05,
                 scaleY: 0.05,
+            },
+            {
+                x: 1432,
+                y: 50,
+                scaleX: 0.05,
+                scaleY: 0.05,
+            },
+            {
+                x: 1847,
+                y: 50,
+                scaleX: 0.05,
+                scaleY: 0.05,
+            },
+            {
+                x: 1847,
+                y: 350,
+                scaleX: 0.05,
+                scaleY: 0.05,
+            },
+            {
+                x: 1284,
+                y: 290,
+                scaleX: 0.05,
+                scaleY: 0.05,
             }
         ]
 
+    },
+    LevelThree:{
+        platforms: [],
+        water:[],
+        stars: [],
+        floatingStars: [],
     }
 }
 
@@ -565,11 +639,11 @@ const config = {
     physics: { //sets up the physics system
         default: 'arcade',
         arcade: { //arcade is object
-            gravity: { y: 300 },
+            gravity: { y: 500 },
             debug: false
         }
     },
-    scene:[MenuScene, new Level('LevelOne', levels.LevelOne), new Level('LevelTwo', levels.LevelTwo)]
+    scene:[MenuScene, new Level('LevelOne', levels.LevelOne), new Level('LevelTwo', levels.LevelTwo), new Level('LevelThree', levels.LevelThree),]
 };
 
 
