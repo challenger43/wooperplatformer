@@ -30,6 +30,7 @@ class Level extends Phaser.Scene {
     keys;
     portalSpawned = false;
     level;
+    isInWater = false;// contavt with water
     waters;
     constructor(key, level) {
         super({ key: key });
@@ -70,10 +71,11 @@ class Level extends Phaser.Scene {
         console.log("portal entered ")
         this.scene.start(portal.destination);
     }
+    enterWater(_player, water){
+        this.isInWater = true;
+    }
 
     create() {
-
-
         // move this to change when the player is in contact with water
         // if (this.water) {
         //     this.physics.config.gravity.y = 250 //when inside water, gravity is set to 250
@@ -84,7 +86,8 @@ class Level extends Phaser.Scene {
         this.keys = this.input.keyboard.addKeys("W,A,S,D,Q,SPACE,")
 
         //an object is a collection of properties and values--properties are like labels
-        let sky = this.add.image(400, 300, 'sky'); //adds images to things-the preload function loads them, this thing makes it actually happen
+        let sky = this.add.image(400, 300, 'sky');
+         //adds images to things-the preload function loads them, this thing makes it actually happen
         //when drawing images, make sure to put it in order--if I loaded the ground before the sky, the sky would cover the ground 
         //  The platforms group contains the ground and the 2 ledges
         this.platforms = this.physics.add.staticGroup();
@@ -181,6 +184,7 @@ class Level extends Phaser.Scene {
         this.cameras.cameras[1].ignore(this.floatingStars.getChildren());
         this.cameras.cameras[1].ignore(sky); //we had to make a sky a variable. 
         this.cameras.cameras[1].ignore(this.portals.getChildren());
+        this.cameras.cameras[1].ignore(this.waters.getChildren());
 
         // this.cameras.main.roundPixels = true; //should in theory make the graphics a lil better 
 
@@ -207,6 +211,7 @@ class Level extends Phaser.Scene {
         this.physics.add.overlap(this.player, this.stars, this.collectStar, null, this);
         this.physics.add.overlap(this.player, this.floatingStars, this.collectFloatingStar, null, this)
         this.physics.add.overlap(this.player, this.portals, this.enterPortal, null, this)
+        this.physics.add.overlap(this.player, this.waters, this.enterWater, null, this)
         // this.physics.add.collider(player, bombs, hitBomb, null, this); //don't need this code cause no bomb
 
     }
@@ -234,10 +239,10 @@ class Level extends Phaser.Scene {
 
         if (
             (this.keys.W.isDown || this.keys.SPACE.isDown) && (
-            (this.water || this.player.body.touching.down)
+            (this.isInWater || this.player.body.touching.down)
         )
         ) { //checks if you can jump--the space/w key has to be pushed and the player body has to be touching
-            this.player.setVelocityY(this.water ? -200 : -430);
+            this.player.setVelocityY(this.isInWater ? -200 : -430);
             // this.scene.start('testScene'); -- a tester code, in this if the player jumps it moves you to another scene called Test Scene
         }
 
@@ -247,13 +252,15 @@ class Level extends Phaser.Scene {
         }
 
         this.scoreText.setText("x: " + Math.floor(this.player.x) + " y: " + Math.floor(this.player.y))
-        let xVel = this.water ? 100 : 150; //the '?' shortens an if -else into one line
-        let yVel = this.water ? -250 : -400
-        let jumpFrames = this.water ? 26 : 31
+        let xVel = this.isInWater ? 100 : 150; //the '?' shortens an if -else into one line
+        let yVel = this.isInWater ? -250 : -400
+        let jumpFrames = this.isInWater ? 26 : 31
 
-        if (this.keys.S.isDown) {
-
+        if (this.keys.S.isDown && this.isInWater) {
+            this.player.setVelocityY(100)
         }
+        
+        this.isInWater = false
 
     }
 
@@ -517,21 +524,21 @@ const levels = {
                 y: 300,
                 scaleX: 0.1,
                 scaleY: 21,
-                tint: 0x3c6529
+                tint: 0x3c6529,
             },
             {
-                x: -20,
+                x: -29,
                 y: -350,
                 scaleX: 0.1,
                 scaleY: 21,
-                tint: 0x3c6529
+                tint: 0x3c6529,
             },
             {
                 x: 1910,
                 y: 300,
                 scaleX: 0.1,
                 scaleY: 21,
-                tint: 0x3c6529
+                tint: 0x3c6529,
             },
             {
                 x: 1910,
@@ -677,14 +684,26 @@ const levels = {
         ]
     },
     LevelThree: {
-        platforms: [],
+        platforms: [{
+            x: 400,
+            y: 632,
+            scaleX: 2,
+            scaleY: 2,
+        },
+        ],
         waters: [
             {
-                x: 1000,
+                x: 330,
                 y: 568,
-                scaleX: 2,
+                scaleX: 1,
                 scaleY: 2
-            },],
+            },
+            {
+            x: 330,
+            y: 480,
+            scaleX: 1,
+            scaleY: 4,
+            }],
         stars: [],
         floatingStars: [],
         portals: []
@@ -694,7 +713,7 @@ const levels = {
 
 const config = {
     type: Phaser.AUTO,
-    width: 1400,
+    width: 1100,
     height: 1100,
     parent: 'game',
     physics: { //sets up the physics system
