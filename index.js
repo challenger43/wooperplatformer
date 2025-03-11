@@ -5,6 +5,9 @@
 //         super({ key: 'testScene' });
 //     }
 // }
+
+const GRAVITY_DEFAULT = 500;
+const GRAVITY_WATER = 0;
 class MenuScene extends Phaser.Scene {
     constructor() {
         super({ key: 'MainMenu' });
@@ -30,7 +33,7 @@ class Level extends Phaser.Scene {
     keys;
     portalSpawned = false;
     level;
-    isInWater = false;// contavt with water
+    isInWater = false;
     waters;
     constructor(key, level) {
         super({ key: key });
@@ -71,25 +74,20 @@ class Level extends Phaser.Scene {
         console.log("portal entered ")
         this.scene.start(portal.destination);
     }
+
     enterWater(_player, water){
         this.isInWater = true;
     }
 
+
     create() {
-        // move this to change when the player is in contact with water
-        // if (this.water) {
-        //     this.physics.config.gravity.y = 250 //when inside water, gravity is set to 250
-        // }
-        // else {
-            this.physics.config.gravity.y = 500
-        // }
+
         this.keys = this.input.keyboard.addKeys("W,A,S,D,Q,SPACE,")
 
         //an object is a collection of properties and values--properties are like labels
         let sky = this.add.image(400, 300, 'sky');
          //adds images to things-the preload function loads them, this thing makes it actually happen
         //when drawing images, make sure to put it in order--if I loaded the ground before the sky, the sky would cover the ground 
-        //  The platforms group contains the ground and the 2 ledges
         this.platforms = this.physics.add.staticGroup();
         // add platforms
         for (let platformData of this.level.platforms) {
@@ -107,7 +105,7 @@ class Level extends Phaser.Scene {
                 .setTint(waterData.tint ?? 0x0000ff)
                 .refreshBody();
         }
-
+        //make portals
         this.portals = this.physics.add.staticGroup()
         for (let portalData of this.level.portals){
         let portal = this.portals.create(portalData.x, portalData.y, 'portal')
@@ -121,8 +119,6 @@ class Level extends Phaser.Scene {
         // The player and its settings5
         this.player = this.physics.add.sprite(100, 450, 'dude');    //use a sprite sheet for easier animations--with a sprite you download not just one image but a bunch of images all in one file that it can switch in between
 
-
-        //  Player physics properties
         // animates player walking left/right
         this.anims.create({
             key: 'left',
@@ -144,8 +140,10 @@ class Level extends Phaser.Scene {
             repeat: -1
         });
 
-
+        //creates arrow keys
         this.cursors = this.input.keyboard.createCursorKeys();
+
+        //creates stars
         this.stars = this.physics.add.group();
         for (let starData of this.level.stars) {
             this.stars.create(starData.x, starData.y, 'star')
@@ -154,12 +152,9 @@ class Level extends Phaser.Scene {
                 .setScale(0.05, 0.05);
         }
 
-        this.floatingStars = this.physics.add.group(); //use setIgnoreGravity to make it ignore gravity 
-        // for (let floatingStarData of this.level.floatingStars){
-        //     this.floatingStars.create(floatingStarData.x, floatingStarData.y, 'star')
-        //     .setScale(0.05, 0.05)      
+        //creates floating stars
+        this.floatingStars = this.physics.add.group(); 
 
-        // }
         for (let floatingStarData of this.level.floatingStars) {
             let floatingStar = this.floatingStars.create(floatingStarData.x, floatingStarData.y, 'star')
                 .setScale(0.05, 0.05); // Set the scale of the star
@@ -174,7 +169,7 @@ class Level extends Phaser.Scene {
         //  The score
         this.scoreText = this.add.text(600, 300, 'score: 0', { fontSize: '32px', fill: '#FFF' });
 
-        //all the cameras!
+        //all the cameras
         this.cameras.cameras[0].startFollow(this.player)
         this.cameras.cameras[0].ignore(this.scoreText); //manually ignores the scoreText Variable, so it doesn't move, only for camera 0
         this.cameras.add(1); //makes another camera, camera 1
@@ -186,16 +181,12 @@ class Level extends Phaser.Scene {
         this.cameras.cameras[1].ignore(this.portals.getChildren());
         this.cameras.cameras[1].ignore(this.waters.getChildren());
 
-        // this.cameras.main.roundPixels = true; //should in theory make the graphics a lil better 
-
         //  Collide the player and the stars with the platforms--since collision code is so hard to write we can just use phaser's built in systems
         this.physics.add.collider(this.player, this.platforms); //these are the things you want to collide with--the first code takes parameters player and platforms, so then player and platforms will collide
         this.physics.add.collider(this.stars, this.platforms);//parameters are stars and platforms, so adds a collide rule to the relationship between stars and platforms 
         this.physics.add.collider(this.bombs, this.platforms);
         this.physics.add.collider(this.portals, this.platforms);
         this.physics.add.collider(this.floatingStars, this.platforms)
-
-
 
 
         // function hitBomb(player, bomb) {
@@ -220,15 +211,25 @@ class Level extends Phaser.Scene {
         if (this.gameOver) {
             return;
         }
+
+                
+        if (this.isInWater) {
+            this.physics.world.gravity.y = GRAVITY_WATER; //when inside water, gravity is set to 250
+            // this.player.setGravityY(GRAVITY_WATER);
+        }
+        else {
+            this.physics.world.gravity.y = GRAVITY_DEFAULT;
+            // this.player.setGravityY(GRAVITY_DEFAULT);
+        }
         if (this.keys.Q.isDown) {
             this.stars.children.iterate((star) => this.collectStar(this.player, star));
             this.floatingStars.children.iterate((star) => this.collectFloatingStar(this.player, star));
         }
-        if (this.keys.A.isDown) {
+        if (this.keys.A.isDown || this.cursors.left.isDown) {
             this.player.setVelocityX(-160);
             this.player.anims.play('left', true);
         }
-        else if (this.keys.D.isDown) {
+        else if (this.keys.D.isDown || this.cursors.right.isDown) {
             this.player.setVelocityX(160);
             this.player.anims.play('right', true);
         }
@@ -238,7 +239,7 @@ class Level extends Phaser.Scene {
         }
 
         if (
-            (this.keys.W.isDown || this.keys.SPACE.isDown) && (
+            (this.keys.W.isDown || this.keys.SPACE.isDown || this.cursors.up.isDown) && (
             (this.isInWater || this.player.body.touching.down)
         )
         ) { //checks if you can jump--the space/w key has to be pushed and the player body has to be touching
@@ -252,15 +253,17 @@ class Level extends Phaser.Scene {
         }
 
         this.scoreText.setText("x: " + Math.floor(this.player.x) + " y: " + Math.floor(this.player.y))
-        let xVel = this.isInWater ? 100 : 150; //the '?' shortens an if -else into one line
-        let yVel = this.isInWater ? -250 : -400
-        let jumpFrames = this.isInWater ? 26 : 31
 
-        if (this.keys.S.isDown && this.isInWater) {
-            this.player.setVelocityY(100)
+        if (this.isInWater) {
+            if (this.keys.S.isDown){
+                this.player.setVelocityY(100);
+            }
+            // if (!([this.keys.W, this.keys.S, this.cursors.up,this.cursors.down,this.keys.SPACE].some(key => key.isDown))){
+            //     this.player.setVelocityY(this.player.velocityY - 1);
+            // }
         }
         
-        this.isInWater = false
+        this.isInWater = false;
 
     }
 
@@ -449,7 +452,7 @@ const levels = {
         portals:[
             {
                 x: 50,
-                y: 450,
+                y: 462,
                 scaleX: 0.3,
                 scaleY: 0.3,
                 destination: "LevelTwo",
@@ -676,7 +679,7 @@ const levels = {
         portals: [
             {
                 x: 50,
-                y: 450,
+                y: 462,
                 scaleX: 0.3,
                 scaleY: 0.3,
                 destination: "LevelThree",
@@ -719,7 +722,7 @@ const config = {
     physics: { //sets up the physics system
         default: 'arcade',
         arcade: { //arcade is object
-            gravity: { y: 500 },
+            gravity: { y: GRAVITY_DEFAULT },
             debug: false
         }
     },
