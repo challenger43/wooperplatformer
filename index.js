@@ -510,8 +510,8 @@ const levels = {
                 scaleX: 0.1,
             },
             {
-                x: 1289,
-                y: 240,
+                x: 1259,
+                y: 200,
                 scaleX: 0.1,
             },
             {
