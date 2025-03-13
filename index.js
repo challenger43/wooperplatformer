@@ -9,12 +9,18 @@
 const GRAVITY_DEFAULT = 500;
 const GRAVITY_WATER = 0;
 class MenuScene extends Phaser.Scene {
-    constructor() {
+    cursor;
+    constructor() { //super() inherits all the characteristics of the Phaser 'scene' class
         super({ key: 'MainMenu' });
     }
     create() {
-        this.scene.start("LevelOne");
+        this.add.text(250, 500, "WOOPER GAME", { fontSize: '92px', fill: '#FFF' })
+        this.add.text(350, 600, "Click anywhere to start", { fontSize: '32px', fill: '#FFF' })
+        this.input.once('pointerup', function () { this.scene.start("LevelOne") }, this);
+
+        // this.scene.start("LevelOne");
     }
+
     update() {
     }
 }
@@ -66,7 +72,7 @@ class Level extends Phaser.Scene {
     spawnPortal() {
 
         console.log('portal spawned')
-        this.portals.children.iterate( (portal) => portal.enableBody(false, 0, 0, true, true));
+        this.portals.children.iterate((portal) => portal.enableBody(false, 0, 0, true, true));
         //false tells them we don't want to change position, 0,0 are coords, true true is invisible and active. 
     }
 
@@ -75,7 +81,7 @@ class Level extends Phaser.Scene {
         this.scene.start(portal.destination);
     }
 
-    enterWater(_player, water){
+    enterWater(_player, water) {
         this.isInWater = true;
     }
 
@@ -86,7 +92,7 @@ class Level extends Phaser.Scene {
 
         //an object is a collection of properties and values--properties are like labels
         let sky = this.add.image(400, 300, 'sky');
-         //adds images to things-the preload function loads them, this thing makes it actually happen
+        //adds images to things-the preload function loads them, this thing makes it actually happen
         //when drawing images, make sure to put it in order--if I loaded the ground before the sky, the sky would cover the ground 
         this.platforms = this.physics.add.staticGroup();
         // add platforms
@@ -107,11 +113,11 @@ class Level extends Phaser.Scene {
         }
         //make portals
         this.portals = this.physics.add.staticGroup()
-        for (let portalData of this.level.portals){
-        let portal = this.portals.create(portalData.x, portalData.y, 'portal')
-            .setScale(0.3, 0.3)
-            .setTint(portalData.tint ?? 0xffffff)
-            .refreshBody();
+        for (let portalData of this.level.portals) {
+            let portal = this.portals.create(portalData.x, portalData.y, 'portal')
+                .setScale(0.3, 0.3)
+                .setTint(portalData.tint ?? 0xffffff)
+                .refreshBody();
             portal.destination = portalData.destination
             portal.disableBody(true, true);
         }
@@ -153,7 +159,7 @@ class Level extends Phaser.Scene {
         }
 
         //creates floating stars
-        this.floatingStars = this.physics.add.group(); 
+        this.floatingStars = this.physics.add.group();
 
         for (let floatingStarData of this.level.floatingStars) {
             let floatingStar = this.floatingStars.create(floatingStarData.x, floatingStarData.y, 'star')
@@ -187,8 +193,6 @@ class Level extends Phaser.Scene {
         this.physics.add.collider(this.bombs, this.platforms);
         this.physics.add.collider(this.portals, this.platforms);
         this.physics.add.collider(this.floatingStars, this.platforms)
-
-
         // function hitBomb(player, bomb) {
         //     this.physics.pause(); //stops the physics mechanism
 
@@ -212,7 +216,7 @@ class Level extends Phaser.Scene {
             return;
         }
 
-                
+
         if (this.isInWater) {
             this.physics.world.gravity.y = GRAVITY_WATER; //when inside water, gravity is set to 250
             // this.player.setGravityY(GRAVITY_WATER);
@@ -226,11 +230,13 @@ class Level extends Phaser.Scene {
             this.floatingStars.children.iterate((star) => this.collectFloatingStar(this.player, star));
         }
         if (this.keys.A.isDown || this.cursors.left.isDown) {
-            this.player.setVelocityX(-160);
+            console.log("a key pressed")
+            this.player.setVelocityX(this.isInWater ? -100 : -160);
             this.player.anims.play('left', true);
         }
         else if (this.keys.D.isDown || this.cursors.right.isDown) {
-            this.player.setVelocityX(160);
+            console.log("d key pressed")
+            this.player.setVelocityX(this.isInWater ? 100 : 160);
             this.player.anims.play('right', true);
         }
         else { //if no key is pressed, will face forwards
@@ -240,10 +246,11 @@ class Level extends Phaser.Scene {
 
         if (
             (this.keys.W.isDown || this.keys.SPACE.isDown || this.cursors.up.isDown) && (
-            (this.isInWater || this.player.body.touching.down)
-        )
+                (this.isInWater || this.player.body.touching.down)
+            )
         ) { //checks if you can jump--the space/w key has to be pushed and the player body has to be touching
-            this.player.setVelocityY(this.isInWater ? -200 : -430);
+            console.log("w key pressed")
+            this.player.setVelocityY(this.isInWater ? -100 : -430);
             // this.scene.start('testScene'); -- a tester code, in this if the player jumps it moves you to another scene called Test Scene
         }
 
@@ -255,14 +262,20 @@ class Level extends Phaser.Scene {
         this.scoreText.setText("x: " + Math.floor(this.player.x) + " y: " + Math.floor(this.player.y))
 
         if (this.isInWater) {
-            if (this.keys.S.isDown){
+            if (this.keys.S.isDown) {
                 this.player.setVelocityY(100);
             }
-            // if (!([this.keys.W, this.keys.S, this.cursors.up,this.cursors.down,this.keys.SPACE].some(key => key.isDown))){
-            //     this.player.setVelocityY(this.player.velocityY - 1);
-            // }
+            if (!([this.keys.W, this.keys.S, this.cursors.up, this.cursors.down, this.keys.SPACE].some(key => key.isDown))) {
+
+                this.player.setVelocityY(Math.min(this.player.body.velocity.y + 10, 50))
+            }
+            let priorX = this.player.body.velocity.x;
+            // on a graph x position is the y axis and t for time as x axis. x is a value for t. math.sin takes that value of time going up first value (relative frequency) is the thing making the graph go horizontal, vertical is magnitude(scales how big the peaks are) by default the tops and bottoms of peaks are -1 
+            let freq = 1 // number of cycles per second
+            let magnitude = 70 // +- maximum x velocity
+            this.player.setVelocityX(priorX + Math.sin(this.time.now * Math.PI * 2 / 1000 * freq) * magnitude)
         }
-        
+
         this.isInWater = false;
 
     }
@@ -449,7 +462,7 @@ const levels = {
 
         ],
 
-        portals:[
+        portals: [
             {
                 x: 50,
                 y: 462,
@@ -702,10 +715,10 @@ const levels = {
                 scaleY: 2
             },
             {
-            x: 330,
-            y: 480,
-            scaleX: 1,
-            scaleY: 4,
+                x: 330,
+                y: 480,
+                scaleX: 1,
+                scaleY: 4,
             }],
         stars: [],
         floatingStars: [],
