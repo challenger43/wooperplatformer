@@ -78,7 +78,7 @@ class Level extends Phaser.Scene {
         this.keys = this.input.keyboard.addKeys("W,A,S,D,Q,SPACE,")
 
         //an object is a collection of properties and values--properties are like labels
-        let sky = this.add.image(400, 300, 'sky');
+        let sky = this.add.image(850, 300, 'sky').setScale(4);
         //adds images to things-the preload function loads them, this thing makes it actually happen
         //when drawing images, make sure to put it in order--if I loaded the ground before the sky, the sky would cover the ground 
         this.platforms = this.physics.add.staticGroup();
@@ -217,12 +217,10 @@ class Level extends Phaser.Scene {
             this.floatingStars.children.iterate((star) => this.collectFloatingStar(this.player, star));
         }
         if (this.keys.A.isDown || this.cursors.left.isDown) {
-            console.log("a key pressed")
             this.player.setVelocityX(this.isInWater ? -100 : -160);
             this.player.anims.play('left', true);
         }
         else if (this.keys.D.isDown || this.cursors.right.isDown) {
-            console.log("d key pressed")
             this.player.setVelocityX(this.isInWater ? 100 : 160);
             this.player.anims.play('right', true);
         }
@@ -236,7 +234,6 @@ class Level extends Phaser.Scene {
                 (this.isInWater || this.player.body.touching.down)
             )
         ) { //checks if you can jump--the space/w key has to be pushed and the player body has to be touching
-            console.log("w key pressed")
             this.player.setVelocityY(this.isInWater ? -100 : -430);
             // this.scene.start('testScene'); -- a tester code, in this if the player jumps it moves you to another scene called Test Scene
         }
@@ -256,17 +253,18 @@ class Level extends Phaser.Scene {
 
                 this.player.setVelocityY(Math.min(this.player.body.velocity.y + 10, 50))
             }
-            let priorX = this.player.body.velocity.x;
-            // on a graph x position is the y axis and t for time as x axis. x is a value for t. math.sin takes that value of time going up first value (relative frequency) is the thing making the graph go horizontal, vertical is magnitude(scales how big the peaks are) by default the tops and bottoms of peaks are -1 
-            let freq = 1 // number of cycles per second
-            let magnitude = 70 // +- maximum x velocity
-            this.player.setVelocityX(priorX + Math.sin(this.time.now * Math.PI * 2 / 1000 * freq) * magnitude)
+            if (!([this.keys.A, this.keys.D, this.cursors.left, this.cursors.right].some(key => key.isDown))){
+                let priorX = this.player.body.velocity.x;
+                // on a graph x position is the y axis and t for time as x axis. x is a value for t. math.sin takes that value of time going up first value (relative frequency) is the thing making the graph go horizontal, vertical is magnitude(scales how big the peaks are) by default the tops and bottoms of peaks are -1 
+                let freq = 1 // number of cycles per second
+                let magnitude = 20 // +- maximum x velocity
+                this.player.setVelocityX(priorX + Math.sin(this.time.now * Math.PI * 2 / 1000 * freq) * magnitude)
+            }
         }
 
         this.isInWater = false;
 
     }
-
 
 
 }
