@@ -1,27 +1,14 @@
-// class TestScene extends Phaser.Scene a tester scene, may use later
-// {
-//     constructor ()
-//     {
-//         super({ key: 'testScene' });
-//     }
-// }
-
-const GRAVITY_DEFAULT = 500;
+const GRAVITY_DEFAULT = 500; //default gravity settings
 const GRAVITY_WATER = 0;
-class MenuScene extends Phaser.Scene {
+class MenuScene extends Phaser.Scene { //the menu
     cursor;
     constructor() { //super() inherits all the characteristics of the Phaser 'scene' class
         super({ key: 'MainMenu' });
     }
     create() {
         this.add.text(250, 500, "WOOPER GAME", { fontSize: '92px', fill: '#FFF' })
-        this.add.text(350, 600, "Click anywhere to start", { fontSize: '32px', fill: '#FFF' })
+        this.add.text(200, 620, "Click anywhere on the screen to start", { fontSize: '32px', fill: '#FFF' })
         this.input.once('pointerup', function () { this.scene.start("LevelOne") }, this);
-
-        // this.scene.start("LevelOne");
-    }
-
-    update() {
     }
 }
 
