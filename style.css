@@ -54,6 +54,30 @@
     font-size: 32px;
 }
 
+#quagsirePic{
+    position: relative;
+    /* transition: right ease-in-out 0.5s; */
+    width: 280px;
+    float: right;
+}
+
+#quagsirePic2{
+    position: relative;
+    /* transition: left ease-in-out 0.5s; */
+    width: 280px;
+    float: left;
+}
+#woopBall{
+    width: 140px;
+    border-color: rgb(38, 212, 172);
+    border-style: dashed;
+    margin-top: 80px;
+    margin-left: 20px;
+    background-color:rgb(141, 231, 151);
+    padding: 20px;
+    border-radius: 500px;
+    border-width: 4px;
+}
 #woopDescription{
     display:flex;
     font-family:'Courier New', Courier, monospace;
@@ -68,9 +92,13 @@
     font-family:'Courier New', Courier, monospace;
     display: flex;
     justify-content: center;
+    margin-top: 200px;
 }
 
 #woopInstructions{
     font-family: 'Courier New', Courier, monospace;
     line-height: 2; 
+    color:darkblue;
+    font-size: 16px;
+    font-weight:bold;
 }

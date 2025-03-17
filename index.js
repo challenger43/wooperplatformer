@@ -695,16 +695,11 @@ const levels = {
         waters: [
             {
                 x: 330,
-                y: 568,
+                y: 520,
                 scaleX: 1,
-                scaleY: 2
+                scaleY: 5
             },
-            {
-                x: 330,
-                y: 480,
-                scaleX: 1,
-                scaleY: 4,
-            }],
+          ],
         stars: [],
         floatingStars: [],
         portals: []
