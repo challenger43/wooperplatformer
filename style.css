@@ -57,14 +57,17 @@
 #quagsirePic{
     position: relative;
     /* transition: right ease-in-out 0.5s; */
-    width: 280px;
+    width: 840px;
+    display:flex;
+    flex-shrink: 5;
     float: right;
 }
 
 #quagsirePic2{
     position: relative;
     /* transition: left ease-in-out 0.5s; */
-    width: 280px;
+    width: 840px;
+    flex-shrink: 5;
     float: left;
 }
 #woopBall{

@@ -257,7 +257,7 @@ class Level extends Phaser.Scene {
                 let priorX = this.player.body.velocity.x;
                 // on a graph x position is the y axis and t for time as x axis. x is a value for t. math.sin takes that value of time going up first value (relative frequency) is the thing making the graph go horizontal, vertical is magnitude(scales how big the peaks are) by default the tops and bottoms of peaks are -1 
                 let freq = 1 // number of cycles per second
-                let magnitude = 20 // +- maximum x velocity
+                let magnitude = 15 // +- maximum x velocity
                 this.player.setVelocityX(priorX + Math.sin(this.time.now * Math.PI * 2 / 1000 * freq) * magnitude)
             }
         }
@@ -685,23 +685,131 @@ const levels = {
         ]
     },
     LevelThree: {
-        platforms: [{
+        platforms: [{ //leftmost ground
             x: 400,
             y: 632,
             scaleX: 2,
             scaleY: 2,
         },
+        {//world bounds left 
+            x: -20,
+            y: 300,
+            scaleX: 0.1,
+            scaleY: 21,
+            tint: 0x3c6529
+        },
+        {//world bounds left 
+            x: -20,
+            y: 100,
+            scaleX: 0.1,
+            scaleY: 21,
+            tint: 0x3c6529
+        },
+        {//the borders to the pool
+            x: 180,
+            y: 489,
+            scaleX: 0.05,
+            scaleY: 7,
+            tint: 0x3c6529
+        },
+        { //the borders to the pool
+            x: 180,
+            y: 269,
+            scaleX: 0.05,
+            scaleY: 7,
+            tint: 0x3c6529
+        },
+        {//ladder platform left
+            x: 16,
+            y: 310,
+            scaleX: 0.07,
+            scaleY: 0.1,
+            tint: 0x3c6529
+        },
+        {//ladder platform left
+            x: 16,
+            y: 450,
+            scaleX: 0.2,
+            scaleY: 0.1,
+            tint: 0x3c6529
+        },
+        {//ladder platform left
+            x: 600,
+            y: 376,
+            scaleX: 0.05,
+            scaleY: 7,
+            tint: 0x3c6529
+        },
+        {//ladder platform left
+            x: 600,
+            y: 576,
+            scaleX: 0.05,
+            scaleY: 2,
+            tint: 0x3c6529
+        },
+        {//ladder platform left
+            x: 16,
+            y: 220,
+            scaleX: 0.2,
+            scaleY: 0.1,
+            tint: 0x3c6529
+        },
+        {//ladder platform left
+            x: 153,
+            y: 330,
+            scaleX: 0.1,
+            scaleY: 0.1,
+            tint: 0x3c6529
+        },
+        {
+            x: 330,
+            y: 330, 
+            scaleX: 0.1,
+        }
         ],
         waters: [
             {
-                x: 330,
-                y: 520,
+                x: 390,
+                y: 440,
                 scaleX: 1,
-                scaleY: 5
+                scaleY: 10,
             },
           ],
-        stars: [],
-        floatingStars: [],
+        stars: [
+            {
+                x: 16,
+                y: 430,
+                scaleX: 0.05,
+                scaleY: 0.05,
+            },
+            {
+                x: 153,
+                y: 200,
+                scaleX: 0.05,
+                scaleY: 0.05,
+            },
+            {
+                x: 15,
+                y: 280,
+                scaleX: 0.05,
+                scaleY: 0.05,
+            },
+            {
+                x: 16,
+                y: 100,
+                scaleX: 0.05,
+                scaleY: 0.05,
+            },
+        ],
+        floatingStars: [
+            {
+                x: 370,
+                y: 510,
+                scaleX: 0.05,
+                scaleY: 0.05,
+            },
+
+        ],
         portals: []
     }
 }
