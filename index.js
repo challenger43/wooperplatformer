@@ -342,14 +342,6 @@ const levels = {
         ],
         waters: [],
         stars: [
-            // stars.create(30,0, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6)).setScale(0.05,0.05);
-            // stars.create(206, 0, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6)).setScale(0.05,0.05);
-            // stars.create(449, 0, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6)).setScale(0.05,0.05);
-            // stars.create(372, 0, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6)).setScale(0.05,0.05);
-            // stars.create(688, 0, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6)).setScale(0.05,0.05);
-            // stars.create(738, 0, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6)).setScale(0.05,0.05);
-            // stars.create(1516, 0, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6)).setScale(0.05,0.05);
-            // stars.create(1116, 512, 'star').setBounceY(Phaser.Math.FloatBetween(0.2,0.6)).setScale(0.05,0.05);
 
             {
                 x: 30,
@@ -443,11 +435,6 @@ const levels = {
 
 
             }
-            //  this.floatingStars.create(100, 290, 'star').setScale(0.05,0.05);
-            // this.floatingStars.create(460, 200, 'star').setScale(0.05,0.05);
-            // this.floatingStars.create(326, 50, 'star').setScale(0.05,0.05);
-            // this.floatingStars.create(787, 290, 'star').setScale(0.05,0.05);
-            // this.floatingStars.create(1728, 180, 'star').setScale(0.05,0.05);
 
         ],
 
