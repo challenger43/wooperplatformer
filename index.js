@@ -5,9 +5,13 @@ class MenuScene extends Phaser.Scene { //the menu
     constructor() { //super() inherits all the characteristics of the Phaser 'scene' class
         super({ key: 'MainMenu' });
     }
+    preload(){
+        this.load.image('quagsireLoadScreen', 'quagsireStartGame.png')
+    }
     create() {
+        this.add.image(550, 500, 'quagsireLoadScreen')
         this.add.text(250, 500, "WOOPER GAME", { fontSize: '92px', fill: '#FFF' })
-        this.add.text(200, 620, "Click anywhere on the screen to start", { fontSize: '32px', fill: '#FFF' })
+        this.add.text(200, 620, "Click anywhere on the quagsire to start", { fontSize: '32px', fill: '#FFF' })
         this.input.once('pointerup', function () { this.scene.start("LevelOne") }, this);
     }
 }
