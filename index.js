@@ -7,12 +7,39 @@ class MenuScene extends Phaser.Scene { //the menu
     }
     preload(){
         this.load.image('quagsireLoadScreen', 'quagsireStartGame.png')
+        this.load.image('sky', 'assets/sky.png'); //the assets/ takes an object from a folder--in this case the folder is assets, the id is sky.png
+        this.load.image('ground', 'assets/platform.png');
+        this.load.image('star', 'WooperBall.png'); //they don't actually look like stars in 'real life' 
+        this.load.image('bomb', 'assets/bomb.png');
+        this.load.image('portal', 'Nether-Portal.png');
+        this.load.spritesheet('dude', 'assets/dude.png', { frameWidth: 32, frameHeight: 48 }); //sets the height of sprite
+        //use a sprite sheet for easier animations--with a sprite you download not just one image but a bunch of images all in one file that it can switch in between
     }
     create() {
         this.add.image(550, 500, 'quagsireLoadScreen')
         this.add.text(250, 500, "WOOPER GAME", { fontSize: '92px', fill: '#FFF' })
         this.add.text(200, 620, "Click anywhere on the quagsire to start", { fontSize: '32px', fill: '#FFF' })
         this.input.once('pointerup', function () { this.scene.start("LevelOne") }, this);
+        
+        this.anims.create({
+            key: 'left',
+            frames: this.anims.generateFrameNumbers('dude', { start: 0, end: 3 }),
+            frameRate: 10,
+            repeat: -1
+        });
+
+        this.anims.create({
+            key: 'turn',
+            frames: [{ key: 'dude', frame: 4 }],
+            frameRate: 20
+        });
+
+        this.anims.create({
+            key: 'right',
+            frames: this.anims.generateFrameNumbers('dude', { start: 5, end: 8 }),
+            frameRate: 10,
+            repeat: -1
+        });
     }
 }
 
@@ -38,13 +65,6 @@ class Level extends Phaser.Scene {
     }
     preload() {
 
-        this.load.image('sky', 'assets/sky.png'); //the assets/ takes an object from a folder--in this case the folder is assets, the id is sky.png
-        this.load.image('ground', 'assets/platform.png');
-        this.load.image('star', 'WooperBall.png'); //they don't actually look like stars in 'real life' 
-        this.load.image('bomb', 'assets/bomb.png');
-        this.load.image('portal', 'Nether-Portal.png');
-        this.load.spritesheet('dude', 'assets/dude.png', { frameWidth: 32, frameHeight: 48 }); //sets the height of sprite
-        //use a sprite sheet for easier animations--with a sprite you download not just one image but a bunch of images all in one file that it can switch in between
     }
     collectStar(player, star) {
         star.disableBody(true, true); //the star no longer has a 'physical body'
@@ -84,61 +104,11 @@ class Level extends Phaser.Scene {
         //an object is a collection of properties and values--properties are like labels
         let sky = this.add.image(850, 300, 'sky').setScale(4);
         //adds images to things-the preload function loads them, this thing makes it actually happen
-        //when drawing images, make sure to put it in order--if I loaded the ground before the sky, the sky would cover the ground 
-        this.platforms = this.physics.add.staticGroup();
-        // add platforms
-        for (let platformData of this.level.platforms) {
-            this.platforms.create(platformData.x, platformData.y, 'ground')
-                .setScale(platformData.scaleX ?? 1, platformData.scaleY ?? 1)
-                .setTint(platformData.tint ?? 0xffffff)
-                .refreshBody();
-        }
 
-        // Make water
-        this.waters = this.physics.add.staticGroup();
-        for (let waterData of this.level.waters) {
-            this.waters.create(waterData.x, waterData.y, 'ground')
-                .setScale(waterData.scaleX ?? 1, waterData.scaleY ?? 1)
-                .setTint(waterData.tint ?? 0x003232)
-                .refreshBody();
-        }
-        //make portals
-        this.portals = this.physics.add.staticGroup()
-        for (let portalData of this.level.portals) {
-            let portal = this.portals.create(portalData.x, portalData.y, 'portal')
-                .setScale(0.3, 0.3)
-                .setTint(portalData.tint ?? 0xffffff)
-                .refreshBody();
-            portal.destination = portalData.destination
-            portal.disableBody(true, true);
-        }
+         // The player and its settings
+         this.player = this.physics.add.sprite(100, 450, 'dude');    //use a sprite sheet for easier animations--with a sprite you download not just one image but a bunch of images all in one file that it can switch in between
 
-        // The player and its settings5
-        this.player = this.physics.add.sprite(100, 450, 'dude');    //use a sprite sheet for easier animations--with a sprite you download not just one image but a bunch of images all in one file that it can switch in between
-
-        // animates player walking left/right
-        this.anims.create({
-            key: 'left',
-            frames: this.anims.generateFrameNumbers('dude', { start: 0, end: 3 }),
-            frameRate: 10,
-            repeat: -1
-        });
-
-        this.anims.create({
-            key: 'turn',
-            frames: [{ key: 'dude', frame: 4 }],
-            frameRate: 20
-        });
-
-        this.anims.create({
-            key: 'right',
-            frames: this.anims.generateFrameNumbers('dude', { start: 5, end: 8 }),
-            frameRate: 10,
-            repeat: -1
-        });
-
-        //creates arrow keys
-        this.cursors = this.input.keyboard.createCursorKeys();
+         // animates player walking left/right
 
         //creates stars
         this.stars = this.physics.add.group();
@@ -160,6 +130,40 @@ class Level extends Phaser.Scene {
             floatingStar.body.setGravity(0, 0);
             floatingStar.body.allowGravity = false;
         }
+
+        //when drawing images, make sure to put it in order--if I loaded the ground before the sky, the sky would cover the ground 
+        this.platforms = this.physics.add.staticGroup();
+        // add platforms
+        for (let platformData of this.level.platforms) {
+            this.platforms.create(platformData.x, platformData.y, 'ground')
+                .setScale(platformData.scaleX ?? 1, platformData.scaleY ?? 1)
+                .setTint(platformData.tint ?? 0xffffff)
+                .refreshBody();
+        }
+
+        // Make water
+        this.waters = this.physics.add.staticGroup();
+        for (let waterData of this.level.waters) {
+            this.waters.create(waterData.x, waterData.y, 'ground')
+                .setScale(waterData.scaleX ?? 1, waterData.scaleY ?? 1)
+                .setTint(waterData.tint ?? 0x0000FF)
+                .refreshBody()
+                .setAlpha(0.5);
+        }
+        //make portals
+        this.portals = this.physics.add.staticGroup()
+        for (let portalData of this.level.portals) {
+            let portal = this.portals.create(portalData.x, portalData.y, 'portal')
+                .setScale(0.3, 0.3)
+                .setTint(portalData.tint ?? 0xffffff)
+                .refreshBody();
+            portal.destination = portalData.destination
+            portal.disableBody(true, true);
+        }
+
+
+        //creates arrow keys
+        this.cursors = this.input.keyboard.createCursorKeys();
 
         this.bombs = this.physics.add.group(); //adds another item to the group of physics
 
@@ -250,7 +254,7 @@ class Level extends Phaser.Scene {
         this.scoreText.setText("x: " + Math.floor(this.player.x) + " y: " + Math.floor(this.player.y))
 
         if (this.isInWater) {
-            if (this.keys.S.isDown) {
+            if (this.keys.S.isDown || this.cursors.down.isDown) {
                 this.player.setVelocityY(100);
             }
             if (!([this.keys.W, this.keys.S, this.cursors.up, this.cursors.down, this.keys.SPACE].some(key => key.isDown))) {
@@ -682,6 +686,12 @@ const levels = {
             scaleX: 2,
             scaleY: 2,
         },
+        { //middle ground
+            x: 900,
+            y: 632,
+            scaleX: 2,
+            scaleY: 2,
+        },
         {//world bounds left 
             x: -20,
             y: 300,
@@ -692,6 +702,20 @@ const levels = {
         {//world bounds left 
             x: -20,
             y: 100,
+            scaleX: 0.1,
+            scaleY: 21,
+            tint: 0x3c6529
+        },
+        {//world bounds right 
+            x: 1290,
+            y: 100,
+            scaleX: 0.1,
+            scaleY: 21,
+            tint: 0x3c6529
+        },
+         {//world bounds right 
+            x: 1290,
+            y: 300,
             scaleX: 0.1,
             scaleY: 21,
             tint: 0x3c6529
@@ -767,10 +791,44 @@ const levels = {
         {  //ladder platform cont.
             x: 20,
             y: 100,
-            scaleX: 0.3,
+            scaleX: 0.3,//change back to 0.3 when done coding
             scaleY: 0.1,
             tint: 0x3c6529
-        }
+        },
+        { //pool border ladder on right
+            x: 636,
+            y: 450,
+            scaleX: 0.1,
+            scaleY: 0.1,
+
+        },
+        { 
+            x: 796,
+            y: 300,
+            scaleX: 0.1,
+            scaleY: 0.1,
+
+        },
+        { 
+            x: 933,
+            y: 420,
+            scaleX: 0.1,
+            scaleY: 0.1,
+        },
+        { //right swimming pool ladder to get stars
+            x: 604,
+            y: 200,
+            scaleX: 0.1,
+            scaleY: 0.1,
+
+        },
+        { //right swimming pool ladder to get stars
+            x: 604,
+            y: 50,
+            scaleX: 0.1,
+            scaleY: 0.1,
+
+        },
         ],
         waters: [
             {
@@ -778,6 +836,7 @@ const levels = {
                 y: 440,
                 scaleX: 1,
                 scaleY: 10,
+                opacity: 0.1,
             },
           ],
         stars: [
@@ -834,6 +893,18 @@ const levels = {
             {
                 x: 418,
                 y: 70,
+                scaleX: 0.05,
+                scaleY: 0.05,
+            },
+            {
+                x: 741,
+                y: 400,
+                scaleX: 0.05,
+                scaleY: 0.05,
+            },
+            {
+                x: 821,
+                y: 400,
                 scaleX: 0.05,
                 scaleY: 0.05,
             },
