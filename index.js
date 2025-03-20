@@ -99,7 +99,7 @@ class Level extends Phaser.Scene {
         for (let waterData of this.level.waters) {
             this.waters.create(waterData.x, waterData.y, 'ground')
                 .setScale(waterData.scaleX ?? 1, waterData.scaleY ?? 1)
-                .setTint(waterData.tint ?? 0x0000ff)
+                .setTint(waterData.tint ?? 0x003232)
                 .refreshBody();
         }
         //make portals
@@ -710,6 +710,13 @@ const levels = {
             scaleY: 7,
             tint: 0x3c6529
         },
+        {//more borders to the pool
+            x:180,
+            y: 100,
+            scaleX: 0.05,
+            scaleY: 7,
+            tint: 0x3c6529
+    },
         {//ladder platform left
             x: 16,
             y: 310,
@@ -756,6 +763,13 @@ const levels = {
             x: 330,
             y: 330, 
             scaleX: 0.1,
+        },
+        {  //ladder platform cont.
+            x: 20,
+            y: 100,
+            scaleX: 0.3,
+            scaleY: 0.1,
+            tint: 0x3c6529
         }
         ],
         waters: [
@@ -791,6 +805,12 @@ const levels = {
                 scaleX: 0.05,
                 scaleY: 0.05,
             },
+            {
+                x: 16,
+                y: 60,
+                scaleX: 0.05,
+                scaleY: 0.05,
+            }
         ],
         floatingStars: [
             {
@@ -799,6 +819,25 @@ const levels = {
                 scaleX: 0.05,
                 scaleY: 0.05,
             },
+            {
+                x: 292,
+                y: -10,
+                scaleX: 0.05,
+                scaleY: 0.05,
+            },
+            {
+                x: 358,
+                y: 30,
+                scaleX: 0.05,
+                scaleY: 0.05,
+            },
+            {
+                x: 418,
+                y: 70,
+                scaleX: 0.05,
+                scaleY: 0.05,
+            },
+
 
         ],
         portals: []
