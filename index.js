@@ -791,7 +791,7 @@ const levels = {
         {  //ladder platform cont.
             x: 20,
             y: 100,
-            scaleX: 0.3,//change back to 0.3 when done coding
+            scaleX: 0.25,//change back to 0.2 when done coding
             scaleY: 0.1,
             tint: 0x3c6529
         },
@@ -829,6 +829,56 @@ const levels = {
             scaleY: 0.1,
 
         },
+        { //swimming pool mid platform above
+            x: 410,
+            y: 120,
+            scaleX: 0.1,
+            scaleY: 0.1,
+
+        },
+        { //right border ladder bottom 
+            x: 1235,
+            y: 480,
+            scaleX: 0.1,
+            scaleY: 0.1,
+
+        },
+        { //right border ladder 2
+            x: 1235,
+            y: 400,
+            scaleX: 0.1,
+            scaleY: 0.1,
+
+        },
+        { //right border ladder 3
+            x: 1235,
+            y: 320,
+            scaleX: 0.1,
+            scaleY: 0.1,
+
+        },
+        { //right border ladder 4
+            x: 1235,
+            y: 240,
+            scaleX: 0.1,
+            scaleY: 0.1,
+
+        },
+        { //right border ladder 4
+            x: 1235,
+            y: 160,
+            scaleX: 0.1,
+            scaleY: 0.1,
+
+        },
+        { //right border ladder 4
+            x: 1235,
+            y: 80,
+            scaleX: 0.1,
+            scaleY: 0.1,
+
+        },
+        
         ],
         waters: [
             {
@@ -905,6 +955,42 @@ const levels = {
             {
                 x: 821,
                 y: 400,
+                scaleX: 0.05,
+                scaleY: 0.05,
+            },
+            {
+                x: 1235,
+                y: 460,
+                scaleX: 0.05,
+                scaleY: 0.05,
+            },
+            {
+                x: 1235,
+                y: 380,
+                scaleX: 0.05,
+                scaleY: 0.05,
+            },
+            {
+                x: 1235,
+                y: 300,
+                scaleX: 0.05,
+                scaleY: 0.05,
+            },
+            {
+                x: 1235,
+                y: 220,
+                scaleX: 0.05,
+                scaleY: 0.05,
+            },
+            {
+                x: 1235,
+                y: 140,
+                scaleX: 0.05,
+                scaleY: 0.05,
+            },
+            {
+                x: 1235,
+                y: 60,
                 scaleX: 0.05,
                 scaleY: 0.05,
             },
