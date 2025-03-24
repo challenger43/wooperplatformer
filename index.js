@@ -12,7 +12,7 @@ class MenuScene extends Phaser.Scene { //the menu
         this.load.image('star', 'WooperBall.png'); //they don't actually look like stars in 'real life' 
         this.load.image('bomb', 'assets/bomb.png');
         this.load.image('portal', 'Nether-Portal.png');
-        this.load.spritesheet('dude', 'assets/dude.png', { frameWidth: 32, frameHeight: 48 }); //sets the height of sprite
+        this.load.spritesheet('dude', 'wooperspritesheet.png', { frameWidth: 32, frameHeight: 48 }); //sets the height of sprite
         //use a sprite sheet for easier animations--with a sprite you download not just one image but a bunch of images all in one file that it can switch in between
     }
     create() {
@@ -23,14 +23,14 @@ class MenuScene extends Phaser.Scene { //the menu
         
         this.anims.create({
             key: 'left',
-            frames: this.anims.generateFrameNumbers('dude', { start: 0, end: 3 }),
+            frames: this.anims.generateFrameNumbers('dude', { start: 1, end: 4 }),
             frameRate: 10,
             repeat: -1
         });
 
         this.anims.create({
             key: 'turn',
-            frames: [{ key: 'dude', frame: 4 }],
+            frames: [{ key: 'dude', frame: 0 }],
             frameRate: 20
         });
 
