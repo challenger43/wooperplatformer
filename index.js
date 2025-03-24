@@ -12,7 +12,7 @@ class MenuScene extends Phaser.Scene { //the menu
         this.load.image('star', 'WooperBall.png'); //they don't actually look like stars in 'real life' 
         this.load.image('bomb', 'assets/bomb.png');
         this.load.image('portal', 'Nether-Portal.png');
-        this.load.spritesheet('dude', 'wooperspritesheet.png', { frameWidth: 32, frameHeight: 48 }); //sets the height of sprite
+        this.load.spritesheet('dude', 'wooperspritesheet.png', { frameWidth: 502, frameHeight: 502 }); //sets the height of sprite
         //use a sprite sheet for easier animations--with a sprite you download not just one image but a bunch of images all in one file that it can switch in between
     }
     create() {
@@ -98,16 +98,14 @@ class Level extends Phaser.Scene {
 
 
     create() {
-
         this.keys = this.input.keyboard.addKeys("W,A,S,D,Q,SPACE,")
-
         //an object is a collection of properties and values--properties are like labels
         let sky = this.add.image(850, 300, 'sky').setScale(4);
         //adds images to things-the preload function loads them, this thing makes it actually happen
 
          // The player and its settings
          this.player = this.physics.add.sprite(100, 450, 'dude');    //use a sprite sheet for easier animations--with a sprite you download not just one image but a bunch of images all in one file that it can switch in between
-
+        this.player.setScale(32/502);
          // animates player walking left/right
 
         //creates stars
@@ -523,7 +521,7 @@ const levels = {
                 tint: 0x3c6529,
             },
             {
-                x: -29,
+                x: -20,
                 y: -350,
                 scaleX: 0.1,
                 scaleY: 21,
