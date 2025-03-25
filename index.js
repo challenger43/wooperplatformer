@@ -6,13 +6,13 @@ class MenuScene extends Phaser.Scene { //the menu
         super({ key: 'MainMenu' });
     }
     preload(){
-        this.load.image('quagsireLoadScreen', 'quagsireStartGame.png')
+        this.load.image('quagsireLoadScreen', 'assets/quagsireStartGame.png')
         this.load.image('sky', 'assets/sky.png'); //the assets/ takes an object from a folder--in this case the folder is assets, the id is sky.png
         this.load.image('ground', 'assets/platform.png');
-        this.load.image('star', 'WooperBall.png'); //they don't actually look like stars in 'real life' 
+        this.load.image('star', 'assets/WooperBall.png'); //they don't actually look like stars in 'real life' 
         this.load.image('bomb', 'assets/bomb.png');
-        this.load.image('portal', 'Nether-Portal.png');
-        this.load.spritesheet('dude', 'wooperspritesheet.png', { frameWidth: 502, frameHeight: 502 }); //sets the height of sprite
+        this.load.image('portal', 'assets/Nether-Portal.png');
+        this.load.spritesheet('dude', 'assets/wooperspritesheet.png', { frameWidth: 502, frameHeight: 502 }); //sets the height of sprite
         //use a sprite sheet for easier animations--with a sprite you download not just one image but a bunch of images all in one file that it can switch in between
     }
     create() {
