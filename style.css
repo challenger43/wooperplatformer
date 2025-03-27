@@ -91,14 +91,18 @@
     line-height: 2;
 }
 
-#howToPlay{
+#howToPlay, #comingSoon{
     font-family:'Courier New', Courier, monospace;
     display: flex;
     justify-content: center;
     margin-top: 200px;
 }
 
-#woopInstructions{
+#comingSoon{
+    justify-content: flex-start;
+}
+
+#woopInstructions, #comingSoonList{
     font-family: 'Courier New', Courier, monospace;
     line-height: 2; 
     color:darkblue;

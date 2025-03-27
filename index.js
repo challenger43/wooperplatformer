@@ -11,6 +11,7 @@ class MenuScene extends Phaser.Scene { //the menu
         this.load.image('ground', 'assets/platform.png');
         this.load.image('star', 'assets/WooperBall.png'); //they don't actually look like stars in 'real life' 
         this.load.image('bomb', 'assets/bomb.png');
+        this.load.image('lemming', 'assets/lemming.png');
         this.load.image('portal', 'assets/Nether-Portal.png');
         this.load.spritesheet('dude', 'assets/wooperspritesheet1a.png', { frameWidth: 32, frameHeight: 32 }); //sets the height of sprite
         //use a sprite sheet for easier animations--with a sprite you download not just one image but a bunch of images all in one file that it can switch in between
@@ -48,12 +49,15 @@ class ToBeContinued extends Phaser.Scene {
         super({ key: 'ToBeContinued' });
     }
     preload(){
-        this.load.image('sleepingWooper', 'assets/toBeContinuedWooperImage')
+        this.load.image('sleepingWooper', 'assets/toBeContinuedWooperImage.png')
     }
     create(){
-        this.add.image(300,400, 'sleepingWooper')
-        this.add.text(250, 500, "Wooper is sleeping...", { fontSize: '42px', fill: '#FFF' })
-        this.add.text(250, 620, "Come back later for future updates,", { fontSize: '22px', fill: '#FFF' })
+        this.add.image(450,400, 'sleepingWooper').setScale(1.5)
+        this.add.text(250, 300, "Z", {fontSize: '32px', fill: '#FFF'} )
+        this.add.text(300, 250, "Z", {fontSize: '26px', fill: '#FFF'} )
+        this.add.text(350, 200, "Z", {fontSize: '22px', fill: '#FFF'} )
+        this.add.text(250, 600, "Wooper is sleeping...", { fontSize: '42px', fill: '#FFF' })
+        this.add.text(250, 720, "Come back later for future updates,", { fontSize: '22px', fill: '#FFF' })
     }
 
 }
@@ -64,6 +68,7 @@ class Level extends Phaser.Scene {
     bombs;
     platforms;
     portal;
+    waterEmitter;
     cursors;
     score = 0;
     gameOver = false;
@@ -107,6 +112,7 @@ class Level extends Phaser.Scene {
 
     enterWater(_player, water) {
         this.isInWater = true;
+        this.waterEmitter.emitParticleAt(this.player.x, this.player.y, 10);
     }
 
 
@@ -160,6 +166,16 @@ class Level extends Phaser.Scene {
                 .refreshBody()
                 .setAlpha(0.5);
         }
+
+        //  Our emitter
+        this.waterEmitter = this.add.particles('lemming', {
+            x: 400, y: 300,
+            lifespan: 1000,
+            speed: { min: 100, max: 200 },
+            angle: { min: 260, max: 280},
+            gravityY: 300,
+            emitting: false
+        });
         //make portals
         this.portals = this.physics.add.staticGroup()
         for (let portalData of this.level.portals) {
@@ -201,7 +217,7 @@ class Level extends Phaser.Scene {
         // function hitBomb(player, bomb) {
         //     this.physics.pause(); //stops the physics mechanism
 
-        //     player.setTint(0xff0000);
+        //     player.setTint(0xff0000); 
 
         //     player.anims.play('turn');
 
