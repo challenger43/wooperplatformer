@@ -43,6 +43,19 @@ class MenuScene extends Phaser.Scene { //the menu
     }
 }
 
+class ToBeContinued extends Phaser.Scene {
+    constructor() { //super() inherits all the characteristics of the Phaser 'scene' class
+        super({ key: 'ToBeContinued' });
+    }
+    preload(){
+
+    }
+    create(){
+        this.add.text(250, 500, "Wooper is sleeping...", { fontSize: '42px', fill: '#FFF' })
+        this.add.text(250, 620, "Come back later for future updates,", { fontSize: '22px', fill: '#FFF' })
+    }
+
+}
 class Level extends Phaser.Scene {
     player; //cannot use const for these because will need to change them later
     stars;
@@ -828,6 +841,13 @@ const levels = {
         },
         { //swimming pool mid platform above
             x: 410,
+            y: 270,
+            scaleX: 0.1,
+            scaleY: 0.1,
+
+        },
+        { //swimming pool mid platform above
+            x: 280,
             y: 120,
             scaleX: 0.1,
             scaleY: 0.1,
@@ -868,12 +888,37 @@ const levels = {
             scaleY: 0.1,
 
         },
-        { //right border ladder 4
+        { //right border ladder 5
             x: 1235,
             y: 80,
             scaleX: 0.1,
             scaleY: 0.1,
 
+        },
+        { //right border ladder 6
+            x: 1235,
+            y: 0,
+            scaleX: 0.1,
+            scaleY: 0.1,
+
+        },
+        {
+            x: 364,
+            y: 496,
+            scaleX: 0.3,
+            scaleY: 0.3,
+        },
+        {
+            x: 318,
+            y: 526,
+            scaleX: 0.05,
+            scaleY: 1.8,
+        },
+        {
+            x: 412,
+            y: 526,
+            scaleX: 0.05,
+            scaleY: 1.8,
         },
         
         ],
@@ -919,9 +964,9 @@ const levels = {
             }
         ],
         floatingStars: [
-            {
+            {//star in a cave
                 x: 370,
-                y: 510,
+                y: 530,
                 scaleX: 0.05,
                 scaleY: 0.05,
             },
@@ -991,10 +1036,51 @@ const levels = {
                 scaleX: 0.05,
                 scaleY: 0.05,
             },
+            {
+                x: 1235,
+                y: -20,
+                scaleX: 0.05,
+                scaleY: 0.05,
+            },
+            {
+                x: 1235,
+                y: -80,
+                scaleX: 0.05,
+                scaleY: 0.05,
+            },
+            {
+                x: 254,
+                y: 390,
+                scaleX: 0.05,
+                scaleY: 0.05,
+            },
+            {
+                x: 454,
+                y: 390,
+                scaleX: 0.05,
+                scaleY: 0.05,
+            },
 
 
         ],
-        portals: []
+        portals: [
+            {
+                x: 1235,
+                y: -120,
+                scaleX: 0.3,
+                scaleY: 0.3,
+                destination: "ToBeContinued",//swap out when i actually finish the next scene
+            },
+        ]
+    },
+    ToBeContinued: {
+        platforms: [],
+        floatingStars: [],
+        stars: [],
+        portals: [],
+        waters: [],
+
+        
     }
 }
 
@@ -1011,7 +1097,7 @@ const config = {
             debug: false
         }
     },
-    scene: [MenuScene, new Level('LevelOne', levels.LevelOne), new Level('LevelTwo', levels.LevelTwo), new Level('LevelThree', levels.LevelThree),]
+    scene: [MenuScene,  ToBeContinued, new Level('LevelOne', levels.LevelOne), new Level('LevelTwo', levels.LevelTwo), new Level('LevelThree', levels.LevelThree), ]
 };
 
 
