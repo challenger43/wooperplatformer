@@ -12,7 +12,7 @@ class MenuScene extends Phaser.Scene { //the menu
         this.load.image('star', 'assets/WooperBall.png'); //they don't actually look like stars in 'real life' 
         this.load.image('bomb', 'assets/bomb.png');
         this.load.image('portal', 'assets/Nether-Portal.png');
-        this.load.spritesheet('dude', 'assets/wooperspritesheet.png', { frameWidth: 502, frameHeight: 502 }); //sets the height of sprite
+        this.load.spritesheet('dude', 'assets/wooperspritesheet1a.png', { frameWidth: 32, frameHeight: 32 }); //sets the height of sprite
         //use a sprite sheet for easier animations--with a sprite you download not just one image but a bunch of images all in one file that it can switch in between
     }
     create() {
@@ -105,7 +105,6 @@ class Level extends Phaser.Scene {
 
          // The player and its settings
          this.player = this.physics.add.sprite(100, 450, 'dude');    //use a sprite sheet for easier animations--with a sprite you download not just one image but a bunch of images all in one file that it can switch in between
-        this.player.setScale(64/502);
          // animates player walking left/right
 
         //creates stars
