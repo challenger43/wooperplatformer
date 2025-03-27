@@ -48,9 +48,10 @@ class ToBeContinued extends Phaser.Scene {
         super({ key: 'ToBeContinued' });
     }
     preload(){
-
+        this.load.image('sleepingWooper', 'assets/toBeContinuedWooperImage')
     }
     create(){
+        this.add.image(300,400, 'sleepingWooper')
         this.add.text(250, 500, "Wooper is sleeping...", { fontSize: '42px', fill: '#FFF' })
         this.add.text(250, 620, "Come back later for future updates,", { fontSize: '22px', fill: '#FFF' })
     }
@@ -94,7 +95,6 @@ class Level extends Phaser.Scene {
     }
 
     spawnPortal() {
-
         console.log('portal spawned')
         this.portals.children.iterate((portal) => portal.enableBody(false, 0, 0, true, true));
         //false tells them we don't want to change position, 0,0 are coords, true true is invisible and active. 
