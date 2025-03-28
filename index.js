@@ -111,15 +111,14 @@ class Level extends Phaser.Scene {
     }
 
     enterWater(_player, water) {
-        this.isInWater = true;
-        this.waterEmitter.emitParticleAt(this.player.x, this.player.y, 10);
+            this.isInWater = true;
+            this.waterEmitter.emitParticleAt(this.player.x, this.player.y, 10);
     }
-
 
     create() {
         this.keys = this.input.keyboard.addKeys("W,A,S,D,Q,SPACE,")
         //an object is a collection of properties and values--properties are like labels
-        let sky = this.add.image(850, 300, 'sky').setScale(4);
+        let sky = this.add.image(850, -100, 'sky').setScale(4);
         //adds images to things-the preload function loads them, this thing makes it actually happen
 
          // The player and its settings
@@ -167,15 +166,7 @@ class Level extends Phaser.Scene {
                 .setAlpha(0.5);
         }
 
-        //  Our emitter
-        this.waterEmitter = this.add.particles('lemming', {
-            x: 400, y: 300,
-            lifespan: 1000,
-            speed: { min: 100, max: 200 },
-            angle: { min: 260, max: 280},
-            gravityY: 300,
-            emitting: false
-        });
+        
         //make portals
         this.portals = this.physics.add.staticGroup()
         for (let portalData of this.level.portals) {
@@ -207,7 +198,8 @@ class Level extends Phaser.Scene {
         this.cameras.cameras[1].ignore(sky); //we had to make a sky a variable. 
         this.cameras.cameras[1].ignore(this.portals.getChildren());
         this.cameras.cameras[1].ignore(this.waters.getChildren());
-
+        // this.cameras.cameras[1].ignore(this.waterEmitter)
+        // this.cameras.cameras[1].ignore(this.particles)
         //  Collide the player and the stars with the platforms--since collision code is so hard to write we can just use phaser's built in systems
         this.physics.add.collider(this.player, this.platforms); //these are the things you want to collide with--the first code takes parameters player and platforms, so then player and platforms will collide
         this.physics.add.collider(this.stars, this.platforms);//parameters are stars and platforms, so adds a collide rule to the relationship between stars and platforms 
@@ -294,6 +286,21 @@ class Level extends Phaser.Scene {
                 let magnitude = 15 // +- maximum x velocity
                 this.player.setVelocityX(priorX + Math.sin(this.time.now * Math.PI * 2 / 1000 * freq) * magnitude)
             }
+             //  Our emitter
+        
+             this.waterEmitter = this.add.particles('star', {
+                x: this.player.x, 
+                y: this.player.y,
+                lifespan: 1000,
+                scaleX: 0.05,
+                scaleY: 0.05,
+                speed: { min: 100, max: 200 },
+                angle: { min: 260, max: 280},
+                gravityY: 300,
+                emitting: false,
+                // visible: false,
+            });
+   
         }
 
         this.isInWater = false;
