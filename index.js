@@ -111,14 +111,14 @@ class Level extends Phaser.Scene {
     }
 
     enterWater(_player, water) {
-            this.isInWater = true;
-            this.waterEmitter.emitParticleAt(this.player.x, this.player.y, 10);
-    }
+        this.isInWater = true;
+        this.waterEmitter.emitParticleAt(this.player.x, this.player.y);
+}
 
     create() {
         this.keys = this.input.keyboard.addKeys("W,A,S,D,Q,SPACE,")
         //an object is a collection of properties and values--properties are like labels
-        let sky = this.add.image(850, -100, 'sky').setScale(4);
+        let sky = this.add.image(900, -100, 'sky').setScale(4);
         //adds images to things-the preload function loads them, this thing makes it actually happen
 
          // The player and its settings
@@ -166,6 +166,22 @@ class Level extends Phaser.Scene {
                 .setAlpha(0.5);
         }
 
+         //  Our emitter
+         this.waterEmitter = this.add.particles('star', {
+            x: this.player.x,
+            y: this.player.y,
+            lifespan: 1000,
+            scaleX: 0.05,
+            scaleY: 0.05,
+            speed: { min: 100, max: 200 },
+            angle: { min: 260, max: 280},
+            gravityY: 300,
+            scrollFactorX: 0,
+            scrollFactorY: 0,
+            // emitting: false,
+            // visible: false,
+        });
+
         
         //make portals
         this.portals = this.physics.add.staticGroup()
@@ -191,15 +207,16 @@ class Level extends Phaser.Scene {
         this.cameras.cameras[0].startFollow(this.player)
         this.cameras.cameras[0].ignore(this.scoreText); //manually ignores the scoreText Variable, so it doesn't move, only for camera 0
         this.cameras.add(1); //makes another camera, camera 1
-        this.cameras.cameras[1].ignore(this.player); //camera 1 ignores player, platforms.getChildre(the get children part gets all the platform variants as well)
+        this.cameras.cameras[1].ignore(this.player); //camera 1 ignores player, platforms.getChildren(the get children part gets all the platform variants as well)
         this.cameras.cameras[1].ignore(this.platforms.getChildren());
         this.cameras.cameras[1].ignore(this.stars.getChildren());
         this.cameras.cameras[1].ignore(this.floatingStars.getChildren());
         this.cameras.cameras[1].ignore(sky); //we had to make a sky a variable. 
         this.cameras.cameras[1].ignore(this.portals.getChildren());
         this.cameras.cameras[1].ignore(this.waters.getChildren());
-        // this.cameras.cameras[1].ignore(this.waterEmitter)
-        // this.cameras.cameras[1].ignore(this.particles)
+        this.cameras.cameras[1].ignore(this.waterEmitter.emitters.list[0].active);
+        // this.waterEmitter.emitters.list[0].onParticleEmit(particle => )
+        // this.cameras.cameras[1].ignore(this.particles);
         //  Collide the player and the stars with the platforms--since collision code is so hard to write we can just use phaser's built in systems
         this.physics.add.collider(this.player, this.platforms); //these are the things you want to collide with--the first code takes parameters player and platforms, so then player and platforms will collide
         this.physics.add.collider(this.stars, this.platforms);//parameters are stars and platforms, so adds a collide rule to the relationship between stars and platforms 
@@ -286,21 +303,6 @@ class Level extends Phaser.Scene {
                 let magnitude = 15 // +- maximum x velocity
                 this.player.setVelocityX(priorX + Math.sin(this.time.now * Math.PI * 2 / 1000 * freq) * magnitude)
             }
-             //  Our emitter
-        
-             this.waterEmitter = this.add.particles('star', {
-                x: this.player.x, 
-                y: this.player.y,
-                lifespan: 1000,
-                scaleX: 0.05,
-                scaleY: 0.05,
-                speed: { min: 100, max: 200 },
-                angle: { min: 260, max: 280},
-                gravityY: 300,
-                emitting: false,
-                // visible: false,
-            });
-   
         }
 
         this.isInWater = false;
@@ -317,42 +319,50 @@ const levels = {
                 x: 1000,
                 y: 568,
                 scaleX: 2,
-                scaleY: 2
+                scaleY: 2,
+                tint: 0x3c6529
             },
             {
                 x: 400,
                 y: 568,
                 scaleX: 2,
-                scaleY: 2
+                scaleY: 2,
+                tint: 0x3c6529
             },
             {
                 x: 750,
                 y: 220,
+                tint: 0x3c6529
             },
             {
                 x: 200,
                 y: 250,
                 scaleX: 0.5,
-                scaleY: 1
+                scaleY: 1,
+                tint: 0x3c6529
             },
             {
                 x: 1400,
                 y: 340,
+                tint: 0x3c6529
             },
             {
                 x: 450,
                 y: 400,
+                tint: 0x3c6529
             },
 
             {
                 x: 1100,
                 y: 450,
+                tint: 0x3c6529
             },
 
             {
                 x: 450,
                 y: 100,
                 scaleX: 0.1,
+                tint: 0x3c6529
             },
 
             {
@@ -360,6 +370,7 @@ const levels = {
                 y: 568,
                 scaleX: 2,
                 scaleY: 2,
+                tint: 0x3c6529
             },
 
             {
@@ -499,54 +510,64 @@ const levels = {
                 x: 1000,
                 y: 568,
                 scaleX: 2,
-                scaleY: 2
+                scaleY: 2,
+                tint: 0x3c6529
             },
             {
                 x: 400,
                 y: 568,
                 scaleX: 2,
-                scaleY: 2
+                scaleY: 2,
+                tint: 0x3c6529
             },
             {
                 x: 1500,
                 y: 568,
                 scaleX: 2,
                 scaleY: 2,
+                tint: 0x3c6529
             },
             {
                 x: 454,
                 y: 280,
                 scaleX: 0.5,
+                tint: 0x3c6529
             },
             {
                 x: 254,
                 y: 380,
                 scaleX: 0.5,
+                tint: 0x3c6529
             },
             {
                 x: 268,
                 y: 100,
                 scaleX: 0.5,
+                tint: 0x3c6529
             },
             {
                 x: 813,
                 y: 280,
                 scaleX: 0.1,
+                tint: 0x3c6529
             },
             {
                 x: 1053,
                 y: 280,
                 scaleX: 0.1,
+                tint: 0x3c6529
             },
             {
                 x: 1259,
                 y: 200,
                 scaleX: 0.1,
+                tint: 0x3c6529
             },
             {
                 x: 1047,
                 y: 60,
                 scaleX: 0.1,
+                tint: 0x3c6529
             },
             {
                 x: -20,
@@ -580,11 +601,13 @@ const levels = {
                 x: 1580,
                 y: 200,
                 scaleX: 0.05,
+                tint: 0x3c6529
             },
             {
                 x: 1847,
                 y: 200,
                 scaleX: 0.1,
+                tint: 0x3c6529
             },
 
         ],
@@ -718,108 +741,111 @@ const levels = {
             y: 632,
             scaleX: 2,
             scaleY: 2,
+            tint: 0x3c6529
         },
         { //middle ground
             x: 900,
             y: 632,
             scaleX: 2,
             scaleY: 2,
+            tint: 0x3c6529
         },
         {//world bounds left 
             x: -20,
             y: 300,
             scaleX: 0.1,
             scaleY: 21,
-            tint: 0x3c6529
+            tint: 0x3c6529,
         },
         {//world bounds left 
             x: -20,
             y: 100,
             scaleX: 0.1,
             scaleY: 21,
-            tint: 0x3c6529
+            tint: 0x3c6529,
         },
         {//world bounds right 
             x: 1290,
             y: 100,
             scaleX: 0.1,
             scaleY: 21,
-            tint: 0x3c6529
+            tint: 0x3c6529,
         },
          {//world bounds right 
             x: 1290,
             y: 300,
             scaleX: 0.1,
             scaleY: 21,
-            tint: 0x3c6529
+            tint: 0x3c6529,
         },
         {//the borders to the pool
             x: 180,
             y: 489,
             scaleX: 0.05,
             scaleY: 7,
-            tint: 0x3c6529
+            tint: 0x3c6529,
         },
         { //the borders to the pool
             x: 180,
             y: 269,
             scaleX: 0.05,
             scaleY: 7,
-            tint: 0x3c6529
+            tint: 0x3c6529,
         },
         {//more borders to the pool
             x:180,
             y: 100,
             scaleX: 0.05,
             scaleY: 7,
-            tint: 0x3c6529
+            tint: 0x3c6529,
     },
         {//ladder platform left
             x: 16,
             y: 310,
             scaleX: 0.07,
             scaleY: 0.1,
-            tint: 0x3c6529
+            tint: 0x3c6529,
         },
         {//ladder platform left
             x: 16,
             y: 450,
             scaleX: 0.2,
             scaleY: 0.1,
-            tint: 0x3c6529
+            tint: 0x3c6529,
         },
         {//ladder platform left
             x: 600,
             y: 376,
             scaleX: 0.05,
             scaleY: 7,
-            tint: 0x3c6529
+            tint: 0x3c6529,
         },
         {//ladder platform left
             x: 600,
             y: 576,
             scaleX: 0.05,
             scaleY: 2,
-            tint: 0x3c6529
+            tint: 0x3c6529,
         },
         {//ladder platform left
             x: 16,
             y: 220,
             scaleX: 0.2,
             scaleY: 0.1,
-            tint: 0x3c6529
+            tint: 0x3c6529,
         },
         {//ladder platform left
             x: 153,
             y: 330,
             scaleX: 0.1,
             scaleY: 0.1,
-            tint: 0x3c6529
+            tint: 0x3c6529,
         },
         {
             x: 330,
             y: 330, 
             scaleX: 0.1,
+            tint: 0x3c6529,
         },
         {  //ladder platform cont.
             x: 20,
@@ -833,6 +859,7 @@ const levels = {
             y: 450,
             scaleX: 0.1,
             scaleY: 0.1,
+            tint: 0x3c6529
 
         },
         { 
@@ -840,6 +867,7 @@ const levels = {
             y: 300,
             scaleX: 0.1,
             scaleY: 0.1,
+            tint: 0x3c6529
 
         },
         { 
@@ -847,12 +875,14 @@ const levels = {
             y: 420,
             scaleX: 0.1,
             scaleY: 0.1,
+            tint: 0x3c6529
         },
         { //right swimming pool ladder to get stars
             x: 604,
             y: 200,
             scaleX: 0.1,
             scaleY: 0.1,
+            tint: 0x3c6529
 
         },
         { //right swimming pool ladder to get stars
@@ -860,6 +890,7 @@ const levels = {
             y: 50,
             scaleX: 0.1,
             scaleY: 0.1,
+            tint: 0x3c6529
 
         },
         { //swimming pool mid platform above
@@ -867,13 +898,14 @@ const levels = {
             y: 270,
             scaleX: 0.1,
             scaleY: 0.1,
-
+            tint: 0x3c6529
         },
         { //swimming pool mid platform above
             x: 280,
             y: 120,
             scaleX: 0.1,
             scaleY: 0.1,
+            tint: 0x3c6529
 
         },
         { //right border ladder bottom 
@@ -881,13 +913,14 @@ const levels = {
             y: 480,
             scaleX: 0.1,
             scaleY: 0.1,
-
+            tint: 0x3c6529
         },
         { //right border ladder 2
             x: 1235,
             y: 400,
             scaleX: 0.1,
             scaleY: 0.1,
+            tint: 0x3c6529
 
         },
         { //right border ladder 3
@@ -895,6 +928,7 @@ const levels = {
             y: 320,
             scaleX: 0.1,
             scaleY: 0.1,
+            tint: 0x3c6529
 
         },
         { //right border ladder 4
@@ -902,6 +936,7 @@ const levels = {
             y: 240,
             scaleX: 0.1,
             scaleY: 0.1,
+            tint: 0x3c6529
 
         },
         { //right border ladder 4
@@ -909,6 +944,7 @@ const levels = {
             y: 160,
             scaleX: 0.1,
             scaleY: 0.1,
+            tint: 0x3c6529
 
         },
         { //right border ladder 5
@@ -916,6 +952,7 @@ const levels = {
             y: 80,
             scaleX: 0.1,
             scaleY: 0.1,
+            tint: 0x3c6529
 
         },
         { //right border ladder 6
@@ -923,6 +960,7 @@ const levels = {
             y: 0,
             scaleX: 0.1,
             scaleY: 0.1,
+            tint: 0x3c6529
 
         },
         {
@@ -930,18 +968,21 @@ const levels = {
             y: 496,
             scaleX: 0.3,
             scaleY: 0.3,
+            tint: 0x3c6529
         },
         {
             x: 318,
             y: 526,
             scaleX: 0.05,
             scaleY: 1.8,
+            tint: 0x3c6529
         },
         {
             x: 412,
             y: 526,
             scaleX: 0.05,
             scaleY: 1.8,
+            tint: 0x3c6529
         },
         
         ],
