@@ -178,10 +178,12 @@ class Level extends Phaser.Scene {
             gravityY: 300,
             scrollFactorX: 0,
             scrollFactorY: 0,
-            // emitting: false,
+            emitting: false,
+            on: false,
+            // active: false,
             // visible: false,
         });
-        // this.waterEmitter.emitters.list[0].onParticleEmit(particle => particle.setAlpha(0))
+        this.waterEmitter.emitters.list[0].onParticleEmit(particle => particle.alpha = 0)
         // this.waterEmitter.getParticles()
 
         
@@ -207,18 +209,15 @@ class Level extends Phaser.Scene {
 
         //all the cameras
         this.cameras.cameras[0].startFollow(this.player)
-        this.cameras.cameras[0].ignore(this.scoreText); //manually ignores the scoreText Variable, so it doesn't move, only for camera 0
-        this.cameras.add(1); //makes another camera, camera 1
-        this.cameras.cameras[1].ignore(this.player); //camera 1 ignores player, platforms.getChildren(the get children part gets all the platform variants as well)
-        this.cameras.cameras[1].ignore(this.platforms.getChildren());
-        this.cameras.cameras[1].ignore(this.stars.getChildren());
-        this.cameras.cameras[1].ignore(this.floatingStars.getChildren());
-        this.cameras.cameras[1].ignore(sky); //we had to make a sky a variable. 
-        this.cameras.cameras[1].ignore(this.portals.getChildren());
-        this.cameras.cameras[1].ignore(this.waters.getChildren());
-        this.cameras.cameras[1].ignore(this.waterEmitter.emitters.list[0].active);
-        // this.waterEmitter.emitters.list[0].onParticleEmit(particle => )
-        // this.cameras.cameras[1].ignore(this.particles);
+        // this.cameras.cameras[0].ignore(this.scoreText); //manually ignores the scoreText Variable, so it doesn't move, only for camera 0
+        // this.cameras.add(1); //makes another camera, camera 1
+        // this.cameras.cameras[1].ignore(this.player); //camera 1 ignores player, platforms.getChildren(the get children part gets all the platform variants as well)
+        // this.cameras.cameras[1].ignore(this.platforms.getChildren());
+        // this.cameras.cameras[1].ignore(this.stars.getChildren());
+        // this.cameras.cameras[1].ignore(this.floatingStars.getChildren());
+        // this.cameras.cameras[1].ignore(sky); //we had to make a sky a variable. 
+        // this.cameras.cameras[1].ignore(this.portals.getChildren());
+        // this.cameras.cameras[1].ignore(this.waters.getChildren());
         //  Collide the player and the stars with the platforms--since collision code is so hard to write we can just use phaser's built in systems
         this.physics.add.collider(this.player, this.platforms); //these are the things you want to collide with--the first code takes parameters player and platforms, so then player and platforms will collide
         this.physics.add.collider(this.stars, this.platforms);//parameters are stars and platforms, so adds a collide rule to the relationship between stars and platforms 
@@ -289,6 +288,8 @@ class Level extends Phaser.Scene {
         }
 
         this.scoreText.setText("x: " + Math.floor(this.player.x) + " y: " + Math.floor(this.player.y))
+        this.scoreText.x = this.player.x + 100;
+        this.scoreText.y = this.player.y - 200;
 
         if (this.isInWater) {
             if (this.keys.S.isDown || this.cursors.down.isDown) {
