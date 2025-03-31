@@ -181,6 +181,8 @@ class Level extends Phaser.Scene {
             // emitting: false,
             // visible: false,
         });
+        // this.waterEmitter.emitters.list[0].onParticleEmit(particle => particle.setAlpha(0))
+        // this.waterEmitter.getParticles()
 
         
         //make portals
@@ -771,9 +773,16 @@ const levels = {
             scaleY: 21,
             tint: 0x3c6529,
         },
-         {//world bounds right 
+        {//world bounds right 
             x: 1290,
             y: 300,
+            scaleX: 0.1,
+            scaleY: 21,
+            tint: 0x3c6529,
+        },
+        {//world bounds right 
+            x: 1290,
+            y: -100,
             scaleX: 0.1,
             scaleY: 21,
             tint: 0x3c6529,
