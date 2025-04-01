@@ -156,16 +156,6 @@ class Level extends Phaser.Scene {
                 .refreshBody();
         }
 
-        // Make water
-        this.waters = this.physics.add.staticGroup();
-        for (let waterData of this.level.waters) {
-            this.waters.create(waterData.x, waterData.y, 'ground')
-                .setScale(waterData.scaleX ?? 1, waterData.scaleY ?? 1)
-                .setTint(waterData.tint ?? 0x0000FF)
-                .refreshBody()
-                .setAlpha(0.5);
-        }
-
          //  Our emitter
          this.waterEmitter = this.add.particles('bubble', {
             x: 5,
@@ -181,7 +171,7 @@ class Level extends Phaser.Scene {
             emitting: false,
             on: false,
             alpha: {
-                start: 1,
+                start: 0.4,
                 end: 0,
                 duration: 1000,
             },
@@ -189,13 +179,23 @@ class Level extends Phaser.Scene {
                 { start: 0.1, 
                   end: 0, 
                   ease: '{Power2}' },
+            tint: 0x0000FF
         });
 
         // The player and its settings
         this.player = this.physics.add.sprite(100, 450, 'dude');    //use a sprite sheet for easier animations--with a sprite you download not just one image but a bunch of images all in one file that it can switch in between
         // animates player walking left/right
 
-        
+          // Make water
+          this.waters = this.physics.add.staticGroup();
+          for (let waterData of this.level.waters) {
+              this.waters.create(waterData.x, waterData.y, 'ground')
+                  .setScale(waterData.scaleX ?? 1, waterData.scaleY ?? 1)
+                  .setTint(waterData.tint ?? 0x0000FF)
+                  .refreshBody()
+                  .setAlpha(0.5);
+          }
+
         //make portals
         this.portals = this.physics.add.staticGroup()
         for (let portalData of this.level.portals) {
@@ -265,10 +265,10 @@ class Level extends Phaser.Scene {
             this.physics.world.gravity.y = GRAVITY_DEFAULT;
             // this.player.setGravityY(GRAVITY_DEFAULT);
         }
-        // if (this.keys.Q.isDown) {
-        //     this.stars.children.iterate((star) => this.collectStar(this.player, star));
-        //     this.floatingStars.children.iterate((star) => this.collectFloatingStar(this.player, star));
-        // } put this back in after presentation
+        if (this.keys.Q.isDown) {
+            this.stars.children.iterate((star) => this.collectStar(this.player, star));
+            this.floatingStars.children.iterate((star) => this.collectFloatingStar(this.player, star));
+        } // put this back in after presentation
         if (this.keys.A.isDown || this.cursors.left.isDown) {
             this.player.setVelocityX(this.isInWater ? -100 : -160);
             this.player.anims.play('left', true);
