@@ -82,7 +82,7 @@
     border-width: 4px;
 }
 #woopDescription{
-    display:flex;
+    display: flex;
     font-family:'Courier New', Courier, monospace;
     color: darkblue;
     font-size: 16px;
@@ -94,12 +94,13 @@
 #howToPlay, #comingSoon{
     font-family:'Courier New', Courier, monospace;
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     margin-top: 200px;
     margin-bottom: 50px;
 }
 
 #comingSoon{
+    display:flex;
     justify-content: flex-start;
 }
 

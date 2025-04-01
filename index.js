@@ -265,10 +265,10 @@ class Level extends Phaser.Scene {
             this.physics.world.gravity.y = GRAVITY_DEFAULT;
             // this.player.setGravityY(GRAVITY_DEFAULT);
         }
-        if (this.keys.Q.isDown) {
-            this.stars.children.iterate((star) => this.collectStar(this.player, star));
-            this.floatingStars.children.iterate((star) => this.collectFloatingStar(this.player, star));
-        }
+        // if (this.keys.Q.isDown) {
+        //     this.stars.children.iterate((star) => this.collectStar(this.player, star));
+        //     this.floatingStars.children.iterate((star) => this.collectFloatingStar(this.player, star));
+        // } put this back in after presentation
         if (this.keys.A.isDown || this.cursors.left.isDown) {
             this.player.setVelocityX(this.isInWater ? -100 : -160);
             this.player.anims.play('left', true);
