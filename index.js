@@ -189,12 +189,7 @@ class Level extends Phaser.Scene {
                 { start: 0.1, 
                   end: 0, 
                   ease: '{Power2}' },
-            // delayCurrent: 1000,
-            // frequency: 1000,
-            // active: false,
-            // visible: false,
         });
-        // this.waterEmitter.getParticles()
 
         // The player and its settings
         this.player = this.physics.add.sprite(100, 450, 'dude');    //use a sprite sheet for easier animations--with a sprite you download not just one image but a bunch of images all in one file that it can switch in between
@@ -233,6 +228,7 @@ class Level extends Phaser.Scene {
         // this.cameras.cameras[1].ignore(sky); //we had to make a sky a variable. 
         // this.cameras.cameras[1].ignore(this.portals.getChildren());
         // this.cameras.cameras[1].ignore(this.waters.getChildren());
+
         //  Collide the player and the stars with the platforms--since collision code is so hard to write we can just use phaser's built in systems
         this.physics.add.collider(this.player, this.platforms); //these are the things you want to collide with--the first code takes parameters player and platforms, so then player and platforms will collide
         this.physics.add.collider(this.stars, this.platforms);//parameters are stars and platforms, so adds a collide rule to the relationship between stars and platforms 
@@ -248,7 +244,7 @@ class Level extends Phaser.Scene {
 
         //     gameOver = true; //boolean value 
         // }
-        //  Checks to see if the player overlaps with any of the stars, if it does it will call the collectStar function
+        //  Checks to see if the player overlaps with any of the stars, if it does it will call the collectStar(or whatever) function
         this.physics.add.overlap(this.player, this.stars, this.collectStar, null, this);
         this.physics.add.overlap(this.player, this.floatingStars, this.collectFloatingStar, null, this)
         this.physics.add.overlap(this.player, this.portals, this.enterPortal, null, this)
@@ -261,8 +257,6 @@ class Level extends Phaser.Scene {
         if (this.gameOver) {
             return;
         }
-
-
         if (this.isInWater) {
             this.physics.world.gravity.y = GRAVITY_WATER; //when inside water, gravity is set to 250
             // this.player.setGravityY(GRAVITY_WATER);
@@ -303,6 +297,7 @@ class Level extends Phaser.Scene {
         }
 
         this.scoreText.setText("x: " + Math.floor(this.player.x) + " y: " + Math.floor(this.player.y))
+        // this.scoreText.setText("Stars Remaining:" + toString(this.stars.countActive)) ----working on this later
         this.scoreText.x = this.player.x + 100;
         this.scoreText.y = this.player.y - 200;
 
@@ -326,8 +321,6 @@ class Level extends Phaser.Scene {
         this.isInWater = false;
 
     }
-
-
 }
 
 const levels = {
