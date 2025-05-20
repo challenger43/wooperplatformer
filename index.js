@@ -12,7 +12,7 @@ class MenuScene extends Phaser.Scene { //the menu
         this.load.image('ground', 'assets/platform.png');
         this.load.image('star', 'assets/WooperBall.png'); //they don't actually look like stars in 'real life' 
         this.load.image('bomb', 'assets/bomb.png');
-        this.load.image('portal', 'assets/NetherPortal.png');
+        this.load.image('portal', 'assets/Nether-Portal.png');
         this.load.image('bubble', 'assets/bubble.png');
         this.load.spritesheet('dude', 'assets/wooperspritesheet1a.png', { frameWidth: 32, frameHeight: 32 }); //sets the height of sprite
         //use a sprite sheet for easier animations--with a sprite you download not just one image but a bunch of images all in one file that it can switch in between
@@ -184,7 +184,6 @@ class Level extends Phaser.Scene {
                 { start: 0.1, 
                   end: 0, 
                   ease: '{Power2}' },
-            tint: 0x0000FF
         });
 
         // The player and its settings
@@ -305,10 +304,13 @@ class Level extends Phaser.Scene {
         this.scoreText.y = this.player.y - 200;
 
         if (this.isInWater) {
-            if (this.keys.S.isDown || this.cursors.down.isDown) {
+            if (this.keys.S.isDown || this.cursors.down.isDown && this.quagsire == true) {
                 this.player.setVelocityY(100);
             }
-            if (!([this.keys.W, this.keys.S, this.cursors.up, this.cursors.down, this.keys.SPACE].some(key => key.isDown))) {
+            if (this.quagsire == false) {
+                this.player.setVelocityY(0)
+            }
+            if (!([this.keys.W, this.keys.S, this.cursors.up, this.cursors.down, this.keys.SPACE].some(key => key.isDown)) && this.quagsire ==true) {
 
                 this.player.setVelocityY(Math.min(this.player.body.velocity.y + 10, 50))
             }
@@ -819,7 +821,7 @@ const levels = {
             scaleX: 0.05,
             scaleY: 7,
             tint: 0x3c6529,
-    },
+        },
         {//ladder platform left
             x: 16,
             y: 310,
