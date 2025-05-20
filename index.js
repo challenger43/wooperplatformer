@@ -1,4 +1,5 @@
 const GRAVITY_DEFAULT = 500; //default gravity settings
+const GRAVITY_QUAGSIRE = 800;
 const GRAVITY_WATER = 0;
 class MenuScene extends Phaser.Scene { //the menu
     cursor;
@@ -11,7 +12,7 @@ class MenuScene extends Phaser.Scene { //the menu
         this.load.image('ground', 'assets/platform.png');
         this.load.image('star', 'assets/WooperBall.png'); //they don't actually look like stars in 'real life' 
         this.load.image('bomb', 'assets/bomb.png');
-        this.load.image('portal', 'assets/Nether-Portal.png');
+        this.load.image('portal', 'assets/NetherPortal.png');
         this.load.image('bubble', 'assets/bubble.png');
         this.load.spritesheet('dude', 'assets/wooperspritesheet1a.png', { frameWidth: 32, frameHeight: 32 }); //sets the height of sprite
         //use a sprite sheet for easier animations--with a sprite you download not just one image but a bunch of images all in one file that it can switch in between
@@ -77,10 +78,14 @@ class Level extends Phaser.Scene {
     portalSpawned = false;
     level;
     isInWater = false;
+    quagsire = false;
     waters;
     constructor(key, level) {
         super({ key: key });
         this.level = level;
+    }
+    init(data){
+        this.quagsire = data.quagsire ?? false;
     }
     preload() {
 
@@ -107,7 +112,7 @@ class Level extends Phaser.Scene {
 
     enterPortal(_player, portal) {
         console.log("portal entered ")
-        this.scene.start(portal.destination);
+        this.scene.start(portal.destination, { quagsire: this.quagsire});
     }
     waterFrame = 0;
     enterWater(_player, water) {
@@ -120,7 +125,7 @@ class Level extends Phaser.Scene {
 }
 
     create() {
-        this.keys = this.input.keyboard.addKeys("W,A,S,D,Q,SPACE,")
+        this.keys = this.input.keyboard.addKeys("W,A,S,D,Q,P,O,SPACE,")
         //an object is a collection of properties and values--properties are like labels
         let sky = this.add.image(900, -100, 'sky').setScale(4);
         //adds images to things-the preload function loads them, this thing makes it actually happen
@@ -218,16 +223,6 @@ class Level extends Phaser.Scene {
 
         //all the cameras
         this.cameras.cameras[0].startFollow(this.player)
-        //got rid of this bc of pain
-        // this.cameras.cameras[0].ignore(this.scoreText); //manually ignores the scoreText Variable, so it doesn't move, only for camera 0
-        // this.cameras.add(1); //makes another camera, camera 1
-        // this.cameras.cameras[1].ignore(this.player); //camera 1 ignores player, platforms.getChildren(the get children part gets all the platform variants as well)
-        // this.cameras.cameras[1].ignore(this.platforms.getChildren());
-        // this.cameras.cameras[1].ignore(this.stars.getChildren());
-        // this.cameras.cameras[1].ignore(this.floatingStars.getChildren());
-        // this.cameras.cameras[1].ignore(sky); //we had to make a sky a variable. 
-        // this.cameras.cameras[1].ignore(this.portals.getChildren());
-        // this.cameras.cameras[1].ignore(this.waters.getChildren());
 
         //  Collide the player and the stars with the platforms--since collision code is so hard to write we can just use phaser's built in systems
         this.physics.add.collider(this.player, this.platforms); //these are the things you want to collide with--the first code takes parameters player and platforms, so then player and platforms will collide
@@ -257,7 +252,9 @@ class Level extends Phaser.Scene {
         if (this.gameOver) {
             return;
         }
-        if (this.isInWater) {
+        if (this.quagsire){
+            this.physics.world.gravity.y = GRAVITY_QUAGSIRE;
+        }else if (this.isInWater) {
             this.physics.world.gravity.y = GRAVITY_WATER; //when inside water, gravity is set to 250
             // this.player.setGravityY(GRAVITY_WATER);
         }
@@ -280,6 +277,12 @@ class Level extends Phaser.Scene {
         else { //if no key is pressed, will face forwards
             this.player.setVelocityX(0)
             this.player.anims.play('turn');
+        }
+        if (this.keys.P.isDown && this.quagsire == false) {
+            this.quagsire = true;
+        }
+        if (this.keys.O.isDown && this.quagsire == true) {
+            this.quagsire = false;
         }
 
         if (
