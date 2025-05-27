@@ -59,7 +59,7 @@ class ToBeContinued extends Phaser.Scene {
         this.add.text(350, 200, "Z", {fontSize: '22px', fill: '#FFF'} )
         this.add.text(250, 600, "Wooper is sleeping...", { fontSize: '42px', fill: '#FFF' })
         this.add.text(250, 720, "Come back later for future updates,", { fontSize: '22px', fill: '#FFF' })
-        // this.cameras.main.fadeIn(1000, 0, 0, 0)
+        this.cameras.main.fadeIn(1000, 0, 0, 0)
     }
 
 }
@@ -68,7 +68,7 @@ class QuagBallIntro extends Phaser.Scene {
         super({ key: 'QuagBallIntro'});
     }
     preload(){
-        this.load.image('quagball', 'assets/quagball.asesprite')
+        this.load.image('quagball', 'assets/quagball.aseprite')
     }
     create(){
         this.add.image(100,600, 'quagball')
@@ -76,7 +76,7 @@ class QuagBallIntro extends Phaser.Scene {
         this.add.text(200,400, "Press P/O to toggle into Quagsire mode,", {fontSize: '32px', fill: '#FFF'})
         this.add.text(300,500, "You need quagsire to swim!", {fontSize: '32px', fill: '#FFF'})
         this.add.text(400,600, "Click to close", {fontSize: '26px', fill: '#FFF'})
-        this.input.once('pointerup', function () { this.scene.start("ToBeContinued") }, this);
+        this.input.once('pointerup', function () { this.scene.start("LevelThree") }, this);
         this.cameras.main.fadeIn(1000, 0, 0, 0)
     }
 }
@@ -262,7 +262,7 @@ class Level extends Phaser.Scene {
         this.physics.add.overlap(this.player, this.portals, this.enterPortal, null, this)
         this.physics.add.overlap(this.player, this.waters, this.enterWater, null, this)
         // this.physics.add.collider(player, bombs, hitBomb, null, this); //don't need this code cause no bomb
-
+        this.cameras.main.fadeIn(1000, 0, 0, 0)
     }
 
     update() {
@@ -765,7 +765,7 @@ const levels = {
                 y: 462,
                 scaleX: 0.3,
                 scaleY: 0.3,
-                destination: "LevelThree",
+                destination: "QuagBallIntro",
             },
         ]
     },
@@ -1174,7 +1174,7 @@ const levels = {
                 y: 400, //-120 
                 scaleX: 0.3,
                 scaleY: 0.3,
-                destination: "QuagBallIntro",//swap out when i actually finish the next scene
+                destination: "ToBeContinued",//swap out when i actually finish the next scene
             },
         ]
     },
