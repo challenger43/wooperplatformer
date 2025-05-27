@@ -15,6 +15,7 @@ class MenuScene extends Phaser.Scene { //the menu
         this.load.image('portal', 'assets/Nether-Portal.png');
         this.load.image('bubble', 'assets/bubble.png');
         this.load.spritesheet('dude', 'assets/wooperspritesheet1a.png', { frameWidth: 32, frameHeight: 32 }); //sets the height of sprite
+        this.load.spritesheet('quagsire', 'assets/quagsirespritesheet.png', {frameWidth: 32, frameHeight: 32});
         //use a sprite sheet for easier animations--with a sprite you download not just one image but a bunch of images all in one file that it can switch in between
     }
     create() {
@@ -68,7 +69,7 @@ class QuagBallIntro extends Phaser.Scene {
         super({ key: 'QuagBallIntro'});
     }
     preload(){
-        this.load.image('quagball', 'assets/quagball.png')
+        this.load.image("quagball", "assets/quagball.png");
     }
     create(){
         this.add.image(150,600, 'quagball')
@@ -76,6 +77,7 @@ class QuagBallIntro extends Phaser.Scene {
         this.add.text(200,400, "Press P/O to toggle into Quagsire mode,", {fontSize: '32px', fill: '#FFF'})
         this.add.text(300,500, "You need quagsire to swim!", {fontSize: '32px', fill: '#FFF'})
         this.add.text(430,600, "Click to close", {fontSize: '26px', fill: '#FFF'})
+
         this.input.once('pointerup', function () { this.scene.start("LevelThree") }, this);
         this.cameras.main.fadeIn(1000, 0, 0, 0)
     }
