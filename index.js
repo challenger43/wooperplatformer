@@ -1,5 +1,5 @@
 const GRAVITY_DEFAULT = 500; //default gravity settings
-const GRAVITY_QUAGSIRE = 800;
+const GRAVITY_QUAGSIRE = 900;
 const GRAVITY_WATER = 0;
 class MenuScene extends Phaser.Scene { //the menu
     cursor;
@@ -20,7 +20,7 @@ class MenuScene extends Phaser.Scene { //the menu
     create() {
         this.add.image(550, 500, 'quagsireLoadScreen')
         this.add.text(250, 500, "WOOPER GAME", { fontSize: '92px', fill: '#FFF' })
-        this.add.text(200, 620, "Click anywhere on the quagsire to start", { fontSize: '32px', fill: '#FFF' })
+        this.add.text(200, 620, "Click anywhere on the quagsire to start", { fontSize: '32px', fill: '#FFF' })  
         this.input.once('pointerup', function () { this.scene.start("LevelOne") }, this);
         
         this.anims.create({
@@ -59,8 +59,26 @@ class ToBeContinued extends Phaser.Scene {
         this.add.text(350, 200, "Z", {fontSize: '22px', fill: '#FFF'} )
         this.add.text(250, 600, "Wooper is sleeping...", { fontSize: '42px', fill: '#FFF' })
         this.add.text(250, 720, "Come back later for future updates,", { fontSize: '22px', fill: '#FFF' })
+        // this.cameras.main.fadeIn(1000, 0, 0, 0)
     }
 
+}
+class QuagBallIntro extends Phaser.Scene {
+    constructor() {
+        super({ key: 'QuagBallIntro'});
+    }
+    preload(){
+        this.load.image('quagball', 'assets/quagball.asesprite')
+    }
+    create(){
+        this.add.image(100,600, 'quagball')
+        this.add.text(100,300, "You have unlocked the quagsire ball!", {fontSize: '32px', fill: '#FFF'})
+        this.add.text(200,400, "Press P/O to toggle into Quagsire mode,", {fontSize: '32px', fill: '#FFF'})
+        this.add.text(300,500, "You need quagsire to swim!", {fontSize: '32px', fill: '#FFF'})
+        this.add.text(400,600, "Click to close", {fontSize: '26px', fill: '#FFF'})
+        this.input.once('pointerup', function () { this.scene.start("ToBeContinued") }, this);
+        this.cameras.main.fadeIn(1000, 0, 0, 0)
+    }
 }
 class Level extends Phaser.Scene {
     player; //cannot use const for these because will need to change them later
@@ -1152,11 +1170,11 @@ const levels = {
         ],
         portals: [
             {
-                x: 1235,
-                y: -120,
+                x: 100, //1235 for original, set bac after testing
+                y: 400, //-120 
                 scaleX: 0.3,
                 scaleY: 0.3,
-                destination: "ToBeContinued",//swap out when i actually finish the next scene
+                destination: "QuagBallIntro",//swap out when i actually finish the next scene
             },
         ]
     },
@@ -1166,9 +1184,16 @@ const levels = {
         stars: [],
         portals: [],
         waters: [],
-
         
+    },
+    QuagBallIntro: {
+        platforms: [],
+        floatingStars: [],
+        stars: [],
+        portals: [],
+        waters: [],
     }
+
 }
 
 
@@ -1184,7 +1209,7 @@ const config = {
             debug: false
         }
     },
-    scene: [MenuScene,  ToBeContinued, new Level('LevelOne', levels.LevelOne), new Level('LevelTwo', levels.LevelTwo), new Level('LevelThree', levels.LevelThree), ]
+    scene: [MenuScene, ToBeContinued, QuagBallIntro, new Level('LevelOne', levels.LevelOne), new Level('LevelTwo', levels.LevelTwo), new Level('LevelThree', levels.LevelThree), ]
 };
 
 
