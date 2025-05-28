@@ -7,6 +7,7 @@ class MenuScene extends Phaser.Scene { //the menu
         super({ key: 'MainMenu' });
     }
     preload(){
+        this.load.image("quagball", "assets/quagball.png");
         this.load.image('quagsireLoadScreen', 'assets/quagsireStartGame.png')
         this.load.image('sky', 'assets/sky.png'); //the assets/ takes an object from a folder--in this case the folder is assets, the id is sky.png
         this.load.image('ground', 'assets/platform.png');
@@ -16,6 +17,7 @@ class MenuScene extends Phaser.Scene { //the menu
         this.load.image('bubble', 'assets/bubble.png');
         this.load.spritesheet('dude', 'assets/wooperspritesheet1a.png', { frameWidth: 32, frameHeight: 32 }); //sets the height of sprite
         this.load.spritesheet('quagsire', 'assets/quagsirespritesheet.png', {frameWidth: 32, frameHeight: 32});
+        this.load.image('sleepingWooper', 'assets/toBeContinuedWooperImage.png')
         //use a sprite sheet for easier animations--with a sprite you download not just one image but a bunch of images all in one file that it can switch in between
     }
     create() {
@@ -43,6 +45,23 @@ class MenuScene extends Phaser.Scene { //the menu
             frameRate: 10,
             repeat: -1
         });
+        this.anims.create({
+            key: 'quagLeft',
+            frames: this.anims.generateFrameNumbers('quagsire', {start: 3, end: 4 }),
+            frameRate: 10,
+            repeat: -1
+        })
+        this.anims.create({
+            key: 'quagRight',
+            frames: this.anims.generateFrameNumbers('quagsire', {start: 1, end: 2 }),
+            frameRate: 10,
+            repeat: -1
+        })
+        this.anims.create({
+            key: 'quagStill',
+            frames: [{key: 'quagsire', frame: 0,}],
+            frameRate: 20, 
+        })
     }
 }
 
@@ -51,7 +70,6 @@ class ToBeContinued extends Phaser.Scene {
         super({ key: 'ToBeContinued' });
     }
     preload(){
-        this.load.image('sleepingWooper', 'assets/toBeContinuedWooperImage.png')
     }
     create(){
         this.add.image(450,400, 'sleepingWooper').setScale(1.5)
@@ -69,7 +87,6 @@ class QuagBallIntro extends Phaser.Scene {
         super({ key: 'QuagBallIntro'});
     }
     preload(){
-        this.load.image("quagball", "assets/quagball.png");
     }
     create(){
         this.add.image(150,600, 'quagball')
@@ -273,7 +290,8 @@ class Level extends Phaser.Scene {
         }
         if (this.quagsire){
             this.physics.world.gravity.y = GRAVITY_QUAGSIRE;
-        }else if (this.isInWater) {
+        }
+        else if (this.isInWater) {
             this.physics.world.gravity.y = GRAVITY_WATER; //when inside water, gravity is set to 250
             // this.player.setGravityY(GRAVITY_WATER);
         }
@@ -287,21 +305,41 @@ class Level extends Phaser.Scene {
         } // put this back in after presentation
         if (this.keys.A.isDown || this.cursors.left.isDown) {
             this.player.setVelocityX(this.isInWater ? -100 : -160);
-            this.player.anims.play('left', true);
+            if (this.quagsire== true) {
+                console.log("Trying to play quagsire_left");
+                this.player.anims.play('quagLeft', true);
+            }
+            else {
+                this.player.anims.play('left', true);
+            }
         }
         else if (this.keys.D.isDown || this.cursors.right.isDown) {
             this.player.setVelocityX(this.isInWater ? 100 : 160);
-            this.player.anims.play('right', true);
+            if (this.quagsire == true){
+                console.log("Trying to play quagsire_right");
+                this.player.anims.play('quagRight', true)
+            }
+            else {
+                this.player.anims.play('right', true);
+            }
         }
         else { //if no key is pressed, will face forwards
             this.player.setVelocityX(0)
-            this.player.anims.play('turn');
+            if (this.quagsire == true) {
+                this.player.anims.play('quagStill', true)
+            }
+            else {
+                this.player.anims.play('turn');
+            }
+
         }
         if (this.keys.P.isDown && this.quagsire == false) {
             this.quagsire = true;
+            this.player.setTexture('quagsire');
         }
         if (this.keys.O.isDown && this.quagsire == true) {
             this.quagsire = false;
+            this.player.setTexture('dude')
         }
 
         if (
