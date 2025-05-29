@@ -29,7 +29,7 @@ class MenuScene extends Phaser.Scene { //the menu
         this.anims.create({
             key: 'left',
             frames: this.anims.generateFrameNumbers('dude', { start: 1, end: 4 }),
-            frameRate: 10,
+            frameRate: 20,
             repeat: -1
         });
 
@@ -42,19 +42,19 @@ class MenuScene extends Phaser.Scene { //the menu
         this.anims.create({
             key: 'right',
             frames: this.anims.generateFrameNumbers('dude', { start: 5, end: 8 }),
-            frameRate: 10,
+            frameRate: 20,
             repeat: -1
         });
         this.anims.create({
             key: 'quagLeft',
             frames: this.anims.generateFrameNumbers('quagsire', {start: 3, end: 4 }),
-            frameRate: 10,
+            frameRate: 4,
             repeat: -1
         })
         this.anims.create({
             key: 'quagRight',
             frames: this.anims.generateFrameNumbers('quagsire', {start: 1, end: 2 }),
-            frameRate: 10,
+            frameRate: 4,
             repeat: -1
         })
         this.anims.create({
@@ -304,23 +304,25 @@ class Level extends Phaser.Scene {
             this.floatingStars.children.iterate((star) => this.collectFloatingStar(this.player, star));
         } // put this back in after presentation
         if (this.keys.A.isDown || this.cursors.left.isDown) {
-            this.player.setVelocityX(this.isInWater ? -100 : -160);
             if (this.quagsire== true) {
+                this.player.setVelocityX(this.isInWater ? -130 : -80);
                 console.log("Trying to play quagsire_left");
                 this.player.anims.play('quagLeft', true);
             }
             else {
                 this.player.anims.play('left', true);
+                this.player.setVelocityX(this.isInWater ? -100 : -160);
             }
         }
         else if (this.keys.D.isDown || this.cursors.right.isDown) {
-            this.player.setVelocityX(this.isInWater ? 100 : 160);
             if (this.quagsire == true){
+                this.player.setVelocityX(this.isInWater ? 130 : 80);
                 console.log("Trying to play quagsire_right");
                 this.player.anims.play('quagRight', true)
             }
             else {
                 this.player.anims.play('right', true);
+                this.player.setVelocityX(this.isInWater ? 100: 160);
             }
         }
         else { //if no key is pressed, will face forwards
@@ -333,6 +335,7 @@ class Level extends Phaser.Scene {
             }
 
         }
+      // && this.level.LevelOne === false && this.level.LevelTwo === false
         if (this.keys.P.isDown && this.quagsire == false) {
             this.quagsire = true;
             this.player.setTexture('quagsire');
