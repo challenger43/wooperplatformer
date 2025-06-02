@@ -79,6 +79,8 @@ class ToBeContinued extends Phaser.Scene {
         this.add.text(250, 600, "Wooper is sleeping...", { fontSize: '42px', fill: '#FFF' })
         this.add.text(250, 720, "Come back later for future updates,", { fontSize: '22px', fill: '#FFF' })
         this.cameras.main.fadeIn(1000, 0, 0, 0)
+        // this.input.once('pointerup', function() {this.scene.start("LevelOne")}, this); need to figure out how to get all the stars to reset again
+        this.cameras.main.fadeIn(2000,0,0,0)
     }
 
 }
@@ -181,7 +183,6 @@ class Level extends Phaser.Scene {
                 // starCount +=1
 
         }
-
         //creates floating stars
         this.floatingStars = this.physics.add.group();
         // let floatingStarCount= 0
@@ -254,14 +255,13 @@ class Level extends Phaser.Scene {
             portal.disableBody(true, true);
         }
 
-
         //creates arrow keys
         this.cursors = this.input.keyboard.createCursorKeys();
 
         this.bombs = this.physics.add.group(); //adds another item to the group of physics
 
         //  The score
-        this.scoreText = this.add.text(600, 300, 'score: 0', { fontSize: '18px', fill: '#FFF' });
+        this.scoreText = this.add.text(600, 300, 'score: 0', { fontSize: '32px', fill: '#FFF' });
 
 
         //all the cameras
@@ -340,7 +340,6 @@ class Level extends Phaser.Scene {
             else {
                 this.player.anims.play('turn');
             }
-
         }
       // && this.level.LevelOne === false && this.level.LevelTwo === false
         if (this.keys.P.isDown && this.quagsire == false) {
@@ -351,7 +350,6 @@ class Level extends Phaser.Scene {
             this.quagsire = false;
             this.player.setTexture('dude')
         }
-
         if (
             (this.keys.W.isDown || this.keys.SPACE.isDown || this.cursors.up.isDown) && (
                 (this.isInWater || this.player.body.touching.down)
@@ -367,7 +365,6 @@ class Level extends Phaser.Scene {
             this.spawnPortal();
             this.portalSpawned = true;
         }
-
         // this.scoreText.setText("x: " + Math.floor(this.player.x) + " y: " + Math.floor(this.player.y))
         this.scoreText.setText("Stars Remaining: " + (activeStars + activeFloatingStars))
         this.scoreText.x = this.player.x + 100;
