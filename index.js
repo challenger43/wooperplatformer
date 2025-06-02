@@ -117,6 +117,9 @@ class Level extends Phaser.Scene {
     isInWater = false;
     quagsire = false;
     waters;
+    // floatingStarCount = 0;
+    // starCount = 0;
+    // totalStarCount = floatingStarCount + starCount;
     constructor(key, level) {
         super({ key: key });
         this.level = level;
@@ -160,7 +163,7 @@ class Level extends Phaser.Scene {
         this.waterFrame++;
         this.waterFrame = this.waterFrame % 10;
 }
-
+    
     create() {
         this.keys = this.input.keyboard.addKeys("W,A,S,D,Q,P,O,SPACE,")
         //an object is a collection of properties and values--properties are like labels
@@ -168,24 +171,27 @@ class Level extends Phaser.Scene {
         //adds images to things-the preload function loads them, this thing makes it actually happen
 
         //creates stars
+        // let starCount = 0
         this.stars = this.physics.add.group();
         for (let starData of this.level.stars) {
             this.stars.create(starData.x, starData.y, 'star')
                 .setBounceY(Phaser.Math.FloatBetween(0.2, 0.6))
                 // .setImmovable(!starData.gravity ?? false)
                 .setScale(0.05, 0.05);
+                // starCount +=1
+
         }
 
         //creates floating stars
         this.floatingStars = this.physics.add.group();
-
+        // let floatingStarCount= 0
         for (let floatingStarData of this.level.floatingStars) {
             let floatingStar = this.floatingStars.create(floatingStarData.x, floatingStarData.y, 'star')
                 .setScale(0.05, 0.05); // Set the scale of the star
-
             // Set gravity to zero for each floating star individually
             floatingStar.body.setGravity(0, 0);
             floatingStar.body.allowGravity = false;
+            // floatingStarCount +=1
         }
 
         //when drawing images, make sure to put it in order--if I loaded the ground before the sky, the sky would cover the ground 
@@ -255,7 +261,8 @@ class Level extends Phaser.Scene {
         this.bombs = this.physics.add.group(); //adds another item to the group of physics
 
         //  The score
-        this.scoreText = this.add.text(600, 300, 'score: 0', { fontSize: '32px', fill: '#FFF' });
+        this.scoreText = this.add.text(600, 300, 'score: 0', { fontSize: '18px', fill: '#FFF' });
+
 
         //all the cameras
         this.cameras.cameras[0].startFollow(this.player)
@@ -283,7 +290,7 @@ class Level extends Phaser.Scene {
         // this.physics.add.collider(player, bombs, hitBomb, null, this); //don't need this code cause no bomb
         this.cameras.main.fadeIn(1000, 0, 0, 0)
     }
-
+    // let totalStarCount = floatingStarCount + starCount
     update() {
         if (this.gameOver) {
             return;
@@ -353,14 +360,16 @@ class Level extends Phaser.Scene {
             this.player.setVelocityY(this.isInWater ? -100 : -430);
             // this.scene.start('testScene'); -- a tester code, in this if the player jumps it moves you to another scene called Test Scene
         }
-
+        let activeFloatingStars = this.floatingStars.countActive(true);
+        let activeStars = this.stars.countActive(true);
+        // console.log(activeFloatingStars + activeStars)
         if (this.stars.countActive(true) == 0 && this.floatingStars.countActive(true) == 0 && !this.portalSpawned) {
             this.spawnPortal();
             this.portalSpawned = true;
         }
 
-        this.scoreText.setText("x: " + Math.floor(this.player.x) + " y: " + Math.floor(this.player.y))
-        // this.scoreText.setText("Stars Remaining:" + toString(this.stars.countActive)) ----working on this later
+        // this.scoreText.setText("x: " + Math.floor(this.player.x) + " y: " + Math.floor(this.player.y))
+        this.scoreText.setText("Stars Remaining: " + (activeStars + activeFloatingStars))
         this.scoreText.x = this.player.x + 100;
         this.scoreText.y = this.player.y - 200;
 
