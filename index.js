@@ -173,26 +173,21 @@ class Level extends Phaser.Scene {
         //adds images to things-the preload function loads them, this thing makes it actually happen
 
         //creates stars
-        // let starCount = 0
         this.stars = this.physics.add.group();
         for (let starData of this.level.stars) {
             this.stars.create(starData.x, starData.y, 'star')
                 .setBounceY(Phaser.Math.FloatBetween(0.2, 0.6))
                 // .setImmovable(!starData.gravity ?? false)
                 .setScale(0.05, 0.05);
-                // starCount +=1
-
-        }
+              }
         //creates floating stars
         this.floatingStars = this.physics.add.group();
-        // let floatingStarCount= 0
         for (let floatingStarData of this.level.floatingStars) {
             let floatingStar = this.floatingStars.create(floatingStarData.x, floatingStarData.y, 'star')
                 .setScale(0.05, 0.05); // Set the scale of the star
             // Set gravity to zero for each floating star individually
             floatingStar.body.setGravity(0, 0);
             floatingStar.body.allowGravity = false;
-            // floatingStarCount +=1
         }
 
         //when drawing images, make sure to put it in order--if I loaded the ground before the sky, the sky would cover the ground 
@@ -204,7 +199,6 @@ class Level extends Phaser.Scene {
                 .setTint(platformData.tint ?? 0xffffff)
                 .refreshBody();
         }
-
          //  Our emitter
          this.waterEmitter = this.add.particles('bubble', {
             x: 5,
@@ -261,8 +255,7 @@ class Level extends Phaser.Scene {
         this.bombs = this.physics.add.group(); //adds another item to the group of physics
 
         //  The score
-        this.scoreText = this.add.text(600, 300, 'score: 0', { fontSize: '32px', fill: '#FFF' });
-
+        this.scoreText = this.add.text(600, 300, 'score: 0', { fontSize: '28px', fill: '#FFF' });
 
         //all the cameras
         this.cameras.cameras[0].startFollow(this.player)
@@ -290,7 +283,6 @@ class Level extends Phaser.Scene {
         // this.physics.add.collider(player, bombs, hitBomb, null, this); //don't need this code cause no bomb
         this.cameras.main.fadeIn(1000, 0, 0, 0)
     }
-    // let totalStarCount = floatingStarCount + starCount
     update() {
         if (this.gameOver) {
             return;
@@ -341,7 +333,7 @@ class Level extends Phaser.Scene {
                 this.player.anims.play('turn');
             }
         }
-      // && this.level.LevelOne === false && this.level.LevelTwo === false
+      // && this.level.LevelOne === false && this.level.LevelTwo === false need to figure out how to do
         if (this.keys.P.isDown && this.quagsire == false) {
             this.quagsire = true;
             this.player.setTexture('quagsire');
@@ -365,8 +357,14 @@ class Level extends Phaser.Scene {
             this.spawnPortal();
             this.portalSpawned = true;
         }
-        // this.scoreText.setText("x: " + Math.floor(this.player.x) + " y: " + Math.floor(this.player.y))
-        this.scoreText.setText("Stars Remaining: " + (activeStars + activeFloatingStars))
+        this.scoreText.setText("x: " + Math.floor(this.player.x) + " y: " + Math.floor(this.player.y))
+        if ((activeStars + activeFloatingStars) > 0) {
+            this.scoreText.setText("WoopBalls Remaining: " + (activeStars + activeFloatingStars))
+        }
+        else {
+            this.scoreText.setText("Find the portal!")
+        }
+        
         this.scoreText.x = this.player.x + 100;
         this.scoreText.y = this.player.y - 200;
 
@@ -819,7 +817,8 @@ const levels = {
         ]
     },
     LevelThree: {
-        platforms: [{ //leftmost ground
+        platforms: [
+        { //leftmost ground
             x: 400,
             y: 632,
             scaleX: 2,
@@ -1223,9 +1222,73 @@ const levels = {
                 y: 400, //-120 
                 scaleX: 0.3,
                 scaleY: 0.3,
-                destination: "ToBeContinued",//swap out when i actually finish the next scene
+                destination: "LevelFour",//swap out when i actually finish the next scene
             },
         ]
+    },
+    LevelFour: {
+        platforms: [
+            { //leftmost ground
+                x: 400,
+                y: 832,
+                scaleX: 2,
+                scaleY: 2,
+                tint: 0x3c6529
+            },
+            { //middle ground
+                x: 900,
+                y: 832,
+                scaleX: 2,
+                scaleY: 2,
+                tint: 0x3c6529
+            },
+            {//world bounds left 
+                x: -20,
+                y: 500,
+                scaleX: 0.1,
+                scaleY: 21,
+                tint: 0x3c6529,
+            },
+            {//world bounds left 
+                x: -20,
+                y: 100,
+                scaleX: 0.1,
+                scaleY: 21,
+                tint: 0x3c6529,
+            },
+            {//world bounds right 
+                x: 1290,
+                y: 200,
+                scaleX: 0.1,
+                scaleY: 21,
+                tint: 0x3c6529,
+            },
+            {//world bounds right 
+                x: 1290,
+                y: 500,
+                scaleX: 0.1,
+                scaleY: 21,
+                tint: 0x3c6529,
+            },
+            {//world bounds right 
+                x: 1290,
+                y: -200,
+                scaleX: 0.1,
+                scaleY: 21,
+                tint: 0x3c6529,
+            },
+            { //wooper spawn platform
+                x: 100,
+                y: 500,
+                scaleX: 0.1,
+                scaleY: 0.3,
+                tint: 0xFF0000,
+            }
+        ],
+        floatingStars: [],
+        stars: [],
+        portals: [],
+        waters: [],
     },
     ToBeContinued: {
         platforms: [],
@@ -1258,7 +1321,7 @@ const config = {
             debug: false
         }
     },
-    scene: [MenuScene, ToBeContinued, QuagBallIntro, new Level('LevelOne', levels.LevelOne), new Level('LevelTwo', levels.LevelTwo), new Level('LevelThree', levels.LevelThree), ]
+    scene: [MenuScene, ToBeContinued, QuagBallIntro, new Level('LevelOne', levels.LevelOne), new Level('LevelTwo', levels.LevelTwo), new Level('LevelThree', levels.LevelThree), new Level('LevelFour', levels.LevelFour) ]
 };
 
 
