@@ -1036,7 +1036,15 @@ const levels = {
             },
         ],
         stars: [],
-        portals: [],
+        portals: [
+            {
+                x: 100, //1235 for original, set bac after testing
+                y: 400, //-120 
+                scaleX: 0.3,
+                scaleY: 0.3,
+                destination: "ToBeContinued",//swap out when i actually finish the next scene
+            },
+        ],
         waters: [
             {
                 x: 640,

@@ -65,7 +65,7 @@ class MenuScene extends Phaser.Scene { //the menu
             frameRate: 20,
         })
     }
-    update(){
+    update() {
         if (this.keys.SPACE.isDown) {
             this.scene.start("LevelOne");
         }
@@ -108,7 +108,7 @@ class QuagBallIntro extends Phaser.Scene {
         // this.input.once('pointerup', function () { this.scene.start("LevelThree") }, this);
         this.cameras.main.fadeIn(1000, 0, 0, 0)
     }
-    update(){
+    update() {
         if (this.keys.SPACE.isDown) {
             this.scene.start("LevelThree");
         }
@@ -142,9 +142,7 @@ class Level extends Phaser.Scene {
     init(data) {
         this.quagsire = data.quagsire ?? false;
     }
-    preload() {
-
-    }
+    preload() {}
     collectStar(player, star) {
         star.disableBody(true, true); //the star no longer has a 'physical body'
         //  Add and update the score
@@ -152,8 +150,6 @@ class Level extends Phaser.Scene {
         this.scoreText.setText('Score: ' + this.score);
         console.log(this.score)
     }
-
-
     collectFloatingStar(player, floatingStar) {
         floatingStar.disableBody(true, true);
         this.score += 10;
@@ -252,9 +248,8 @@ class Level extends Phaser.Scene {
                 .refreshBody()
                 .setAlpha(0.5);
         }
-
         //make portals
-        this.portals = this.physics.add.staticGroup()
+        this.portals = this.physics.add.staticGroup();
         for (let portalData of this.level.portals) {
             let portal = this.portals.create(portalData.x, portalData.y, 'portal')
                 .setScale(0.3, 0.3)
@@ -266,12 +261,9 @@ class Level extends Phaser.Scene {
 
         //creates arrow keys
         this.cursors = this.input.keyboard.createCursorKeys();
-
         this.bombs = this.physics.add.group(); //adds another item to the group of physics
-
         //  The score
         this.scoreText = this.add.text(600, 300, 'score: 0', { fontSize: '28px', fill: '#FFF' });
-
         //all the cameras
         this.cameras.cameras[0].startFollow(this.player)
 
@@ -373,14 +365,13 @@ class Level extends Phaser.Scene {
             this.spawnPortal();
             this.portalSpawned = true;
         }
-        this.scoreText.setText("x: " + Math.floor(this.player.x) + " y: " + Math.floor(this.player.y))
-        // if ((activeStars + activeFloatingStars) > 0) {
-        //     this.scoreText.setText("WoopBalls Remaining: " + (activeStars + activeFloatingStars))
-        // }
-        // else {
-        //     this.scoreText.setText("Find the portal!")
-        // }
-
+        // this.scoreText.setText("x: " + Math.floor(this.player.x) + " y: " + Math.floor(this.player.y))
+        if ((activeStars + activeFloatingStars) > 0) {
+            this.scoreText.setText("WoopBalls Remaining: " + (activeStars + activeFloatingStars))
+        }
+        else {
+            this.scoreText.setText("Find the portal!")
+        }
         this.scoreText.x = this.player.x + 100;
         this.scoreText.y = this.player.y - 200;
 
@@ -405,11 +396,8 @@ class Level extends Phaser.Scene {
         }
 
         this.isInWater = false;
-
     }
 }
-
-
 
 const config = {
     type: Phaser.AUTO,
