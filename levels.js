@@ -424,262 +424,262 @@ const levels = {
     },
     LevelThree: {
         platforms: [
-        { //leftmost ground
-            x: 400,
-            y: 632,
-            scaleX: 2,
-            scaleY: 2,
-            tint: 0x3c6529
-        },
-        { //middle ground
-            x: 900,
-            y: 632,
-            scaleX: 2,
-            scaleY: 2,
-            tint: 0x3c6529
-        },
-        {//world bounds left 
-            x: -20,
-            y: 300,
-            scaleX: 0.1,
-            scaleY: 21,
-            tint: 0x3c6529,
-        },
-        {//world bounds left 
-            x: -20,
-            y: 100,
-            scaleX: 0.1,
-            scaleY: 21,
-            tint: 0x3c6529,
-        },
-        {//world bounds right 
-            x: 1290,
-            y: 100,
-            scaleX: 0.1,
-            scaleY: 21,
-            tint: 0x3c6529,
-        },
-        {//world bounds right 
-            x: 1290,
-            y: 300,
-            scaleX: 0.1,
-            scaleY: 21,
-            tint: 0x3c6529,
-        },
-        {//world bounds right 
-            x: 1290,
-            y: -100,
-            scaleX: 0.1,
-            scaleY: 21,
-            tint: 0x3c6529,
-        },
-        {//the borders to the pool
-            x: 180,
-            y: 489,
-            scaleX: 0.05,
-            scaleY: 7,
-            tint: 0x3c6529,
-        },
-        { //the borders to the pool
-            x: 180,
-            y: 269,
-            scaleX: 0.05,
-            scaleY: 7,
-            tint: 0x3c6529,
-        },
-        {//more borders to the pool
-            x:180,
-            y: 100,
-            scaleX: 0.05,
-            scaleY: 7,
-            tint: 0x3c6529,
-        },
-        {//ladder platform left
-            x: 16,
-            y: 310,
-            scaleX: 0.07,
-            scaleY: 0.1,
-            tint: 0x3c6529,
-        },
-        {//ladder platform left
-            x: 16,
-            y: 450,
-            scaleX: 0.2,
-            scaleY: 0.1,
-            tint: 0x3c6529,
-        },
-        {//ladder platform left
-            x: 600,
-            y: 376,
-            scaleX: 0.05,
-            scaleY: 7,
-            tint: 0x3c6529,
-        },
-        {//ladder platform left
-            x: 600,
-            y: 576,
-            scaleX: 0.05,
-            scaleY: 2,
-            tint: 0x3c6529,
-        },
-        {//ladder platform left
-            x: 16,
-            y: 220,
-            scaleX: 0.2,
-            scaleY: 0.1,
-            tint: 0x3c6529,
-        },
-        {//ladder platform left
-            x: 153,
-            y: 330,
-            scaleX: 0.1,
-            scaleY: 0.1,
-            tint: 0x3c6529,
-        },
-        {
-            x: 330,
-            y: 330, 
-            scaleX: 0.1,
-            tint: 0x3c6529,
-        },
-        {  //ladder platform cont.
-            x: 20,
-            y: 100,
-            scaleX: 0.25,//change back to 0.2 when done coding
-            scaleY: 0.1,
-            tint: 0x3c6529
-        },
-        { //pool border ladder on right
-            x: 636,
-            y: 450,
-            scaleX: 0.1,
-            scaleY: 0.1,
-            tint: 0x3c6529
+            { //leftmost ground
+                x: 400,
+                y: 632,
+                scaleX: 2,
+                scaleY: 2,
+                tint: 0x3c6529
+            },
+            { //middle ground
+                x: 900,
+                y: 632,
+                scaleX: 2,
+                scaleY: 2,
+                tint: 0x3c6529
+            },
+            {//world bounds left 
+                x: -20,
+                y: 300,
+                scaleX: 0.1,
+                scaleY: 21,
+                tint: 0x3c6529,
+            },
+            {//world bounds left 
+                x: -20,
+                y: 100,
+                scaleX: 0.1,
+                scaleY: 21,
+                tint: 0x3c6529,
+            },
+            {//world bounds right 
+                x: 1290,
+                y: 100,
+                scaleX: 0.1,
+                scaleY: 21,
+                tint: 0x3c6529,
+            },
+            {//world bounds right 
+                x: 1290,
+                y: 300,
+                scaleX: 0.1,
+                scaleY: 21,
+                tint: 0x3c6529,
+            },
+            {//world bounds right 
+                x: 1290,
+                y: -100,
+                scaleX: 0.1,
+                scaleY: 21,
+                tint: 0x3c6529,
+            },
+            {//the borders to the pool
+                x: 180,
+                y: 489,
+                scaleX: 0.05,
+                scaleY: 7,
+                tint: 0x3c6529,
+            },
+            { //the borders to the pool
+                x: 180,
+                y: 269,
+                scaleX: 0.05,
+                scaleY: 7,
+                tint: 0x3c6529,
+            },
+            {//more borders to the pool
+                x: 180,
+                y: 100,
+                scaleX: 0.05,
+                scaleY: 7,
+                tint: 0x3c6529,
+            },
+            {//ladder platform left
+                x: 16,
+                y: 310,
+                scaleX: 0.07,
+                scaleY: 0.1,
+                tint: 0x3c6529,
+            },
+            {//ladder platform left
+                x: 16,
+                y: 450,
+                scaleX: 0.2,
+                scaleY: 0.1,
+                tint: 0x3c6529,
+            },
+            {//ladder platform left
+                x: 600,
+                y: 376,
+                scaleX: 0.05,
+                scaleY: 7,
+                tint: 0x3c6529,
+            },
+            {//ladder platform left
+                x: 600,
+                y: 576,
+                scaleX: 0.05,
+                scaleY: 2,
+                tint: 0x3c6529,
+            },
+            {//ladder platform left
+                x: 16,
+                y: 220,
+                scaleX: 0.2,
+                scaleY: 0.1,
+                tint: 0x3c6529,
+            },
+            {//ladder platform left
+                x: 153,
+                y: 330,
+                scaleX: 0.1,
+                scaleY: 0.1,
+                tint: 0x3c6529,
+            },
+            {
+                x: 330,
+                y: 330,
+                scaleX: 0.1,
+                tint: 0x3c6529,
+            },
+            {  //ladder platform cont.
+                x: 20,
+                y: 100,
+                scaleX: 0.25,//change back to 0.2 when done coding
+                scaleY: 0.1,
+                tint: 0x3c6529
+            },
+            { //pool border ladder on right
+                x: 636,
+                y: 450,
+                scaleX: 0.1,
+                scaleY: 0.1,
+                tint: 0x3c6529
 
-        },
-        { 
-            x: 796,
-            y: 300,
-            scaleX: 0.1,
-            scaleY: 0.1,
-            tint: 0x3c6529
+            },
+            {
+                x: 796,
+                y: 300,
+                scaleX: 0.1,
+                scaleY: 0.1,
+                tint: 0x3c6529
 
-        },
-        { 
-            x: 933,
-            y: 420,
-            scaleX: 0.1,
-            scaleY: 0.1,
-            tint: 0x3c6529
-        },
-        { //right swimming pool ladder to get stars
-            x: 604,
-            y: 200,
-            scaleX: 0.1,
-            scaleY: 0.1,
-            tint: 0x3c6529
+            },
+            {
+                x: 933,
+                y: 420,
+                scaleX: 0.1,
+                scaleY: 0.1,
+                tint: 0x3c6529
+            },
+            { //right swimming pool ladder to get stars
+                x: 604,
+                y: 200,
+                scaleX: 0.1,
+                scaleY: 0.1,
+                tint: 0x3c6529
 
-        },
-        { //right swimming pool ladder to get stars
-            x: 604,
-            y: 50,
-            scaleX: 0.1,
-            scaleY: 0.1,
-            tint: 0x3c6529
+            },
+            { //right swimming pool ladder to get stars
+                x: 604,
+                y: 50,
+                scaleX: 0.1,
+                scaleY: 0.1,
+                tint: 0x3c6529
 
-        },
-        { //swimming pool mid platform above
-            x: 410,
-            y: 270,
-            scaleX: 0.1,
-            scaleY: 0.1,
-            tint: 0x3c6529
-        },
-        { //swimming pool mid platform above
-            x: 280,
-            y: 120,
-            scaleX: 0.1,
-            scaleY: 0.1,
-            tint: 0x3c6529
+            },
+            { //swimming pool mid platform above
+                x: 410,
+                y: 270,
+                scaleX: 0.1,
+                scaleY: 0.1,
+                tint: 0x3c6529
+            },
+            { //swimming pool mid platform above
+                x: 280,
+                y: 120,
+                scaleX: 0.1,
+                scaleY: 0.1,
+                tint: 0x3c6529
 
-        },
-        { //right border ladder bottom 
-            x: 1235,
-            y: 480,
-            scaleX: 0.1,
-            scaleY: 0.1,
-            tint: 0x3c6529
-        },
-        { //right border ladder 2
-            x: 1235,
-            y: 400,
-            scaleX: 0.1,
-            scaleY: 0.1,
-            tint: 0x3c6529
+            },
+            { //right border ladder bottom 
+                x: 1235,
+                y: 480,
+                scaleX: 0.1,
+                scaleY: 0.1,
+                tint: 0x3c6529
+            },
+            { //right border ladder 2
+                x: 1235,
+                y: 400,
+                scaleX: 0.1,
+                scaleY: 0.1,
+                tint: 0x3c6529
 
-        },
-        { //right border ladder 3
-            x: 1235,
-            y: 320,
-            scaleX: 0.1,
-            scaleY: 0.1,
-            tint: 0x3c6529
+            },
+            { //right border ladder 3
+                x: 1235,
+                y: 320,
+                scaleX: 0.1,
+                scaleY: 0.1,
+                tint: 0x3c6529
 
-        },
-        { //right border ladder 4
-            x: 1235,
-            y: 240,
-            scaleX: 0.1,
-            scaleY: 0.1,
-            tint: 0x3c6529
+            },
+            { //right border ladder 4
+                x: 1235,
+                y: 240,
+                scaleX: 0.1,
+                scaleY: 0.1,
+                tint: 0x3c6529
 
-        },
-        { //right border ladder 4
-            x: 1235,
-            y: 160,
-            scaleX: 0.1,
-            scaleY: 0.1,
-            tint: 0x3c6529
+            },
+            { //right border ladder 4
+                x: 1235,
+                y: 160,
+                scaleX: 0.1,
+                scaleY: 0.1,
+                tint: 0x3c6529
 
-        },
-        { //right border ladder 5
-            x: 1235,
-            y: 80,
-            scaleX: 0.1,
-            scaleY: 0.1,
-            tint: 0x3c6529
+            },
+            { //right border ladder 5
+                x: 1235,
+                y: 80,
+                scaleX: 0.1,
+                scaleY: 0.1,
+                tint: 0x3c6529
 
-        },
-        { //right border ladder 6
-            x: 1235,
-            y: 0,
-            scaleX: 0.1,
-            scaleY: 0.1,
-            tint: 0x3c6529
+            },
+            { //right border ladder 6
+                x: 1235,
+                y: 0,
+                scaleX: 0.1,
+                scaleY: 0.1,
+                tint: 0x3c6529
 
-        },
-        {
-            x: 364,
-            y: 496,
-            scaleX: 0.3,
-            scaleY: 0.3,
-            tint: 0x3c6529
-        },
-        {
-            x: 318,
-            y: 526,
-            scaleX: 0.05,
-            scaleY: 1.8,
-            tint: 0x3c6529
-        },
-        {
-            x: 412,
-            y: 526,
-            scaleX: 0.05,
-            scaleY: 1.8,
-            tint: 0x3c6529
-        },
-        
+            },
+            {
+                x: 364,
+                y: 496,
+                scaleX: 0.3,
+                scaleY: 0.3,
+                tint: 0x3c6529
+            },
+            {
+                x: 318,
+                y: 526,
+                scaleX: 0.05,
+                scaleY: 1.8,
+                tint: 0x3c6529
+            },
+            {
+                x: 412,
+                y: 526,
+                scaleX: 0.05,
+                scaleY: 1.8,
+                tint: 0x3c6529
+            },
+
         ],
         waters: [
             {
@@ -689,7 +689,7 @@ const levels = {
                 scaleY: 10,
                 opacity: 0.1,
             },
-          ],
+        ],
         stars: [
             {
                 x: 16,
@@ -890,20 +890,159 @@ const levels = {
                 scaleY: 0.3,
                 tint: 0xFF0000,
             },
-            {
+            { //exit water platform
                 x: 300,
-                y: 550,
+                y: 580,
+                scaleX: 0.3,
+                scaleY: 0.3,
+                tint: 0x3c6529,
+            },
+            { //exit water platform #2
+                x: 680,
+                y: 580,
+                scaleX: 0.3,
+                scaleY: 0.3,
+                tint: 0x3c6529,
+            },
+            { //water rock thing
+                x: 500,
+                y: 650,
+                scaleX: 0.5,
+                scaleY: 0.7,
+                tint: 0x3c6529,
+            },
+            {
+                x: 280,
+                y: 730,
+                scaleX: 0.3,
+                scaleY: 1,
+                tint: 0x3c6529,
+            },
+            {
+                x: 630,
+                y: 710,
+                scaleX: 0.3,
+                scaleY: 0.5,
+                tint: 0x3c6529,
+            },
+            {
+                x: 50,
+                y: 710,
+                scaleX: 0.3,
+                scaleY: 0.5,
+                tint: 0x3c6529,
+            },
+            {
+                x: 730,
+                y: 750,
+                scaleX: 0.3,
+                scaleY: 0.5,
+                tint: 0x3c6529,
+            },
+            {
+                x: 1058,
+                y: 710,
+                scaleX: 0.3,
+                scaleY: 0.5,
+                tint: 0x3c6529,
+            },
+            {
+                x: 1177,
+                y: 710,
+                scaleX: 0.3,
+                scaleY: 3,
+                tint: 0x3c6529,
+            },//these two make the 'dumbell' shape
+            {
+                x: 940,
+                y: 710,
+                scaleX: 0.3,
+                scaleY: 3,
+                tint: 0x3c6529,
             },
         ],
-        floatingStars: [],
+        floatingStars: [
+            {
+                x: 48,
+                y: 686,
+                scaleX: 0.05,
+                scaleY: 0.05,
+            },
+            {
+                x: 48,
+                y: 750,
+                scaleX: 0.05,
+                scaleY: 0.05,
+            },
+            {
+                x: 415,
+                y: 720,
+                scaleX: 0.05,
+                scaleY: 0.05,
+            },
+            {
+                x: 480,
+                y: 370,
+                scaleX: 0.05,
+                scaleY: 0.05,
+            },
+            {
+                x: 585,
+                y: 686,
+                scaleX: 0.05,
+                scaleY: 0.05,
+            },
+            {
+                x: 712,
+                y: 726,
+                scaleX: 0.05,
+                scaleY: 0.05,
+            },
+            {
+                x: 735,
+                y: 784,
+                scaleX: 0.05,
+                scaleY: 0.05,
+            },
+            {
+                x: 1060,
+                y: 770,
+                scaleX: 0.05,
+                scaleY: 0.05,
+            },
+            {
+                x: 920,
+                y: 784,
+                scaleX: 0.05,
+                scaleY: 0.05,
+            },
+            {
+                x: 1250,
+                y: 784,
+                scaleX: 0.05,
+                scaleY: 0.05,
+            },
+            {
+                x: 1250,
+                y: 730,
+                scaleX: 0.05,
+                scaleY: 0.05,
+            },
+            {
+                x: 1044,
+                y: 686,
+                scaleX: 0.05,
+                scaleY: 0.05,
+            },
+        ],
         stars: [],
         portals: [],
         waters: [
             {
-            x: 640,
-            y: 690,
-            scaleX: 3.4,
-            scaleY: 7,
+                x: 640,
+                y: 690,
+                scaleX: 3.4,
+                scaleY: 7,
             }
         ],
     },
@@ -913,7 +1052,7 @@ const levels = {
         stars: [],
         portals: [],
         waters: [],
-        
+
     },
     QuagBallIntro: {
         platforms: [],

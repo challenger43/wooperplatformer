@@ -361,12 +361,12 @@ class Level extends Phaser.Scene {
             this.portalSpawned = true;
         }
         this.scoreText.setText("x: " + Math.floor(this.player.x) + " y: " + Math.floor(this.player.y))
-        if ((activeStars + activeFloatingStars) > 0) {
-            this.scoreText.setText("WoopBalls Remaining: " + (activeStars + activeFloatingStars))
-        }
-        else {
-            this.scoreText.setText("Find the portal!")
-        }
+        // if ((activeStars + activeFloatingStars) > 0) {
+        //     this.scoreText.setText("WoopBalls Remaining: " + (activeStars + activeFloatingStars))
+        // }
+        // else {
+        //     this.scoreText.setText("Find the portal!")
+        // }
 
         this.scoreText.x = this.player.x + 100;
         this.scoreText.y = this.player.y - 200;
