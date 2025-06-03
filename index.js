@@ -3,6 +3,7 @@ const GRAVITY_QUAGSIRE = 900;
 const GRAVITY_WATER = 0;
 class MenuScene extends Phaser.Scene { //the menu
     cursor;
+    keys;
     constructor() { //super() inherits all the characteristics of the Phaser 'scene' class
         super({ key: 'MainMenu' });
     }
@@ -21,10 +22,11 @@ class MenuScene extends Phaser.Scene { //the menu
         //use a sprite sheet for easier animations--with a sprite you download not just one image but a bunch of images all in one file that it can switch in between
     }
     create() {
+        this.keys = this.input.keyboard.addKeys("SPACE,")
         this.add.image(550, 500, 'quagsireLoadScreen')
         this.add.text(250, 500, "WOOPER GAME", { fontSize: '92px', fill: '#FFF' })
-        this.add.text(200, 620, "Click anywhere on the quagsire to start", { fontSize: '32px', fill: '#FFF' })
-        this.input.once('pointerup', function () { this.scene.start("LevelOne") }, this);
+        this.add.text(380, 620, "Press Space To Start", { fontSize: '32px', fill: '#FFF' })
+        // this.input.once('pointerup', function () { this.scene.start("LevelOne") }, this);
 
         this.anims.create({
             key: 'left',
@@ -63,6 +65,11 @@ class MenuScene extends Phaser.Scene { //the menu
             frameRate: 20,
         })
     }
+    update(){
+        if (this.keys.SPACE.isDown) {
+            this.scene.start("LevelOne");
+        }
+    }
 }
 
 class ToBeContinued extends Phaser.Scene {
@@ -91,14 +98,20 @@ class QuagBallIntro extends Phaser.Scene {
     preload() {
     }
     create() {
+        this.keys = this.input.keyboard.addKeys("SPACE,")
         this.add.image(150, 600, 'quagball')
         this.add.text(100, 300, "You have unlocked the quagsire ball!", { fontSize: '32px', fill: '#FFF' })
         this.add.text(200, 400, "Press P/O to toggle into Quagsire mode,", { fontSize: '32px', fill: '#FFF' })
         this.add.text(300, 500, "You need quagsire to swim!", { fontSize: '32px', fill: '#FFF' })
-        this.add.text(430, 600, "Click to close", { fontSize: '26px', fill: '#FFF' })
+        this.add.text(430, 600, "Press Space to Close", { fontSize: '26px', fill: '#FFF' })
 
-        this.input.once('pointerup', function () { this.scene.start("LevelThree") }, this);
+        // this.input.once('pointerup', function () { this.scene.start("LevelThree") }, this);
         this.cameras.main.fadeIn(1000, 0, 0, 0)
+    }
+    update(){
+        if (this.keys.SPACE.isDown) {
+            this.scene.start("LevelThree");
+        }
     }
 }
 class Level extends Phaser.Scene {
