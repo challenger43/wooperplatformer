@@ -960,6 +960,97 @@ const levels = {
                 scaleY: 3,
                 tint: 0x3c6529,
             },
+            {
+                x: 500,
+                y: 250,
+                scaleX: 0.6,
+                scaleY: 1,
+                tint: 0x3c6529,
+            },
+            {
+                x: 600,
+                y: 340,
+                scaleX: 0.8,
+                scaleY: 1,
+                tint: 0x3c6529,
+            },
+            {
+                x: 10,
+                y: 400,
+                scaleX: 0.05,
+                scaleY: 0.1,
+                tint: 0x3c6529,
+            },
+            {
+                x: 10,
+                y: 250,
+                scaleX: 0.05,
+                scaleY: 0.1,
+                tint: 0x3c6529,
+            },
+            {
+                x: 224, //jumping platform
+                y: 280,
+                scaleX: 0.05,
+                scaleY: 0.1,
+                tint: 0x3c6529,
+            },
+            {
+                x: 586,
+                y: 150,
+                scaleX: 0.1,
+                scaleY: 3,
+                tint: 0x3c6529,
+            },
+            {
+                x: 586,
+                y: 20,
+                scaleX: 0.1,
+                scaleY: 2,
+                tint: 0x3c6529,
+            },
+            {
+                x: 563,
+                y: 86,
+                scaleX: 0.01,
+                scaleY: 3,
+                tint: 0x3c6529,
+            },
+            {
+                x: 834,
+                y: 130,
+                scaleX: 0.01,
+                scaleY: 3,
+                tint: 0x3c6529,
+            },
+            {
+                x: 1020,
+                y: 200,
+                scaleX: 0.01,
+                scaleY: 3,
+                tint: 0x3c6529,
+            },
+            {
+                x: 1178,
+                y: 300,
+                scaleX: 0.5,
+                scaleY: 1,
+                tint: 0x3c6529,
+            },
+            {
+                x: 917,
+                y: 380,
+                scaleX: 0.1,
+                scaleY: 0.2,
+                // tint: 0x3c6529,
+            },
+            {
+                x: 1150,
+                y: 480,
+                scaleX: 0.1,
+                scaleY: 0.2,
+                // tint: 0x3c6529,
+            },
         ],
         floatingStars: [
             {
@@ -1034,8 +1125,65 @@ const levels = {
                 scaleX: 0.05,
                 scaleY: 0.05,
             },
+            {
+                x: 210,
+                y: 500,
+                scaleX: 0.05,
+                scaleY: 0.05,
+            },
+            {
+                x: 180,
+                y: 500,
+                scaleX: 0.05,
+                scaleY: 0.05,
+            },
+            {
+                x: 100,
+                y: 530,
+                scaleX: 0.05,
+                scaleY: 0.05,
+            },
+            {
+                x: 395,
+                y: 290,
+                scaleX: 0.05,
+                scaleY: 0.05,
+            },
+            {
+                x: 930,
+                y: -116,
+                scaleX: 0.05,
+                scaleY: 0.05,
+            },
+            {
+                x: 1150,
+                y: 440,
+                scaleX: 0.05,
+                scaleY: 0.05,
+            },
         ],
-        stars: [],
+        stars: [
+            {
+                x: 224,
+                y: 100,
+                scaleX: 0.05,
+                scaleY: 0.05,
+            },
+            {
+                x: 590,
+                y: -30,
+                scaleX: 0.05,
+                scaleY: 0.05,
+            },
+            {
+                x: 910,
+                y: 0,
+                scaleX: 0.05,
+                scaleY: 0.05,
+            },
+
+        ],
+
         portals: [
             {
                 x: 100, //1235 for original, set bac after testing
