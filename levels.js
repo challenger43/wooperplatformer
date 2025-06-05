@@ -824,8 +824,8 @@ const levels = {
         ],
         portals: [
             {
-                x: 100, //1235 for original, set bac after testing
-                y: 400, //-120 
+                x: 1235, //1235 for original, set back after testing 100 for testing
+                y: -120, //-120 400 for testing
                 scaleX: 0.3,
                 scaleY: 0.3,
                 destination: "LevelFour",//swap out when i actually finish the next scene
