@@ -26,6 +26,7 @@ class MenuScene extends Phaser.Scene { //the menu
         this.add.image(550, 500, 'quagsireLoadScreen')
         this.add.text(250, 500, "WOOPER GAME", { fontSize: '92px', fill: '#FFF' })
         this.add.text(380, 620, "Press Space To Start", { fontSize: '32px', fill: '#FFF' })
+        this.add.text(150, 940, "Instructions are at the bottom of the page if you need help :)", { fontSize: '20px', fill: '#FFF' })
         // this.input.once('pointerup', function () { this.scene.start("LevelOne") }, this);
 
         this.anims.create({
@@ -83,9 +84,8 @@ class ToBeContinued extends Phaser.Scene {
         this.add.text(250, 300, "Z", { fontSize: '32px', fill: '#FFF' })
         this.add.text(300, 250, "Z", { fontSize: '26px', fill: '#FFF' })
         this.add.text(350, 200, "Z", { fontSize: '22px', fill: '#FFF' })
-        this.add.text(250, 600, "Wooper is sleeping...", { fontSize: '42px', fill: '#FFF' })
-        this.add.text(250, 720, "Come back later for future updates,", { fontSize: '22px', fill: '#FFF' })
-        this.cameras.main.fadeIn(1000, 0, 0, 0)
+        this.add.text(250, 630, "Wooper is sleeping...", { fontSize: '42px', fill: '#FFF' })
+        this.add.text(250, 720, "Come back later for future updates.", { fontSize: '22px', fill: '#FFF' })
         // this.input.once('pointerup', function() {this.scene.start("LevelOne")}, this); need to figure out how to get all the stars to reset again
         this.cameras.main.fadeIn(2000, 0, 0, 0)
     }
@@ -101,9 +101,10 @@ class QuagBallIntro extends Phaser.Scene {
         this.keys = this.input.keyboard.addKeys("SPACE,")
         this.add.image(150, 600, 'quagball')
         this.add.text(100, 300, "You have unlocked the quagsire ball!", { fontSize: '32px', fill: '#FFF' })
-        this.add.text(200, 400, "Press P/O to toggle into Quagsire mode,", { fontSize: '32px', fill: '#FFF' })
-        this.add.text(300, 500, "You need quagsire to swim!", { fontSize: '32px', fill: '#FFF' })
-        this.add.text(430, 600, "Press Space to Close", { fontSize: '26px', fill: '#FFF' })
+        this.add.text(200, 400, "Press P to toggle into Quagsire mode,", { fontSize: '32px', fill: '#FFF' })
+        this.add.text(300, 500, "Press O to toggle back into Wooper mode,", { fontSize: '32px', fill: '#FFF' })
+        this.add.text(350, 600, "You need quagsire to swim!", { fontSize: '32px', fill: '#FFF' })
+        this.add.text(430, 700, "Press Space to Close", { fontSize: '26px', fill: '#FFF' })
 
         // this.input.once('pointerup', function () { this.scene.start("LevelThree") }, this);
         this.cameras.main.fadeIn(1000, 0, 0, 0)
@@ -146,9 +147,9 @@ class Level extends Phaser.Scene {
     collectStar(player, star) {
         star.disableBody(true, true); //the star no longer has a 'physical body'
         //  Add and update the score
-        this.score += 10;
-        this.scoreText.setText('Score: ' + this.score);
-        console.log(this.score)
+        // this.score += 10;
+        // this.scoreText.setText('Score: ' + this.score);
+        // console.log(this.score)
     }
     collectFloatingStar(player, floatingStar) {
         floatingStar.disableBody(true, true);
@@ -305,14 +306,14 @@ class Level extends Phaser.Scene {
             this.physics.world.gravity.y = GRAVITY_DEFAULT;
             // this.player.setGravityY(GRAVITY_DEFAULT);
         }
-        if (this.keys.Q.isDown) {
-            this.stars.children.iterate((star) => this.collectStar(this.player, star));
-            this.floatingStars.children.iterate((star) => this.collectFloatingStar(this.player, star));
-        } // put this back in after presentation
+        // if (this.keys.Q.isDown) {
+        //     this.stars.children.iterate((star) => this.collectStar(this.player, star));
+        //     this.floatingStars.children.iterate((star) => this.collectFloatingStar(this.player, star));
+        // } // put this back in after presentation
         if (this.keys.A.isDown || this.cursors.left.isDown) {
             if (this.quagsire == true) {
                 this.player.setVelocityX(this.isInWater ? -130 : -80);
-                console.log("Trying to play quagsire_left");
+                // console.log("Trying to play quagsire_left");
                 this.player.anims.play('quagLeft', true);
             }
             else {
@@ -323,7 +324,7 @@ class Level extends Phaser.Scene {
         else if (this.keys.D.isDown || this.cursors.right.isDown) {
             if (this.quagsire == true) {
                 this.player.setVelocityX(this.isInWater ? 130 : 80);
-                console.log("Trying to play quagsire_right");
+                // console.log("Trying to play quagsire_right");
                 this.player.anims.play('quagRight', true)
             }
             else {
