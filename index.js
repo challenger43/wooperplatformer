@@ -101,10 +101,9 @@ class QuagBallIntro extends Phaser.Scene {
         this.keys = this.input.keyboard.addKeys("SPACE,")
         this.add.image(150, 600, 'quagball')
         this.add.text(100, 300, "You have unlocked the quagsire ball!", { fontSize: '32px', fill: '#FFF' })
-        this.add.text(200, 400, "Press P to toggle into Quagsire mode,", { fontSize: '32px', fill: '#FFF' })
-        this.add.text(300, 500, "Press O to toggle back into Wooper mode,", { fontSize: '32px', fill: '#FFF' })
-        this.add.text(350, 600, "You need quagsire to swim!", { fontSize: '32px', fill: '#FFF' })
-        this.add.text(430, 700, "Press Space to Close", { fontSize: '26px', fill: '#FFF' })
+        this.add.text(200, 400, "Press O to toggle into Quagsire/Wooper mode,", { fontSize: '32px', fill: '#FFF' })
+        this.add.text(350, 500, "You need quagsire to swim!", { fontSize: '32px', fill: '#FFF' })
+        this.add.text(430, 600, "Press Space to Close", { fontSize: '26px', fill: '#FFF' })
 
         // this.input.once('pointerup', function () { this.scene.start("LevelThree") }, this);
         this.cameras.main.fadeIn(1000, 0, 0, 0)
@@ -132,6 +131,7 @@ class Level extends Phaser.Scene {
     level;
     isInWater = false;
     quagsire = false;
+    wasODownLastFrame = false;
     waters;
     // floatingStarCount = 0;
     // starCount = 0;
@@ -143,7 +143,7 @@ class Level extends Phaser.Scene {
     init(data) {
         this.quagsire = data.quagsire ?? false;
     }
-    preload() {}
+    preload() { }
     collectStar(player, star) {
         star.disableBody(true, true); //the star no longer has a 'physical body'
         //  Add and update the score
@@ -306,10 +306,10 @@ class Level extends Phaser.Scene {
             this.physics.world.gravity.y = GRAVITY_DEFAULT;
             // this.player.setGravityY(GRAVITY_DEFAULT);
         }
-        // if (this.keys.Q.isDown) {
-        //     this.stars.children.iterate((star) => this.collectStar(this.player, star));
-        //     this.floatingStars.children.iterate((star) => this.collectFloatingStar(this.player, star));
-        // } // put this back in after presentation
+        if (this.keys.Q.isDown) {
+            this.stars.children.iterate((star) => this.collectStar(this.player, star));
+            this.floatingStars.children.iterate((star) => this.collectFloatingStar(this.player, star));
+        } // put this back in after presentation
         if (this.keys.A.isDown || this.cursors.left.isDown) {
             if (this.quagsire == true) {
                 this.player.setVelocityX(this.isInWater ? -130 : -80);
@@ -342,14 +342,15 @@ class Level extends Phaser.Scene {
             }
         }
         if (!["LevelOne", "LevelTwo"].includes(this.scene.key)) {
-            if (this.keys.P.isDown && this.quagsire == false) {
-                this.quagsire = true;
-                this.player.setTexture('quagsire');
+            if (this.keys.O.isDown && !this.wasODownLastFrame) {
+                this.quagsire = !this.quagsire;
+                if (this.quagsire) {
+                    this.player.setTexture('quagsire');
+                } else {
+                    this.player.setTexture('dude')
+                }
             }
-            if (this.keys.O.isDown && this.quagsire == true) {
-                this.quagsire = false;
-                this.player.setTexture('dude')
-            }
+            this.wasODownLastFrame = this.keys.O.isDown;
         }
         if (
             (this.keys.W.isDown || this.keys.SPACE.isDown || this.cursors.up.isDown) && (
