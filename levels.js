@@ -824,8 +824,13 @@ const levels = {
         ],
         portals: [
             {
+<<<<<<< HEAD
                 x: 100, //1235 for original, set back after testing 100 for testing
                 y: 400, //-120 400 for testing
+=======
+                x: 1235, //1235 for original, set back after testing 100 for testing
+                y: -120, //-120 400 for testing
+>>>>>>> ac8e7d68c0bd3aff5736d16f31bdd94e18158159
                 scaleX: 0.3,
                 scaleY: 0.3,
                 destination: "LevelFour",//swap out when i actually finish the next scene
@@ -1190,7 +1195,11 @@ const levels = {
                 y: 400, //-120 
                 scaleX: 0.3,
                 scaleY: 0.3,
+<<<<<<< HEAD
                 destination: "LevelFive",//swap out when i actually finish the next scene
+=======
+                destination: "ToBeContinued",//swap out when i actually finish the next scene
+>>>>>>> ac8e7d68c0bd3aff5736d16f31bdd94e18158159
             },
         ],
         waters: [
@@ -1202,6 +1211,7 @@ const levels = {
             }
         ],
     },
+<<<<<<< HEAD
     LevelFive: {
         platforms: [
 
@@ -1386,6 +1396,8 @@ const levels = {
             },
         ],
     },
+=======
+>>>>>>> ac8e7d68c0bd3aff5736d16f31bdd94e18158159
     ToBeContinued: {
         platforms: [],
         floatingStars: [],
