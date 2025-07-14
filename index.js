@@ -120,6 +120,7 @@ class Level extends Phaser.Scene {
     floatingStars;
     bombs;
     platforms;
+    movingPlatforms;
     portal;
     waterEmitter;
     cursors;
@@ -133,9 +134,6 @@ class Level extends Phaser.Scene {
     quagsire = false;
     wasODownLastFrame = false;
     waters;
-    // floatingStarCount = 0;
-    // starCount = 0;
-    // totalStarCount = floatingStarCount + starCount;
     constructor(key, level) {
         super({ key: key });
         this.level = level;
@@ -209,7 +207,19 @@ class Level extends Phaser.Scene {
                 .setTint(platformData.tint ?? 0xffffff)
                 .refreshBody();
         }
-        //  Our emitter
+        this.movingPlatforms = this.physics.add.group();
+        for (let movingPlatformData of this.level.movingPlatforms){
+            let movingPlatform = this.movingPlatforms.create(movingPlatformData.x, movingPlatformData.y, 'ground')
+                .setTint(movingPlatformData.tint ?? 0xffffff)
+                .setScale(movingPlatformData.scaleX ?? 1, movingPlatformData.scaleY ?? 1)
+                movingPlatform.movementType = movingPlatformData.movementType;
+                movingPlatform.moveX = movingPlatformData.moveX;
+                movingPlatform.moveY = movingPlatformData.moveY;
+                movingPlatform.speed = movingPlatformData.speed;
+                movingPlatform.setImmovable(true)
+                movingPlatform.body.allowGravity = false;
+        }
+        //  Our emitter 
         this.waterEmitter = this.add.particles('bubble', {
             x: 5,
             y: 40,
@@ -273,7 +283,8 @@ class Level extends Phaser.Scene {
         this.physics.add.collider(this.stars, this.platforms);//parameters are stars and platforms, so adds a collide rule to the relationship between stars and platforms 
         this.physics.add.collider(this.bombs, this.platforms);
         this.physics.add.collider(this.portals, this.platforms);
-        this.physics.add.collider(this.floatingStars, this.platforms)
+        this.physics.add.collider(this.floatingStars, this.platforms);
+        this.physics.add.collider(this.player, this.movingPlatforms);
         // function hitBomb(player, bomb) {
         //     this.physics.pause(); //stops the physics mechanism
 
@@ -396,6 +407,32 @@ class Level extends Phaser.Scene {
                 this.player.setVelocityX(priorX + Math.sin(this.time.now * Math.PI * 2 / 1000 * freq) * magnitude)
             }
         }
+        this.movingPlatforms.children.iterate(movingPlatform => {
+            if (movingPlatform.movementType === 'pingpong'){
+                if (movingPlatform.originX === undefined){
+                    movingPlatform.originX = movingPlatform.x
+                    movingPlatform.originY = movingPlatform.y
+                }
+                if (movingPlatform.directionX === undefined){
+                    movingPlatform.directionX = 1
+                }
+                let platformOriginX = movingPlatform.originX;
+                let platformMovementX = movingPlatform.moveX;
+                let platformMovementSpeed = movingPlatform.speed;
+                if (movingPlatform.x >= (platformOriginX + platformMovementX)){
+                    movingPlatform.directionX = -1; // move left
+                }
+                else if (movingPlatform.x <= platformOriginX){
+                    movingPlatform.directionX = 1; // move right
+                }
+                movingPlatform.setVelocityX(platformMovementSpeed * movingPlatform.directionX);
+            }
+            else if (this.platforms.movementType==='circular'){
+
+            }
+            else if (this.platforms.movementType==='updown'){}
+
+        })
 
         this.isInWater = false;
     }

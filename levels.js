@@ -189,7 +189,17 @@ const levels = {
             //     tint: 0xff0000,
             //     destination: "LevelThree",
             // },
-        ]
+        ],
+        movingPlatforms: [
+            // {
+            //     x: 200,
+            //     y: 420,
+            //     movementType: 'pingpong',
+            //     moveX: 500,
+            //     speed: 50,
+            //     scaleX: 0.1,
+            // },  ---just a basic tester from original
+        ],
     },
     LevelTwo: {
         platforms: [
@@ -420,7 +430,8 @@ const levels = {
                 scaleY: 0.3,
                 destination: "QuagBallIntro",
             },
-        ]
+        ],
+        movingPlatforms: [],
     },
     LevelThree: {
         platforms: [
@@ -830,7 +841,8 @@ const levels = {
                 scaleY: 0.3,
                 destination: "LevelFour",//swap out when i actually finish the next scene
             },
-        ]
+        ],
+        movingPlatforms: [],
     },
     LevelFour: {
         platforms: [
@@ -1201,6 +1213,7 @@ const levels = {
                 scaleY: 7,
             }
         ],
+        movingPlatforms: [],
     },
     LevelFive: {
         platforms: [
@@ -1385,6 +1398,7 @@ const levels = {
                 scaleY: 9.3,       
             },
         ],
+        movingPlatforms: [],
     },
     ToBeContinued: {
         platforms: [],
@@ -1392,6 +1406,7 @@ const levels = {
         stars: [],
         portals: [],
         waters: [],
+        movingPlatforms: [],
 
     },
     QuagBallIntro: {
@@ -1400,6 +1415,7 @@ const levels = {
         stars: [],
         portals: [],
         waters: [],
+        movingPlatforms: [],
     }
 
 }
