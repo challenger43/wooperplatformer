@@ -194,11 +194,19 @@ const levels = {
             // {
             //     x: 200,
             //     y: 420,
-            //     movementType: 'pingpong',
-            //     moveX: 500,
-            //     speed: 50,
+            //     centerX: 200,
+            //     centerY: 420,
+            //     movementType: 'circular',
+            //     radius: 120,
+            //     // moveY: 300,
+            //     speed: 0.1,
             //     scaleX: 0.1,
-            // },  ---just a basic tester from original
+            //     tint: 0x3c6529,
+            //     angle: 0,
+            //     startingAngle: 0,
+                 
+            // },  
+            // ---just a basic tester from original
         ],
     },
     LevelTwo: {

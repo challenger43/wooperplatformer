@@ -216,8 +216,14 @@ class Level extends Phaser.Scene {
                 movingPlatform.moveX = movingPlatformData.moveX;
                 movingPlatform.moveY = movingPlatformData.moveY;
                 movingPlatform.speed = movingPlatformData.speed;
+                if (movingPlatform.movementType === 'circular'){
+                    movingPlatform.radius = movingPlatformData.radius
+                    movingPlatform.angle = movingPlatformData.angle
+                    movingPlatform.startingAngle = movingPlatform.startingAngle
+                }
                 movingPlatform.setImmovable(true)
                 movingPlatform.body.allowGravity = false;
+                console.log('Created  movingPlatform at:', movingPlatform.x, movingPlatform.y);
         }
         //  Our emitter 
         this.waterEmitter = this.add.particles('bubble', {
@@ -427,10 +433,59 @@ class Level extends Phaser.Scene {
                 }
                 movingPlatform.setVelocityX(platformMovementSpeed * movingPlatform.directionX);
             }
-            else if (this.platforms.movementType==='circular'){
-
+            else if (movingPlatform.movementType === 'circular'){
+                let spawnX = movingPlatform.x;
+                let spawnY = movingPlatform.y;
+                let radius = movingPlatform.radius;
+                let startingAngle = movingPlatform.angle ?? 0;
+                if (typeof movingPlatform.orbitAngle !== 'number') {
+                    movingPlatform.orbitAngle = movingPlatform.startingAngle ?? 0;
+                }
+                let originX = movingPlatform.originX ?? movingPlatform.x;
+                let originY = movingPlatform.originY ?? movingPlatform.y;
+                let centerX = spawnX - movingPlatform.radius * Math.cos(movingPlatform.orbitAngle);
+                let centerY = spawnY - movingPlatform.radius * Math.sin(movingPlatform.orbitAngle);
+               
+                movingPlatform.centerX = centerX;
+                movingPlatform.centerY = centerY;
+                console.log('Creating circular tween for platform:', {
+                    x: movingPlatform.x,
+                    y: movingPlatform.y,
+                    radius: movingPlatform.radius,
+                    centerX: movingPlatform.centerX,
+                    centerY: movingPlatform.centerY,
+                    orbitAngle: movingPlatform.orbitAngle
+                  });
+                this.tweens.add({
+                    targets: movingPlatform,
+                    orbitAngle: movingPlatform.orbitAngle + 2 * Math.PI,
+                    duration: 1 / movingPlatform.speed * 1000, // calculate duration from speed
+                    repeat: -1,
+                    onUpdate: () => {
+                        movingPlatform.x = centerX + movingPlatform.radius * Math.cos(movingPlatform.orbitAngle);
+                        movingPlatform.y = centerY + movingPlatform.radius * Math.sin(movingPlatform.orbitAngle);
+                    }
+                });
             }
-            else if (this.platforms.movementType==='updown'){}
+            else if (movingPlatform.movementType==='updown'){
+                if (movingPlatform.originY === undefined){
+                    movingPlatform.originX = movingPlatform.x
+                    movingPlatform.originY = movingPlatform.y
+                }
+                if (movingPlatform.directionY === undefined){
+                    movingPlatform.directionY = 1
+                }
+                let platformOriginY = movingPlatform.originY;
+                let platformMovementY = movingPlatform.moveY;
+                let platformMovementSpeed = movingPlatform.speed;
+                if (movingPlatform.y >= (platformOriginY + platformMovementY)){
+                    movingPlatform.directionY = -1; // move left
+                }
+                else if (movingPlatform.y <= platformOriginY){
+                    movingPlatform.directionY = 1; // move right
+                }
+                movingPlatform.setVelocityY(platformMovementSpeed * movingPlatform.directionY);
+            }
 
         })
 
