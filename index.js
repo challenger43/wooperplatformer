@@ -143,13 +143,9 @@ class Level extends Phaser.Scene {
     init(data) {
         this.quagsire = data.quagsire ?? false;
     }
-    preload() { }
+    preload() {}
     collectStar(player, star) {
         star.disableBody(true, true); //the star no longer has a 'physical body'
-        //  Add and update the score
-        // this.score += 10;
-        // this.scoreText.setText('Score: ' + this.score);
-        // console.log(this.score)
     }
     collectFloatingStar(player, floatingStar) {
         floatingStar.disableBody(true, true);
@@ -164,7 +160,7 @@ class Level extends Phaser.Scene {
 
     enterPortal(_player, portal) {
         console.log("portal entered ")
-        this.scene.start(portal.destination, { quagsire: this.quagsire });
+        this.scene.start(portal.destination, { quagsire: this.quagsire }, {boss: portal.boss ?? null});
     }
     waterFrame = 0;
     enterWater(_player, water) {
@@ -210,22 +206,22 @@ class Level extends Phaser.Scene {
                 .refreshBody();
         }
         this.movingPlatforms = this.physics.add.group();
-        for (let movingPlatformData of this.level.movingPlatforms){
+        for (let movingPlatformData of this.level.movingPlatforms) {
             let movingPlatform = this.movingPlatforms.create(movingPlatformData.x, movingPlatformData.y, 'ground')
                 .setTint(movingPlatformData.tint ?? 0xffffff)
                 .setScale(movingPlatformData.scaleX ?? 1, movingPlatformData.scaleY ?? 1)
-                movingPlatform.movementType = movingPlatformData.movementType;
-                movingPlatform.moveX = movingPlatformData.moveX;
-                movingPlatform.moveY = movingPlatformData.moveY;
-                movingPlatform.speed = movingPlatformData.speed;
-                if (movingPlatform.movementType === 'circular'){
-                    movingPlatform.radius = movingPlatformData.radius
-                    movingPlatform.angle = movingPlatformData.angle
-                    movingPlatform.startingAngle = movingPlatform.startingAngle
-                }
-                movingPlatform.setImmovable(true)
-                movingPlatform.body.allowGravity = false;
-                console.log('Created  movingPlatform at:', movingPlatform.x, movingPlatform.y);
+            movingPlatform.movementType = movingPlatformData.movementType;
+            movingPlatform.moveX = movingPlatformData.moveX;
+            movingPlatform.moveY = movingPlatformData.moveY;
+            movingPlatform.speed = movingPlatformData.speed;
+            if (movingPlatform.movementType === 'circular') {
+                movingPlatform.radius = movingPlatformData.radius
+                movingPlatform.angle = movingPlatformData.angle
+                movingPlatform.startingAngle = movingPlatform.startingAngle
+            }
+            movingPlatform.setImmovable(true)
+            movingPlatform.body.allowGravity = false;
+            console.log('Created  movingPlatform at:', movingPlatform.x, movingPlatform.y);
         }
         //  Our emitter 
         this.waterEmitter = this.add.particles('bubble', {
@@ -310,11 +306,11 @@ class Level extends Phaser.Scene {
         // this.physics.add.collider(player, bombs, hitBomb, null, this); //don't need this code cause no bomb
         this.cameras.main.fadeIn(1000, 0, 0, 0)
     }
-    update(time,delta) {
-        let deltaSeconds = delta /1000
+    update(time, delta) {
+        let deltaSeconds = delta / 1000
         this.frameCount++;
         this.timeAccumulator += delta;
-        
+
         if (this.timeAccumulator >= 1000) {
             console.log(`FPS: ${this.frameCount}`);
             this.frameCount = 0;
@@ -426,26 +422,26 @@ class Level extends Phaser.Scene {
             }
         }
         this.movingPlatforms.children.iterate(movingPlatform => {
-            if (movingPlatform.movementType === 'pingpong'){
-                if (movingPlatform.originX === undefined){
+            if (movingPlatform.movementType === 'pingpong') {
+                if (movingPlatform.originX === undefined) {
                     movingPlatform.originX = movingPlatform.x
                     movingPlatform.originY = movingPlatform.y
                 }
-                if (movingPlatform.directionX === undefined){
+                if (movingPlatform.directionX === undefined) {
                     movingPlatform.directionX = 1
                 }
                 let platformOriginX = movingPlatform.originX;
                 let platformMovementX = movingPlatform.moveX;
                 let platformMovementSpeed = movingPlatform.speed;
-                if (movingPlatform.x >= (platformOriginX + platformMovementX)){
+                if (movingPlatform.x >= (platformOriginX + platformMovementX)) {
                     movingPlatform.directionX = -1; // move left
                 }
-                else if (movingPlatform.x <= platformOriginX){
+                else if (movingPlatform.x <= platformOriginX) {
                     movingPlatform.directionX = 1; // move right
                 }
                 movingPlatform.setVelocityX(platformMovementSpeed * movingPlatform.directionX);
             }
-            else if (movingPlatform.movementType === 'circular'){
+            else if (movingPlatform.movementType === 'circular') {
                 let spawnX = movingPlatform.x;
                 let spawnY = movingPlatform.y;
                 let radius = movingPlatform.radius;
@@ -457,7 +453,7 @@ class Level extends Phaser.Scene {
                 let originY = movingPlatform.originY ?? movingPlatform.y;
                 let centerX = spawnX - movingPlatform.radius * Math.cos(movingPlatform.orbitAngle);
                 let centerY = spawnY - movingPlatform.radius * Math.sin(movingPlatform.orbitAngle);
-               
+
                 movingPlatform.centerX = centerX;
                 movingPlatform.centerY = centerY;
                 // console.log('Creating circular tween for platform:', {
@@ -479,21 +475,21 @@ class Level extends Phaser.Scene {
                     }
                 });
             }
-            else if (movingPlatform.movementType==='updown'){
-                if (movingPlatform.originY === undefined){
+            else if (movingPlatform.movementType === 'updown') {
+                if (movingPlatform.originY === undefined) {
                     movingPlatform.originX = movingPlatform.x
                     movingPlatform.originY = movingPlatform.y
                 }
-                if (movingPlatform.directionY === undefined){
+                if (movingPlatform.directionY === undefined) {
                     movingPlatform.directionY = 1
                 }
                 let platformOriginY = movingPlatform.originY;
                 let platformMovementY = movingPlatform.moveY;
                 let platformMovementSpeed = movingPlatform.speed;
-                if (movingPlatform.y >= (platformOriginY + platformMovementY)){
+                if (movingPlatform.y >= (platformOriginY + platformMovementY)) {
                     movingPlatform.directionY = -1; // move left
                 }
-                else if (movingPlatform.y <= platformOriginY){
+                else if (movingPlatform.y <= platformOriginY) {
                     movingPlatform.directionY = 1; // move right
                 }
                 movingPlatform.setVelocityY(platformMovementSpeed * movingPlatform.directionY);
@@ -517,7 +513,13 @@ const config = {
             debug: false
         }
     },
-    scene: [MenuScene, ToBeContinued, QuagBallIntro, new Level('LevelOne', levels.LevelOne), new Level('LevelTwo', levels.LevelTwo), new Level('LevelThree', levels.LevelThree), new Level('LevelFour', levels.LevelFour), new Level('LevelFive', levels.LevelFive)]
+    scene: [
+        MenuScene, 
+        ToBeContinued, 
+        QuagBallIntro, 
+        new Level('LevelOne', levels.LevelOne), new Level('LevelTwo', levels.LevelTwo), new Level('LevelThree', levels.LevelThree), new Level('LevelFour', levels.LevelFour), new Level('LevelFive', levels.LevelFive),
+        new BossBattle('GrumpigBoss', levels.GrumpigBoss),  
+    ]
 };
 
 

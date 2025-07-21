@@ -1,3 +1,31 @@
+const grumpigLevelData = {
+    platforms: [
+      { x: 200, y: 500, scaleX: 3, scaleY: 1, tint: 0x8B4513 }, // big ground platform
+      { x: 600, y: 400, scaleX: 1.5, scaleY: 1 },
+    ],
+    movingPlatforms: [
+      {
+        x: 400,
+        y: 350,
+        scaleX: 1,
+        scaleY: 1,
+        movementType: 'pingpong',
+        moveX: 200,
+        moveY: 0,
+        speed: 100,
+        tint: 0x228B22,
+      }
+    ],
+    waters: [
+      { x: 300, y: 520, scaleX: 2, scaleY: 0.5, tint: 0x0000FF }
+    ],
+    portals: [
+      { x: 750, y: 450, destination: 'NextScene', tint: 0xffffff }
+    ],
+    floatingStars:[],
+    stars:[],
+
+  };
 
 const levels = {
     LevelOne: {
@@ -176,7 +204,8 @@ const levels = {
                 y: 462,
                 scaleX: 0.3,
                 scaleY: 0.3,
-                destination: "LevelTwo",
+                destination: "GrumpigBoss",
+                levelData: grumpigLevelData,
             },
             // { omnious testing portal 
             //     x: 550,
@@ -1424,3 +1453,5 @@ const levels = {
     }
 
 }
+
+  
