@@ -239,7 +239,7 @@ class Level extends Phaser.Scene {
             scrollFactorY: 0,
             emitting: false,
             on: false,
-            alpha: {
+            alpha: { //transparency/opacity 
                 start: 0.4,
                 end: 0,
                 duration: 1000,
@@ -384,13 +384,13 @@ class Level extends Phaser.Scene {
             this.spawnPortal();
             this.portalSpawned = true;
         }
-        this.scoreText.setText("x: " + Math.floor(this.player.x) + " y: " + Math.floor(this.player.y))
-        // if ((activeStars + activeFloatingStars) > 0) {
-        //     this.scoreText.setText("WoopBalls Remaining: " + (activeStars + activeFloatingStars))
-        // }
-        // else {
-        //     this.scoreText.setText("Find the portal!")
-        // }
+        // this.scoreText.setText("x: " + Math.floor(this.player.x) + " y: " + Math.floor(this.player.y))
+        if ((activeStars + activeFloatingStars) > 0) {
+            this.scoreText.setText("WoopBalls Remaining: " + (activeStars + activeFloatingStars))
+        }
+        else {
+            this.scoreText.setText("Find the portal!")
+        }
         this.scoreText.x = this.player.x + 100;
         this.scoreText.y = this.player.y - 200;
 
@@ -460,8 +460,8 @@ class Level extends Phaser.Scene {
                     targets: movingPlatform,
                     orbitAngle: movingPlatform.orbitAngle + 2 * Math.PI,
                     duration: 1 / movingPlatform.speed * 1000, // calculate duration from speed
-                    repeat: -1,
-                    onUpdate: () => {
+                    repeat: -1, //makes it loop
+                    onUpdate: () => { //this is what actually moves it 
                         movingPlatform.x = centerX + movingPlatform.radius * Math.cos(movingPlatform.orbitAngle);
                         movingPlatform.y = centerY + movingPlatform.radius * Math.sin(movingPlatform.orbitAngle);
                     }

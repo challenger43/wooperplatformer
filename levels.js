@@ -167,12 +167,9 @@ const levels = {
                 y: 180,
                 scaleX: 0.05,
                 scaleY: 0.05,
-
-
             }
 
         ],
-
         portals: [
             {
                 x: 50,
@@ -191,21 +188,21 @@ const levels = {
             // },
         ],
         movingPlatforms: [
-            // {
-            //     x: 200,
-            //     y: 420,
-            //     centerX: 200,
-            //     centerY: 420,
-            //     movementType: 'circular',
-            //     radius: 120,
-            //     // moveY: 300,
-            //     speed: 0.1,
-            //     scaleX: 0.1,
-            //     tint: 0x3c6529,
-            //     angle: 0,
-            //     startingAngle: 0,
+            {
+                x: 200,
+                y: 420,
+                centerX: 200,
+                centerY: 420,
+                movementType: 'circular',
+                radius: 120,
+                // moveY: 300,
+                speed: 0.1,
+                scaleX: 0.1,
+                tint: 0xff0000,
+                angle: 0,
+                startingAngle: 0,
                  
-            // },  
+            },  
             // ---just a basic tester from original
         ],
     },
