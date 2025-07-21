@@ -134,6 +134,8 @@ class Level extends Phaser.Scene {
     quagsire = false;
     wasODownLastFrame = false;
     waters;
+    frameCount = 0
+    timeAccumulator = 0
     constructor(key, level) {
         super({ key: key });
         this.level = level;
@@ -308,7 +310,17 @@ class Level extends Phaser.Scene {
         // this.physics.add.collider(player, bombs, hitBomb, null, this); //don't need this code cause no bomb
         this.cameras.main.fadeIn(1000, 0, 0, 0)
     }
-    update() {
+    update(time,delta) {
+        let deltaSeconds = delta /1000
+        this.frameCount++;
+        this.timeAccumulator += delta;
+        
+        if (this.timeAccumulator >= 1000) {
+            console.log(`FPS: ${this.frameCount}`);
+            this.frameCount = 0;
+            this.timeAccumulator = 0;
+        }
+
         if (this.gameOver) {
             return;
         }
@@ -448,14 +460,14 @@ class Level extends Phaser.Scene {
                
                 movingPlatform.centerX = centerX;
                 movingPlatform.centerY = centerY;
-                console.log('Creating circular tween for platform:', {
-                    x: movingPlatform.x,
-                    y: movingPlatform.y,
-                    radius: movingPlatform.radius,
-                    centerX: movingPlatform.centerX,
-                    centerY: movingPlatform.centerY,
-                    orbitAngle: movingPlatform.orbitAngle
-                  });
+                // console.log('Creating circular tween for platform:', {
+                //     x: movingPlatform.x,
+                //     y: movingPlatform.y,
+                //     radius: movingPlatform.radius,
+                //     centerX: movingPlatform.centerX,
+                //     centerY: movingPlatform.centerY,
+                //     orbitAngle: movingPlatform.orbitAngle
+                //   }); //use for testing purposes
                 this.tweens.add({
                     targets: movingPlatform,
                     orbitAngle: movingPlatform.orbitAngle + 2 * Math.PI,
