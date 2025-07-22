@@ -270,7 +270,12 @@ class Level extends Phaser.Scene {
                 .setScale(0.3, 0.3)
                 .setTint(portalData.tint ?? 0xffffff)
                 .refreshBody();
-            portal.destination = portalData.destination
+            if (portalData.destination){
+                portal.destination = portalData.destination
+            } 
+            if (portalData.boss){  
+                portal.boss = portalData.boss
+            }
             portal.disableBody(true, true);
         }
 
@@ -518,7 +523,7 @@ const config = {
         ToBeContinued, 
         QuagBallIntro, 
         new Level('LevelOne', levels.LevelOne), new Level('LevelTwo', levels.LevelTwo), new Level('LevelThree', levels.LevelThree), new Level('LevelFour', levels.LevelFour), new Level('LevelFive', levels.LevelFive),
-        new BossBattle('GrumpigBoss', levels.GrumpigBoss),  
+        new GrumpigBoss(),
     ]
 };
 

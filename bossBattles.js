@@ -8,13 +8,18 @@ class BossBattle extends Phaser.Scene {
     isInWater = false;
     quagsire = false;
     waters;
+    levelDataToPass;
     constructor(key) {
         super({ key: key })
-        this.boss = null
+        this.boss = null    
+        this.bossBattles = bossBattles
+        this.levels = levels
     }
     init(data) {
+        console.log('init data:', data);
         this.quagsire = data.quagsire ?? false;
-        this.level = data.levelData;
+        this.bossBattle = data.bossBattleData;
+        console.log('this.bossBattle set to:', this.bossBattle);
     }
     preload() { //need to create grumpig sprite sheet later
         this.load.image('sky', 'assets/sky.png'); //the assets/ takes an object from a folder--in this case the folder is assets, the id is sky.png
@@ -26,13 +31,28 @@ class BossBattle extends Phaser.Scene {
     }
     enterPortal(_player, portal) {
         console.log("portal entered ")
-
-        if (portal.boss && levels[portal.boss]) {
-            levelDataToPass = levels[portal.boss];
-        } else if (portal.destination && levels[portal.destination]) {
-            levelDataToPass = levels[portal.destination];
+        let levelDataToPass = null
+        let sceneToStart = null
+        
+    if (portal.boss) {
+        console.log('portal.boss:', portal.boss);
+    }
+    if (portal.destination) {
+        console.log('portal.destination:', portal.destination);
+    }
+        if (portal.boss && this.bossBattles[portal.boss]) {
+            levelDataToPass = this.bossBattles[portal.boss];
+            sceneToStart = portal.boss
+            console.log('boss: ', portal.boss)
+        } else if (portal.destination && this.bossBattles[portal.destination]) {
+            levelDataToPass = this.bossBattles[portal.destination];
+            sceneToStart = portal.destination
+            console.log('destination: ', portal.destination)
         }
-        this.scene.start(portal.destination, { quagsire: this.quagsire }), { levelData: levels[portal.boss] };
+        if (!levelDataToPass) {
+            console.log('No bossBattle data found for portal:', portal);
+        }
+        this.scene.start(sceneToStart, { quagsire: this.quagsire, bossBattleData: levelDataToPass });
     }
     waterFrame = 0;
     enterWater(_player, water) {
@@ -87,14 +107,14 @@ class BossBattle extends Phaser.Scene {
         this.keys = this.input.keyboard.addKeys("W,A,S,D,P,O,SPACE,")
         this.platforms = this.physics.add.staticGroup();
         // add platforms
-        for (let platformData of this.level.platforms) {
+        for (let platformData of this.bossBattle.platforms) {
             this.platforms.create(platformData.x, platformData.y, 'ground')
                 .setScale(platformData.scaleX ?? 1, platformData.scaleY ?? 1)
                 .setTint(platformData.tint ?? 0xffffff)
                 .refreshBody();
         }
         this.movingPlatforms = this.physics.add.group();
-        for (let movingPlatformData of this.level.movingPlatforms) {
+        for (let movingPlatformData of this.bossBattle.movingPlatforms) {
             let movingPlatform = this.movingPlatforms.create(movingPlatformData.x, movingPlatformData.y, 'ground')
                 .setTint(movingPlatformData.tint ?? 0xffffff)
                 .setScale(movingPlatformData.scaleX ?? 1, movingPlatformData.scaleY ?? 1)
@@ -138,7 +158,7 @@ class BossBattle extends Phaser.Scene {
             },
         });
         this.waters = this.physics.add.staticGroup();
-        for (let waterData of this.level.waters) {
+        for (let waterData of this.bossBattle.waters) {
             this.waters.create(waterData.x, waterData.y, 'ground')
                 .setScale(waterData.scaleX ?? 1, waterData.scaleY ?? 1)
                 .setTint(waterData.tint ?? 0x0000FF)
@@ -147,7 +167,7 @@ class BossBattle extends Phaser.Scene {
         }
         //make portals
         this.portals = this.physics.add.staticGroup();
-        for (let portalData of this.level.portals) {
+        for (let portalData of this.bossBattle.portals) {
             let portal = this.portals.create(portalData.x, portalData.y, 'portal')
                 .setScale(0.3, 0.3)
                 .setTint(portalData.tint ?? 0xffffff)

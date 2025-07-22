@@ -1,31 +1,33 @@
 const grumpigLevelData = {
     platforms: [
-      { x: 200, y: 500, scaleX: 3, scaleY: 1, tint: 0x8B4513 }, // big ground platform
-      { x: 600, y: 400, scaleX: 1.5, scaleY: 1 },
+        { x: 200, y: 500, scaleX: 3, scaleY: 1, tint: 0x8B4513 }, // big ground platform
+        { x: 600, y: 400, scaleX: 1.5, scaleY: 1 },
     ],
     movingPlatforms: [
-      {
-        x: 400,
-        y: 350,
-        scaleX: 1,
-        scaleY: 1,
-        movementType: 'pingpong',
-        moveX: 200,
-        moveY: 0,
-        speed: 100,
-        tint: 0x228B22,
-      }
+        {
+            x: 400,
+            y: 350,
+            scaleX: 1,
+            scaleY: 1,
+            movementType: 'pingpong',
+            moveX: 200,
+            moveY: 0,
+            speed: 100,
+            tint: 0x228B22,
+        }
     ],
     waters: [
-      { x: 300, y: 520, scaleX: 2, scaleY: 0.5, tint: 0x0000FF }
+        { x: 300, y: 520, scaleX: 2, scaleY: 0.5, tint: 0x0000FF }
     ],
     portals: [
-      { x: 750, y: 450, destination: 'NextScene', tint: 0xffffff }
+        { x: 750, y: 450, destination: 'LevelTwo', tint: 0xffffff }
     ],
-    floatingStars:[],
-    stars:[],
-
-  };
+    floatingStars: [],
+    stars: [],
+}
+const bossBattles = {
+    GrumpigBoss: grumpigLevelData
+};
 
 const levels = {
     LevelOne: {
@@ -204,7 +206,7 @@ const levels = {
                 y: 462,
                 scaleX: 0.3,
                 scaleY: 0.3,
-                destination: "GrumpigBoss",
+                boss: "GrumpigBoss",
                 levelData: grumpigLevelData,
             },
             // { omnious testing portal 
@@ -230,7 +232,7 @@ const levels = {
             //     tint: 0xff0000,
             //     angle: 0,
             //     startingAngle: 0,
-                 
+
             // },  
             // ---just a basic tester from original
         ],
@@ -1306,63 +1308,63 @@ const levels = {
                 y: 500,
                 scaleX: 0.1,
                 scaleY: 0.1,
-                tint: 0x3c6529,   
+                tint: 0x3c6529,
             },
             {
                 x: 212,
                 y: 484,
                 scaleX: 0.1,
                 scaleY: 17.79,
-                tint: 0x3c6529,  
+                tint: 0x3c6529,
             },
             {
                 x: 70,
                 y: 595,
                 scaleX: 0.35,
                 scaleY: 1,
-                tint: 0x3c6529,    
+                tint: 0x3c6529,
             },
             {
                 x: 118,
                 y: 753,
                 scaleX: 0.375,
                 scaleY: 1,
-                tint: 0x3c6529, 
+                tint: 0x3c6529,
             },
             {
                 x: 66,
                 y: 651,
                 scaleX: 0.1,
                 scaleY: 3,
-                tint: 0x3c6529,  
+                tint: 0x3c6529,
             },
             {
                 x: 175,
                 y: 683,
                 scaleX: 0.25,
                 scaleY: 1,
-                tint: 0x3c6529,  
+                tint: 0x3c6529,
             },
             {
                 x: 176,
                 y: 201,
                 scaleX: 0.1,
                 scaleY: 0.1,
-                tint: 0x3c6529,  
+                tint: 0x3c6529,
             },
             {
                 x: 16,
                 y: 335,
                 scaleX: 0.1,
                 scaleY: 0.1,
-                tint: 0x3c6529,  
+                tint: 0x3c6529,
             },
             {
                 x: 750,
                 y: 593,
                 scaleX: 2.79,
                 scaleY: 1.25,
-                tint: 0x3c6529, 
+                tint: 0x3c6529,
             },
             {
                 x: 280,
@@ -1375,28 +1377,28 @@ const levels = {
                 x: 340,
                 y: 712,
                 scaleX: 0.05,
-                scaleY: 3.3,  
+                scaleY: 3.3,
                 tint: 0x3c6529,
             },
             {
                 x: 580,
                 y: 665,
                 scaleX: 1.25,
-                scaleY: 1,  
+                scaleY: 1,
                 tint: 0x3c6529,
             },
             {
                 x: 580,
                 y: 750,
                 scaleX: 1.25,
-                scaleY: 1,  
+                scaleY: 1,
                 tint: 0x3c6529,
             },
             {
                 x: 835,
                 y: 750,
                 scaleX: 0.05,
-                scaleY: 3,  
+                scaleY: 3,
                 tint: 0x3c6529,
             },
 
@@ -1406,19 +1408,19 @@ const levels = {
                 x: 176,
                 y: 720,
                 scaleX: 0.05,
-                scaleY: 0.05,  
+                scaleY: 0.05,
             },
             {
                 x: 149,
                 y: 635,
                 scaleX: 0.05,
-                scaleY: 0.05,  
+                scaleY: 0.05,
             },
             {
                 x: 16,
                 y: 627,
                 scaleX: 0.05,
-                scaleY: 0.05,  
+                scaleY: 0.05,
             },
         ],
 
@@ -1429,7 +1431,7 @@ const levels = {
                 x: 643,
                 y: 653,
                 scaleX: 3.3,
-                scaleY: 9.3,       
+                scaleY: 9.3,
             },
         ],
         movingPlatforms: [],
@@ -1454,4 +1456,3 @@ const levels = {
 
 }
 
-  
