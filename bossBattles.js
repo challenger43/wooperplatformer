@@ -1,4 +1,5 @@
-class BossBattle extends Phaser.Scene {
+import { levels, bossBattles, grumpigLevelData } from './levels.js';
+export default class BossBattle extends Phaser.Scene {
     player;
     platforms;
     movingPlatforms;
@@ -9,8 +10,9 @@ class BossBattle extends Phaser.Scene {
     quagsire = false;
     waters;
     levelDataToPass;
-    constructor(key) {
-        super({ key: key })
+    constructor(sceneKey) {
+        super({ key: sceneKey })
+        console.log('BossBattle initialized with key:', sceneKey);
         this.boss = null    
         this.bossBattles = bossBattles
         this.levels = levels
@@ -40,14 +42,23 @@ class BossBattle extends Phaser.Scene {
     if (portal.destination) {
         console.log('portal.destination:', portal.destination);
     }
-        if (portal.boss && this.bossBattles[portal.boss]) {
+        // if (portal.boss && this.bossBattles[portal.boss]) {
+        //     levelDataToPass = this.bossBattles[portal.boss];
+        //     sceneToStart = portal.boss
+        //     console.log('boss: ', portal.boss)
+        // } else if (portal.destination && this.bossBattles[portal.destination]) {
+        //     levelDataToPass = this.bossBattles[portal.destination];
+        //     sceneToStart = portal.destination
+        //     console.log('destination: ', portal.destination)
+        // }
+        if (portal.boss && this.scene.get(portal.boss)) {
+            sceneToStart = portal.boss;
             levelDataToPass = this.bossBattles[portal.boss];
-            sceneToStart = portal.boss
-            console.log('boss: ', portal.boss)
-        } else if (portal.destination && this.bossBattles[portal.destination]) {
+            console.log('boss: ', portal.boss);
+        } else if (portal.destination && this.scene.get(portal.destination)) {
+            sceneToStart = portal.destination;
             levelDataToPass = this.bossBattles[portal.destination];
-            sceneToStart = portal.destination
-            console.log('destination: ', portal.destination)
+            console.log('destination: ', portal.destination);
         }
         if (!levelDataToPass) {
             console.log('No bossBattle data found for portal:', portal);
@@ -167,12 +178,15 @@ class BossBattle extends Phaser.Scene {
         }
         //make portals
         this.portals = this.physics.add.staticGroup();
+        console.log('portals array:', this.bossBattle.portals);
         for (let portalData of this.bossBattle.portals) {
             let portal = this.portals.create(portalData.x, portalData.y, 'portal')
                 .setScale(0.3, 0.3)
                 .setTint(portalData.tint ?? 0xffffff)
                 .refreshBody();
             portal.destination = portalData.destination
+            portal.boss = portalData.boss
+            console.log(portal.destination ?? portal.boss ?? null)
             portal.disableBody(true, true);
         }
         this.cursors = this.input.keyboard.createCursorKeys();
@@ -323,8 +337,14 @@ class BossBattle extends Phaser.Scene {
 
     }
 }
-class GrumpigBoss extends BossBattle {
+export class GrumpigBoss extends BossBattle {
     constructor() {
         super('GrumpigBoss'); // pass the scene key string directly
     }
+    create(){
+        console.log('grumpig boss')
+    }
 }
+console.log('bossBattles loaded', bossBattles);
+
+window.GrumpigBoss = GrumpigBoss;

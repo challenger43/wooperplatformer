@@ -1,4 +1,4 @@
-const grumpigLevelData = {
+export const grumpigLevelData = {
     platforms: [
         { x: 200, y: 500, scaleX: 3, scaleY: 1, tint: 0x8B4513 }, // big ground platform
         { x: 600, y: 400, scaleX: 1.5, scaleY: 1 },
@@ -25,11 +25,11 @@ const grumpigLevelData = {
     floatingStars: [],
     stars: [],
 }
-const bossBattles = {
+export const bossBattles = {
     GrumpigBoss: grumpigLevelData
 };
 
-const levels = {
+export const levels = {
     LevelOne: {
         platforms: [
             {

@@ -1,6 +1,10 @@
 const GRAVITY_DEFAULT = 500; //default gravity settings
 const GRAVITY_QUAGSIRE = 900;
 const GRAVITY_WATER = 0;
+import { grumpigLevelData } from './levels.js'; 
+import GrumpigBoss from './bossBattles.js'; 
+import {bossBattles} from './levels.js';
+import { levels } from './levels.js';
 class MenuScene extends Phaser.Scene { //the menu
     cursor;
     keys;
@@ -142,8 +146,9 @@ class Level extends Phaser.Scene {
     }
     init(data) {
         this.quagsire = data.quagsire ?? false;
+        this.bossBattles = data.bossBattles;
     }
-    preload() {}
+    preload() { }
     collectStar(player, star) {
         star.disableBody(true, true); //the star no longer has a 'physical body'
     }
@@ -160,7 +165,25 @@ class Level extends Phaser.Scene {
 
     enterPortal(_player, portal) {
         console.log("portal entered ")
-        this.scene.start(portal.destination, { quagsire: this.quagsire }, {boss: portal.boss ?? null});
+        portal.destination = portal.getData('destination');
+        portal.boss = portal.getData('boss');
+        let target = portal.destination ?? portal.boss;
+        console.log('portal object in enterPortal:', portal);
+        console.log('portal.destination:', portal.destination);
+        console.log('portal.boss:', portal.boss);
+        console.log("Trying to start scene:", target);
+        let bossBattleData = null
+        if (portal.boss && this.bossBattles) {
+            bossBattleData = this.bossBattles[portal.boss];
+            console.log('Found bossBattleData:', bossBattleData);
+        }   
+        if (target) {
+            this.scene.start(target, {
+                quagsire: this.quagsire,
+                boss: portal.boss ?? null,
+                bossBattleData: bossBattleData ?? null
+            });
+        }
     }
     waterFrame = 0;
     enterWater(_player, water) {
@@ -270,12 +293,11 @@ class Level extends Phaser.Scene {
                 .setScale(0.3, 0.3)
                 .setTint(portalData.tint ?? 0xffffff)
                 .refreshBody();
-            if (portalData.destination){
-                portal.destination = portalData.destination
-            } 
-            if (portalData.boss){  
-                portal.boss = portalData.boss
-            }
+
+                portal.setData('destination', portalData.destination);
+                portal.setData('boss', portalData.boss);
+            
+                console.log('Portal data:', portal.getData('destination'), portal.getData('boss'));
             portal.disableBody(true, true);
         }
 
@@ -519,14 +541,18 @@ const config = {
         }
     },
     scene: [
-        MenuScene, 
-        ToBeContinued, 
-        QuagBallIntro, 
+        MenuScene,
+        ToBeContinued,  
+        QuagBallIntro,
+        GrumpigBoss,
         new Level('LevelOne', levels.LevelOne), new Level('LevelTwo', levels.LevelTwo), new Level('LevelThree', levels.LevelThree), new Level('LevelFour', levels.LevelFour), new Level('LevelFive', levels.LevelFive),
-        new GrumpigBoss(),
+       
     ]
 };
 
 
 const game = new Phaser.Game(config);
+console.log('Scenes registered in SceneManager:', game.scene.scenes.map(s => s.scene.key));
+console.log(game.scene.keys)
+
 
