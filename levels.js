@@ -206,8 +206,9 @@ export const levels = {
                 y: 462,
                 scaleX: 0.3,
                 scaleY: 0.3,
-                boss: "GrumpigBoss",
-                levelData: grumpigLevelData,
+                destination: "LevelTwo"
+                // boss: "GrumpigBoss",
+                // levelData: grumpigLevelData,
             },
             // { omnious testing portal 
             //     x: 550,
