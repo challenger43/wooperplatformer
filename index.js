@@ -1,9 +1,8 @@
 const GRAVITY_DEFAULT = 500; //default gravity settings
 const GRAVITY_QUAGSIRE = 900;
 const GRAVITY_WATER = 0;
-import { grumpigLevelData } from './levels.js'; 
-import GrumpigBoss from './bossBattles.js'; 
-import {bossBattles} from './levels.js';
+import {GrumpigBoss} from './bossBattles.js';
+import {bossBattles} from './levels.js'
 import { levels } from './levels.js';
 class MenuScene extends Phaser.Scene { //the menu
     cursor;
@@ -137,12 +136,14 @@ class Level extends Phaser.Scene {
     isInWater = false;
     quagsire = false;
     wasODownLastFrame = false;
+    wasVDownLastFrame = false;
     waters;
     frameCount = 0
     timeAccumulator = 0
     constructor(key, level) {
         super({ key: key });
         this.level = level;
+        this.playerMode = !this.playerMode
     }
     init(data) {
         this.quagsire = data.quagsire ?? false;
@@ -176,7 +177,10 @@ class Level extends Phaser.Scene {
         if (portal.boss && this.bossBattles) {
             bossBattleData = this.bossBattles[portal.boss];
             console.log('Found bossBattleData:', bossBattleData);
-        }   
+        }
+        if (!bossBattleData) {
+            console.warn(`No bossBattle data found for boss key: ${portal.boss}`);
+        }
         if (target) {
             this.scene.start(target, {
                 quagsire: this.quagsire,
@@ -196,7 +200,8 @@ class Level extends Phaser.Scene {
     }
 
     create() {
-        this.keys = this.input.keyboard.addKeys("W,A,S,D,Q,P,O,SPACE,")
+        this.bossBattles = bossBattles
+        this.keys = this.input.keyboard.addKeys("W,A,S,D,Q,P,O,V,SPACE,")
         //an object is a collection of properties and values--properties are like labels
         let sky = this.add.image(900, -100, 'sky').setScale(4);
         //adds images to things-the preload function loads them, this thing makes it actually happen
@@ -294,10 +299,10 @@ class Level extends Phaser.Scene {
                 .setTint(portalData.tint ?? 0xffffff)
                 .refreshBody();
 
-                portal.setData('destination', portalData.destination);
-                portal.setData('boss', portalData.boss);
-            
-                console.log('Portal data:', portal.getData('destination'), portal.getData('boss'));
+            portal.setData('destination', portalData.destination);
+            portal.setData('boss', portalData.boss);
+
+            console.log('Portal data:', portal.getData('destination'), portal.getData('boss'));
             portal.disableBody(true, true);
         }
 
@@ -419,15 +424,23 @@ class Level extends Phaser.Scene {
             this.spawnPortal();
             this.portalSpawned = true;
         }
-        // this.scoreText.setText("x: " + Math.floor(this.player.x) + " y: " + Math.floor(this.player.y))
-        if ((activeStars + activeFloatingStars) > 0) {
-            this.scoreText.setText("WoopBalls Remaining: " + (activeStars + activeFloatingStars))
+        if (this.keys.V.isDown && !this.wasVDownLastFrame) {
+            this.playerMode = !this.playerMode
         }
-        else {
-            this.scoreText.setText("Find the portal!")
+        this.wasVDownLastFrame = this.keys.V.isDown;
+        if (this.playerMode) {
+            if ((activeStars + activeFloatingStars) > 0) {
+                this.scoreText.setText("WoopBalls Remaining: " + (activeStars + activeFloatingStars))
+            }
+            else {
+                this.scoreText.setText("Find the portal!")
+            }
         }
-        this.scoreText.x = this.player.x + 100;
-        this.scoreText.y = this.player.y - 200;
+        if (!this.playerMode){
+            this.scoreText.setText("x: " + Math.floor(this.player.x) + " y: " + Math.floor(this.player.y))
+        }
+        this.scoreText.x = this.player.x + 80;
+        this.scoreText.y = this.player.y - 250;
 
         if (this.isInWater) {
             if (this.keys.S.isDown || this.cursors.down.isDown && this.quagsire == true) {
@@ -542,11 +555,11 @@ const config = {
     },
     scene: [
         MenuScene,
-        ToBeContinued,  
+        ToBeContinued,
         QuagBallIntro,
         GrumpigBoss,
         new Level('LevelOne', levels.LevelOne), new Level('LevelTwo', levels.LevelTwo), new Level('LevelThree', levels.LevelThree), new Level('LevelFour', levels.LevelFour), new Level('LevelFive', levels.LevelFive),
-       
+
     ]
 };
 
@@ -554,5 +567,6 @@ const config = {
 const game = new Phaser.Game(config);
 console.log('Scenes registered in SceneManager:', game.scene.scenes.map(s => s.scene.key));
 console.log(game.scene.keys)
+
 
 

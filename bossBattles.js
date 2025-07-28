@@ -13,7 +13,7 @@ export default class BossBattle extends Phaser.Scene {
     constructor(sceneKey) {
         super({ key: sceneKey })
         console.log('BossBattle initialized with key:', sceneKey);
-        this.boss = null    
+        this.boss = null
         this.bossBattles = bossBattles
         this.levels = levels
     }
@@ -35,13 +35,13 @@ export default class BossBattle extends Phaser.Scene {
         console.log("portal entered ")
         let levelDataToPass = null
         let sceneToStart = null
-        
-    if (portal.boss) {
-        console.log('portal.boss:', portal.boss);
-    }
-    if (portal.destination) {
-        console.log('portal.destination:', portal.destination);
-    }
+
+        if (portal.boss) {
+            console.log('portal.boss:', portal.boss);
+        }
+        if (portal.destination) {
+            console.log('portal.destination:', portal.destination);
+        }
         // if (portal.boss && this.bossBattles[portal.boss]) {
         //     levelDataToPass = this.bossBattles[portal.boss];
         //     sceneToStart = portal.boss
@@ -78,44 +78,10 @@ export default class BossBattle extends Phaser.Scene {
     create() {
         this.frameCount = 0
         this.timeAccumulator = 0
-        this.player = this.physics.add.sprite(300, 400, 'dude');
-        // this.anims.create({
-        //     key: 'left',
-        //     frames: this.anims.generateFrameNumbers('dude', { start: 1, end: 4 }),
-        //     frameRate: 20,
-        //     repeat: -1
-        // });
-
-        // this.anims.create({
-        //     key: 'turn',
-        //     frames: [{ key: 'dude', frame: 0 }],
-        //     frameRate: 20
-        // });
-
-        // this.anims.create({
-        //     key: 'right',
-        //     frames: this.anims.generateFrameNumbers('dude', { start: 5, end: 8 }),
-        //     frameRate: 20,
-        //     repeat: -1
-        // });
-        // this.anims.create({
-        //     key: 'quagLeft',
-        //     frames: this.anims.generateFrameNumbers('quagsire', { start: 3, end: 4 }),
-        //     frameRate: 4,
-        //     repeat: -1
-        // })
-        // this.anims.create({
-        //     key: 'quagRight',
-        //     frames: this.anims.generateFrameNumbers('quagsire', { start: 1, end: 2 }),
-        //     frameRate: 4,
-        //     repeat: -1
-        // })
-        // this.anims.create({
-        //     key: 'quagStill',
-        //     frames: [{ key: 'quagsire', frame: 0, }],
-        //     frameRate: 20,
-        // })
+        this.player = this.physics.add.sprite(100, 450, 'dude');
+        this.cameras.cameras[0].startFollow(this.player)
         this.keys = this.input.keyboard.addKeys("W,A,S,D,P,O,SPACE,")
+        this.cursors = this.input.keyboard.createCursorKeys();
         this.platforms = this.physics.add.staticGroup();
         // add platforms
         for (let platformData of this.bossBattle.platforms) {
@@ -189,7 +155,6 @@ export default class BossBattle extends Phaser.Scene {
             console.log(portal.destination ?? portal.boss ?? null)
             portal.disableBody(true, true);
         }
-        this.cursors = this.input.keyboard.createCursorKeys();
         this.physics.add.collider(this.player, this.platforms); //these are the things you want to collide with--the first code takes parameters player and platforms, so then player and platforms will collide
         this.physics.add.collider(this.portals, this.platforms);
         this.physics.add.collider(this.player, this.movingPlatforms);
@@ -207,26 +172,34 @@ export default class BossBattle extends Phaser.Scene {
             this.frameCount = 0;
             this.timeAccumulator = 0;
         }
+        let speed;
+        let jumpVelocity;
         if (this.keys.A.isDown || this.cursors.left.isDown) {
             if (this.quagsire == true) {
-                this.player.setVelocityX(this.isInWater ? -130 : -80);
-                // console.log("Trying to play quagsire_left");
+                speed = this.isInWater ? -130 : -80
+                speed *= this.speedMultiplier ?? 1  //applies a multiplier(if it doesn't have one defaults to 1)
+                this.player.setVelocityX(speed);
                 this.player.anims.play('quagLeft', true);
             }
             else {
+                speed = this.isInWater ? -100 : -160
+                speed *= this.speedMultiplier ?? 1
+                this.player.setVelocityX(speed)
                 this.player.anims.play('left', true);
-                this.player.setVelocityX(this.isInWater ? -100 : -160);
             }
         }
         else if (this.keys.D.isDown || this.cursors.right.isDown) {
             if (this.quagsire == true) {
-                this.player.setVelocityX(this.isInWater ? 130 : 80);
-                // console.log("Trying to play quagsire_right");
+                speed = this.isInWater ? -130 : -80
+                speed *= this.speedMultiplier ?? 1
+                this.player.setVelocityX(speed);
                 this.player.anims.play('quagRight', true)
             }
             else {
+                speed = this.isInWater ? 100 : 160
+                speed *= this.speedMultiplier ?? 1
+                this.player.setVelocityX(speed)
                 this.player.anims.play('right', true);
-                this.player.setVelocityX(this.isInWater ? 100 : 160);
             }
         }
         else { //if no key is pressed, will face forwards
@@ -237,6 +210,11 @@ export default class BossBattle extends Phaser.Scene {
             else {
                 this.player.anims.play('turn');
             }
+        }
+        if ((this.keys.W.isDown || this.keys.SPACE.isDown || this.cursors.up.isDown) && ((this.isInWater || this.player.body.touching.down))) {
+            jumpVelocity = this.isInWater ? -100 : -430
+            jumpVelocity *= this.jumpMultiplier ?? 1
+            this.player.setVelocityY(jumpVelocity);
         }
         if (this.isInWater) {
             if (this.keys.S.isDown || this.cursors.down.isDown && this.quagsire == true) {
@@ -292,14 +270,6 @@ export default class BossBattle extends Phaser.Scene {
 
                 movingPlatform.centerX = centerX;
                 movingPlatform.centerY = centerY;
-                // console.log('Creating circular tween for platform:', {
-                //     x: movingPlatform.x,
-                //     y: movingPlatform.y,
-                //     radius: movingPlatform.radius,
-                //     centerX: movingPlatform.centerX,
-                //     centerY: movingPlatform.centerY,
-                //     orbitAngle: movingPlatform.orbitAngle
-                //   }); //use for testing purposes
                 this.tweens.add({
                     targets: movingPlatform,
                     orbitAngle: movingPlatform.orbitAngle + 2 * Math.PI,
@@ -339,10 +309,18 @@ export default class BossBattle extends Phaser.Scene {
 }
 export class GrumpigBoss extends BossBattle {
     constructor() {
-        super('GrumpigBoss'); // pass the scene key string directly
+        super('GrumpigBoss');
+        this.playerSpeedMultiplier = 0.6;
+        this.playerJumpMultiplier = 0.8;
     }
-    create(){
-        console.log('grumpig boss')
+    create() {
+        super.create() //super refers to parent class-- basically calling the create() method from boss battle
+    }
+    update() {
+        super.update()
+        this.speedMultiplier = this.playerSpeedMultiplier || 1;
+        this.jumpMultiplier = this.playerJumpMultiplier || 1
+
     }
 }
 console.log('bossBattles loaded', bossBattles);

@@ -1,6 +1,7 @@
 export const grumpigLevelData = {
     platforms: [
-        { x: 200, y: 500, scaleX: 3, scaleY: 1, tint: 0x8B4513 }, // big ground platform
+        { x: 200, y: 600, scaleX: 3, scaleY: 1, tint: 0xFFFFFF }, //0x8B4513
+        // big ground platform
         { x: 600, y: 400, scaleX: 1.5, scaleY: 1 },
     ],
     movingPlatforms: [
@@ -17,7 +18,7 @@ export const grumpigLevelData = {
         }
     ],
     waters: [
-        { x: 300, y: 520, scaleX: 2, scaleY: 0.5, tint: 0x0000FF }
+        // { x: 300, y: 520, scaleX: 2, scaleY: 0.5, tint: 0x0000FF }
     ],
     portals: [
         { x: 750, y: 450, destination: 'LevelTwo', tint: 0xffffff }
@@ -92,16 +93,58 @@ export const levels = {
 
             {
                 x: -20,
-                y: 300,
+                y: 200,
                 scaleX: 0.1,
-                scaleY: 21,
+                scaleY: 33,
                 tint: 0x3c6529
             },
             {
                 x: 1910,
-                y: 300,
+                y: 200,
                 scaleX: 0.1,
-                scaleY: 21,
+                scaleY: 33,
+                tint: 0x3c6529
+            },
+            {
+                x: 620,
+                y: -75,
+                scaleX: 0.1,
+                scaleY: 1,
+                tint: 0x3c6529
+            },
+            {
+                x: 761,
+                y: -10,
+                scaleX: 0.1,
+                scaleY: 1,
+                tint: 0x3c6529
+            },
+            {
+                x: 927,
+                y: 20,
+                scaleX: 0.1,
+                scaleY: 1,
+                tint: 0x3c6529
+            },
+            {
+                x: 327,
+                y: -24,
+                scaleX: 0.1,
+                scaleY: 1,
+                tint: 0x3c6529
+            },
+            {
+                x: 133,
+                y: -27,
+                scaleX: 0.1,
+                scaleY: 1,
+                tint: 0x3c6529
+            },
+            {
+                x: 22,
+                y: 120,
+                scaleX: 0.1,
+                scaleY: 1,
                 tint: 0x3c6529
             },
         ],
@@ -156,8 +199,27 @@ export const levels = {
                 y: 0,
                 scaleX: 0.05,
                 scaleY: 0.05,
-            }
-
+            },
+            {
+                x: 330,
+                y: -56,
+                scaleX: 0.05,
+                scaleY: 0.05,
+            },
+            {
+                x: 133,
+                y: -59,
+                scaleX: 0.05,
+                scaleY: 0.05,
+            },
+            {
+                x: 762,
+                y: -40,
+                scaleX: 0.05,
+                scaleY: 0.05,
+            },
+            
+        
         ],
         floatingStars: [
             {
@@ -177,14 +239,6 @@ export const levels = {
 
             },
             {
-                x: 326,
-                y: 50,
-                scaleX: 0.05,
-                scaleY: 0.05,
-
-
-            },
-            {
                 x: 787,
                 y: 290,
                 scaleX: 0.05,
@@ -197,7 +251,22 @@ export const levels = {
                 y: 180,
                 scaleX: 0.05,
                 scaleY: 0.05,
-            }
+            },
+            {
+                x: 1150,
+                y: -100,
+                scaleX: 0.05,
+                scaleY: 0.05,
+            },
+            {
+                x: 1267,
+                y: 126,
+                scaleX: 0.05,
+                scaleY: 0.05,
+
+
+            },
+
 
         ],
         portals: [
@@ -206,8 +275,9 @@ export const levels = {
                 y: 462,
                 scaleX: 0.3,
                 scaleY: 0.3,
-                boss: "GrumpigBoss",
-                levelData: grumpigLevelData,
+                destination: "LevelTwo"
+                // boss: "GrumpigBoss",
+                // levelData: grumpigLevelData,
             },
             // { omnious testing portal 
             //     x: 550,
@@ -465,6 +535,7 @@ export const levels = {
                 scaleX: 0.3,
                 scaleY: 0.3,
                 destination: "QuagBallIntro",
+                // boss: "GrumpigBoss"
             },
         ],
         movingPlatforms: [],
