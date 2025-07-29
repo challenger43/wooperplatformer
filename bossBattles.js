@@ -308,20 +308,78 @@ export default class BossBattle extends Phaser.Scene {
     }
 }
 export class GrumpigBoss extends BossBattle {
+    grumpig;
     constructor() {
         super('GrumpigBoss');
         this.playerSpeedMultiplier = 0.6;
         this.playerJumpMultiplier = 0.8;
     }
+    preload() {
+        super.preload()
+        this.load.spritesheet('grumpig', 'assets/grumpigsprite.png', { frameWidth: 32, frameHeight: 32 })
+    }
     create() {
         super.create() //super refers to parent class-- basically calling the create() method from boss battle
+        this.grumpig = this.physics.add.sprite(150, 400, 'grumpig').setScale(2)
+        this.physics.add.collider(this.grumpig, this.platforms);
+        this.anims.create({
+            key: 'grumpigFaceForward',
+            frames: [{ key: 'grumpig', frame: 0 }],
+            frameRate: 20
+        })
+        this.anims.create({
+            key: 'grumpigPowerUp',
+            frames: this.anims.generateFrameNumbers('grumpig', { start: 1, end: 2 }),
+            repeat: 5, //total plays 1(auto) + 5 = 6 times
+            frameRate: 20
+        })
+        this.anims.create({
+            key: 'grumpigFade',
+            frames: this.anims.generateFrameNumbers('grumpig', { start: 3, end: 33 }),
+            repeat: 0, //plays once, is default
+            frameRate: 50
+        })
+    }
+    playAnimationBackwards(sprite, animKey) {
+        let anim = sprite.anims.animationManager.get(animKey);
+        if (!anim) {
+            console.error('Animation not found:', animKey);
+            return;
+        }
+        let frames = anim.frames;
+        let index = frames.length - 1;
+
+        sprite.anims.stop();
+        sprite.setFrame(frames[index].frame.name);
+
+        let frameDuration = 1000 / anim.frameRate;
+
+        let timer = sprite.scene.time.addEvent({
+            delay: frameDuration,
+            repeat: frames.length - 1,
+            callback: () => {
+                index--;
+                if (index >= 0) {
+                    sprite.setFrame(frames[index].frame.name);
+                } else {
+                    timer.remove();
+                }
+            }
+        });
     }
     update() {
         super.update()
         this.speedMultiplier = this.playerSpeedMultiplier || 1;
         this.jumpMultiplier = this.playerJumpMultiplier || 1
+        if (this.keys.A.isDown) {
+            this.grumpig.anims.play('grumpigFade', true)
+        }
+        if (this.keys.D.isDown) {
+            this.playAnimationBackwards(this.grumpig, 'grumpigFade')
+        }
 
     }
+    
 }
 console.log('bossBattles loaded', bossBattles);
 

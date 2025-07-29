@@ -147,6 +147,13 @@ export const levels = {
                 scaleY: 1,
                 tint: 0x3c6529
             },
+            {
+                x: 1450,
+                y: 170,
+                scaleX: 0.5,
+                scaleY: 1,
+                tint: 0x3c6529
+            },
         ],
         waters: [],
         stars: [
@@ -275,9 +282,9 @@ export const levels = {
                 y: 462,
                 scaleX: 0.3,
                 scaleY: 0.3,
-                destination: "LevelTwo"
-                // boss: "GrumpigBoss",
-                // levelData: grumpigLevelData,
+                // destination: "LevelTwo"
+                boss: "GrumpigBoss",
+                levelData: grumpigLevelData,
             },
             // { omnious testing portal 
             //     x: 550,
