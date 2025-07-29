@@ -318,9 +318,39 @@ export class GrumpigBoss extends BossBattle {
         super.preload()
         this.load.spritesheet('grumpig', 'assets/grumpigsprite.png', { frameWidth: 32, frameHeight: 32 })
     }
+    playAnimationBackwards(sprite, animKey) { //pretty much the name, plays animation backwards
+        //pass in the sprite and the animation key you want to be played backwards
+        let anim = sprite.anims.animationManager.get(animKey); //get the animation by the key
+        if (!anim) {
+            console.error('Animation not found:', animKey);
+            return;
+        } //if there isn't an animation by that key then the console will show error message
+        let frames = anim.frames; //get the frames array from animation
+        let index = frames.length - 1; //set starting frame index to last frame (to play backwards)
+
+        sprite.anims.stop(); //stops current animations on sprite
+        sprite.setFrame(frames[index].frame.name); //set sprite's displayed frame to the last frame 
+
+        let frameDuration = 1000 / anim.frameRate; //calculate time per frame based off framerate in milliseconds
+
+        let timer = sprite.scene.time.addEvent({ //Create a Phaser timer event to run repeatedly at the interval of frameDuration
+            delay: frameDuration,
+            repeat: frames.length - 1,
+            callback: () => {
+                index--; //On each timer tick, move to the previous frame (index--)
+                if (index >= 0) {
+                    sprite.setFrame(frames[index].frame.name);
+                } else { //If  reached before the first frame, remove the timer to stop the animation
+                    timer.remove();
+                }
+            }
+        });
+    }
     create() {
         super.create() //super refers to parent class-- basically calling the create() method from boss battle
         this.grumpig = this.physics.add.sprite(150, 400, 'grumpig').setScale(2)
+        this.sensor = this.physics.add.sprite(190, 400, 'grumpig').setScale(2).setAlpha(0.6)
+        this.physics.add.collider(this.sensor, this.platforms);
         this.physics.add.collider(this.grumpig, this.platforms);
         this.anims.create({
             key: 'grumpigFaceForward',
@@ -339,47 +369,80 @@ export class GrumpigBoss extends BossBattle {
             repeat: 0, //plays once, is default
             frameRate: 50
         })
+        this.anims.create({
+            key: 'grumpigForward',
+            frames: this.anims.generateFrameNumbers('grumpig', { start: 34, end: 35 }),
+            repeat: -1,
+            frameRate: 12
+        })
     }
-    playAnimationBackwards(sprite, animKey) {
-        let anim = sprite.anims.animationManager.get(animKey);
-        if (!anim) {
-            console.error('Animation not found:', animKey);
-            return;
+    moveGrumpig(delta) {
+        let deltaX = Math.abs(this.grumpig.x - this.grumpigPrevX)
+        this.grumpig.isStandingStill = false
+        if (this.sensor.body.touching.down) {
+            this.sensor.setVelocityX(80)
+            this.grumpig.setVelocityX(80)
+            this.grumpig.anims.play('grumpigForward', true)
+            this.grumpig.isStandingStill = false
+            console.log(this.grumpig.isStandingStill)
+            this.grumpig.isJumping = false
         }
-        let frames = anim.frames;
-        let index = frames.length - 1;
-
-        sprite.anims.stop();
-        sprite.setFrame(frames[index].frame.name);
-
-        let frameDuration = 1000 / anim.frameRate;
-
-        let timer = sprite.scene.time.addEvent({
-            delay: frameDuration,
-            repeat: frames.length - 1,
-            callback: () => {
-                index--;
-                if (index >= 0) {
-                    sprite.setFrame(frames[index].frame.name);
-                } else {
-                    timer.remove();
+        if (!this.sensor.body.touching.down && !this.grumpig.isJumping) {
+            this.grumpig.setVelocityX(0);
+            this.sensor.setVelocityX(0)
+            this.sensor.y = this.grumpig.y
+            this.grumpig.anims.play('grumpigFaceForward', true)
+        }
+        if (deltaX < 1) {//means is stuck 
+            this.grumpig.isStandingStill = true
+            this.grumpigStillTime += delta;
+            if (this.grumpigStillTime >= 3000) {
+                console.log("Grumpig has been stuck for 3 seconds!");
+                if (this.grumpig.body.touching.down) {
+                    this.grumpig.setVelocityY(-300);
+                    this.grumpig.setVelocityX(50)
+                    this.grumpig.isJumping = true
                 }
             }
-        });
+        } else {
+            this.grumpigStillTime = 0
+        }
+        this.grumpigPrevX = this.grumpig.x
+        //Create a limited number of sensor clones(e.g., 5 - 10) to avoid crashing.
+
+        // For each sensor clone:
+
+        // Start at Grumpig’s current position.
+
+        // Give it a unique target horizontal offset (e.g., jump forward 50, 100, 150 pixels).
+
+        // Make the sensor simulate a jump and move forward that distance.
+
+        // While the sensor is “in the air”:
+
+        // Continuously check if it lands on a platform.
+
+        // If it lands safely, it logs the position (how far it got).
+
+        // After all sensors finish their “test jumps”:
+
+        // Collect all the landing positions from sensors that found safe platforms.
+
+        // Pick the closest (or best) landing spot.
+
+        // Tell Grumpig to jump forward that exact distance.
+
+        // Remove or reset the sensor clones for the next scan.
     }
-    update() {
-        super.update()
+    update(time, delta) {
+        super.update(time, delta)
         this.speedMultiplier = this.playerSpeedMultiplier || 1;
         this.jumpMultiplier = this.playerJumpMultiplier || 1
-        if (this.keys.A.isDown) {
-            this.grumpig.anims.play('grumpigFade', true)
-        }
-        if (this.keys.D.isDown) {
-            this.playAnimationBackwards(this.grumpig, 'grumpigFade')
-        }
+
+        this.moveGrumpig(delta)
 
     }
-    
+
 }
 console.log('bossBattles loaded', bossBattles);
 
