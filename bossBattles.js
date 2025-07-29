@@ -311,8 +311,9 @@ export class GrumpigBoss extends BossBattle {
     grumpig;
     constructor() {
         super('GrumpigBoss');
-        this.playerSpeedMultiplier = 0.6;
+        this.playerSpeedMultiplier = 0.8;
         this.playerJumpMultiplier = 0.8;
+        this.jumpSensorsActive = false
     }
     preload() {
         super.preload()
@@ -350,8 +351,11 @@ export class GrumpigBoss extends BossBattle {
         super.create() //super refers to parent class-- basically calling the create() method from boss battle
         this.grumpig = this.physics.add.sprite(150, 400, 'grumpig').setScale(2)
         this.sensor = this.physics.add.sprite(190, 400, 'grumpig').setScale(2).setAlpha(0.6)
+        this.jumpSensors = this.physics.add.group()
+        this.jumpInterval = 20
         this.physics.add.collider(this.sensor, this.platforms);
         this.physics.add.collider(this.grumpig, this.platforms);
+        this.physics.add.collider(this.jumpSensors, this.platforms)
         this.anims.create({
             key: 'grumpigFaceForward',
             frames: [{ key: 'grumpig', frame: 0 }],
@@ -398,49 +402,91 @@ export class GrumpigBoss extends BossBattle {
             this.grumpigStillTime += delta;
             if (this.grumpigStillTime >= 3000) {
                 console.log("Grumpig has been stuck for 3 seconds!");
+                this.createJumpSensors();
+                this.jumpSensorsActive = true
+                console.log("jumpsensors spawning")
                 if (this.grumpig.body.touching.down) {
-                    this.grumpig.setVelocityY(-300);
-                    this.grumpig.setVelocityX(50)
                     this.grumpig.isJumping = true
                 }
             }
         } else {
             this.grumpigStillTime = 0
+            this.jumpSensorsActive = false 
         }
         this.grumpigPrevX = this.grumpig.x
-        //Create a limited number of sensor clones(e.g., 5 - 10) to avoid crashing.
-
-        // For each sensor clone:
-
-        // Start at Grumpig’s current position.
-
-        // Give it a unique target horizontal offset (e.g., jump forward 50, 100, 150 pixels).
-
-        // Make the sensor simulate a jump and move forward that distance.
-
-        // While the sensor is “in the air”:
-
-        // Continuously check if it lands on a platform.
-
-        // If it lands safely, it logs the position (how far it got).
-
-        // After all sensors finish their “test jumps”:
-
-        // Collect all the landing positions from sensors that found safe platforms.
-
-        // Pick the closest (or best) landing spot.
-
-        // Tell Grumpig to jump forward that exact distance.
-
-        // Remove or reset the sensor clones for the next scan.
+    }
+    createJumpSensors() {
+        console.log("createjumpsensors called")
+        this.jumpSensorResults = [];
+        for (let i = 0; i < 10; i++) {
+            let offsetX = Phaser.Math.Between(0, 300);
+            let spawnX = this.grumpig.x + offsetX;
+            let spawnY = this.grumpig.y - 800;
+            let clone = this.physics.add.sprite(spawnX, spawnY, 'grumpig')
+                .setAlpha(0.3)
+                .setScale(1.5)
+            clone.isJumping = false
+            clone.hasLanded = false
+            this.physics.add.collider(clone, this.platforms, () => {
+                clone.hasLanded = true;
+                clone.isJumping = false;
+            });
+            this.jumpSensors.add(clone)
+        }
+    }
+    updateJumpSensors() {
+        let landedClone = null
+        if (this.jumpSensors.getLength() === 0) return;
+        this.jumpSensors.children.iterate(clone => {
+            // console.log(`Clone at x=${clone.x}, y=${clone.y}, targetOffsetX=${clone.targetOffsetX}`); 
+            if (clone.hasLanded && !landedClone) {
+                landedClone = clone; // Take the first clone that landed as safe spot
+                console.log(`Clone landed at x=${clone.x}, y=${clone.y}`);
+                console.log(`Grumpig will jump to x=${landedClone.x}`);
+                this.grumpig.setVelocityX(landedClone.x - this.grumpig.x);
+                this.grumpig.setVelocityY(-300);  // jump velocity upwards
+                this.grumpigStillTime = 0 
+        
+                // Clear clones since jump is now decided
+                this.jumpSensors.clear(true, true);
+                this.jumpSensorResults = [];
+                return
+            }
+            })
+            // if (landedClone) {
+            //     // Make Grumpig jump towards the landed clone's x-position
+            //     console.log(`Grumpig will jump to x=${landedClone.x}`);
+            //     this.grumpig.setVelocityX(landedClone.x - this.grumpig.x);
+            //     this.grumpig.setVelocityY(-300);  // jump velocity upwards
+            //     this.grumpigStillTime = 0 
+        
+            //     // Clear clones since jump is now decided
+            //     this.jumpSensors.clear(true, true);
+            //     this.jumpSensorResults = [];
+            //     return
+            // }
+        if(!landedClone) { //no clone landed
+            let allDone = true
+            this.jumpSensors.children.iterate(clone => {
+                if (!clone.hasLanded && !clone.isJumping) {
+                    allDone = false
+                }
+            })
+            if (allDone) {
+                console.log("All clones finished jumping but no safe landing found. Increasing jumpInterval and retrying.");
+                // have failed
+                this.jumpSensors.clear(true, true)
+                this.jumpSensorResults = [];
+                this.createJumpSensors();
+            }
+        }
     }
     update(time, delta) {
         super.update(time, delta)
         this.speedMultiplier = this.playerSpeedMultiplier || 1;
         this.jumpMultiplier = this.playerJumpMultiplier || 1
-
         this.moveGrumpig(delta)
-
+        this.updateJumpSensors();
     }
 
 }

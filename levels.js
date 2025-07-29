@@ -2,20 +2,24 @@ export const grumpigLevelData = {
     platforms: [
         { x: 200, y: 600, scaleX: 3, scaleY: 1, tint: 0xFFFFFF }, //0x8B4513
         // big ground platform
-        { x: 600, y: 400, scaleX: 1.5, scaleY: 1 },
+        // { x: 600, y: 400, scaleX: 1.5, scaleY: 1 },
+        {
+            x: 1100,
+            y: 500,
+        }
     ],
     movingPlatforms: [
-        {
-            x: 400,
-            y: 350,
-            scaleX: 1,
-            scaleY: 1,
-            movementType: 'pingpong',
-            moveX: 200,
-            moveY: 0,
-            speed: 100,
-            tint: 0x228B22,
-        }
+        // {
+        //     x: 400,
+        //     y: 350,
+        //     scaleX: 1,
+        //     scaleY: 1,
+        //     movementType: 'pingpong',
+        //     moveX: 200,
+        //     moveY: 0,
+        //     speed: 100,
+        //     tint: 0x228B22,
+        // }
     ],
     waters: [
         // { x: 300, y: 520, scaleX: 2, scaleY: 0.5, tint: 0x0000FF }
