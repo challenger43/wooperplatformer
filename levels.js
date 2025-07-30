@@ -4,10 +4,31 @@ export const grumpigLevelData = {
         // big ground platform
         // { x: 600, y: 400, scaleX: 1.5, scaleY: 1 },
         {
-            x: 1050,
+            x: 1030,
             y: 500,
-            scaleX: 0.2
-        }
+            scaleX: 0.6
+        },
+        {
+            x: 1350,
+            y: 550,
+            scaleX: 0.3,
+        },
+        {
+            x: 1550,
+            y: 700,
+            scaleX: 0.2,
+        },
+        {
+            x: 1623,
+            y: 600,
+            scaleX: 0.2,
+        },
+        {
+            x: 1572,
+            y: 500,
+            scaleX: 0.02,
+            scaleY: 2.6,
+        },
     ],
     movingPlatforms: [
         // {

@@ -316,6 +316,7 @@ export class GrumpigBoss extends BossBattle {
         this.playerJumpMultiplier = 0.8;
         this.jumpSensorsActive = false
         this.grumpigTeleporting = false
+        this.lastCheckpointPosition = {x: 774, y:450}
     }
     preload() {
         super.preload()
@@ -354,6 +355,7 @@ export class GrumpigBoss extends BossBattle {
     }
     create() {
         super.create() //super refers to parent class-- basically calling the create() method from boss battle
+        this.scoreText = this.add.text(600, 300, 'score: 0', { fontSize: '28px', fill: '#FFF' });
         this.grumpig = this.physics.add.sprite(150, 400, 'grumpig').setScale(2)
         // console.log('[DEBUG] grumpig texture exists:', this.textures.exists('grumpig'));
         this.sensor = this.physics.add.sprite(190, 400, 'grumpig').setScale(2).setAlpha(0.6)
@@ -373,13 +375,13 @@ export class GrumpigBoss extends BossBattle {
             key: 'grumpigPowerUp',
             frames: this.anims.generateFrameNumbers('grumpig', { start: 1, end: 2 }),
             repeat: 5, //total plays 1(auto) + 5 = 6 times
-            frameRate: 20
+            frameRate: 25
         })
         this.anims.create({
             key: 'grumpigFade',
             frames: this.anims.generateFrameNumbers('grumpig', { start: 3, end: 33 }),
             repeat: 0, //plays once, is default
-            frameRate: 50
+            frameRate: 70
         })
         this.anims.create({
             key: 'grumpigForward',
@@ -398,8 +400,8 @@ export class GrumpigBoss extends BossBattle {
             return;
         }
         if (this.sensor.body.touching.down) { //as long as sensor is touching down(meaning there is ground for grumpig to walk on, grumpig will walk)
-            this.sensor.setVelocityX(80)
-            this.grumpig.setVelocityX(80)
+            this.sensor.setVelocityX(120)
+            this.grumpig.setVelocityX(120)
             this.grumpig.anims.play('grumpigForward', true);
             this.grumpig.isStandingStill = false
             // console.log(this.grumpig.isStandingStill)
@@ -414,8 +416,8 @@ export class GrumpigBoss extends BossBattle {
         if (deltaX < 1) {//means is stuck 
             this.grumpig.isStandingStill = true
             this.grumpigStillTime += delta;
-            if (this.grumpigStillTime >= 3000 && !this.hasSpawnedJumpSensors && !this.jumpSensorsActive) {
-                console.log("Grumpig has been stuck for 3 seconds!");
+            if (this.grumpigStillTime >= 200 && !this.hasSpawnedJumpSensors && !this.jumpSensorsActive) { //if has been standing still for longer than 0.5 seconds
+                console.log("Grumpig has been stuck for 0.5 seconds!");
                 this.createJumpSensors();
                 this.jumpSensorsActive = true
                 console.log("jumpsensors spawning")
@@ -438,12 +440,13 @@ export class GrumpigBoss extends BossBattle {
         console.log("createjumpsensors called")
         this.jumpSensorResults = [];
         for (let i = 0; i < 10; i++) {
-            let offsetX = Phaser.Math.Between(0, 300);
+            let offsetX = Phaser.Math.Between(60, 300);
             let spawnX = this.grumpig.x + offsetX;
-            let spawnY = this.grumpig.y - 800;
+            let spawnY = this.grumpig.y - 300;
             let clone = this.physics.add.sprite(spawnX, spawnY, 'grumpig')
                 .setAlpha(0.3)
                 .setScale(1.5)
+            clone.setVelocityY(2400)
             clone.isJumping = false
             clone.hasLanded = false
             this.physics.add.overlap(clone, this.platforms, () => {
@@ -459,44 +462,45 @@ export class GrumpigBoss extends BossBattle {
     }
     updateJumpSensors() {
         if (!this.jumpSensorsActive || this.jumpSensors.getLength() === 0) return;
-    
         if (this.jumpSensorResults.length > 0) {
             let grumpigX = this.grumpig.x;
             let landedClone = this.jumpSensorResults.reduce((furthest, clone) => {
                 return Math.abs(clone.x - grumpigX) > Math.abs(furthest.x - grumpigX) ? clone : furthest;
             });
-    
+
             console.log(`Clone landed at x=${landedClone.x}, y=${landedClone.y}`);
             console.log(`Grumpig will teleport to x=${landedClone.x}`);
-    
+
             this.grumpigTeleporting = true;
+            this.sensor.body.reset(this.grumpig.x + 50, this.grumpig.y);
             this.grumpig.anims.play('grumpigPowerUp', true);
-    
-            this.time.delayedCall(500, () => {
+
+            this.time.delayedCall(200, () => {
                 this.grumpig.anims.play('grumpigFade', true);
             });
-    
-            this.time.delayedCall(2000, () => {
+
+            this.time.delayedCall(600, () => {
                 this.grumpig.setPosition(landedClone.x, landedClone.y - this.grumpig.height / 2);
+                this.sensor.body.reset(this.grumpig.x + 50, this.grumpig.y);
             });
-    
-            this.time.delayedCall(2500, () => {
+
+            this.time.delayedCall(1000, () => {
                 this.playAnimationBackwards(this.grumpig, 'grumpigFade');
             });
-    
-            this.time.delayedCall(3500, () => {
+
+            this.time.delayedCall(1600, () => {
                 this.grumpigTeleporting = false;
             });
-    
+            this.sensor.body.reset(this.grumpig.x + 50, this.grumpig.y);
             this.grumpig.isJumping = true;
             this.grumpigStillTime = 0;
-    
+
             // Clear sensors and results after teleport chosen
             this.jumpSensors.clear(true, true);
             this.jumpSensorResults = [];
             return;
         }
-    
+
         // No clones landed, check if all finished jumping
         let allDone = true;
         this.jumpSensors.children.iterate(clone => {
@@ -504,25 +508,40 @@ export class GrumpigBoss extends BossBattle {
                 allDone = false;
             }
         });
-    
+
         if (allDone) {
             console.log("All clones finished jumping but no safe landing found. Increasing jumpInterval and retrying.");
             this.jumpSensors.clear(true, true);
             this.jumpSensorResults = [];
             this.createJumpSensors();
         }
-    }    
+    }
     update(time, delta) {
         super.update(time, delta)
-        this.speedMultiplier = this.playerSpeedMultiplier || 1;
-        this.jumpMultiplier = this.playerJumpMultiplier || 1
+        this.scoreText.setText("x: " + Math.floor(this.player.x) + " y: " + Math.floor(this.player.y))
+        this.scoreText.x = this.player.x + 80;
+        this.scoreText.y = this.player.y - 250;
         this.moveGrumpig(delta)
         this.updateJumpSensors();
+        if (this.player.y > 700){
+            if (this.player.x > 780){
+                this.player.setPosition(this.lastCheckpointPosition.x, this.lastCheckpointPosition.y)
+            }
+            else if (this.player.x > 1480) {
+                this.lastCheckpointPosition = {x: 1400, y: 518};
+                this.player.setPosition(this.lastCheckpointPosition.x, this.lastCheckpointPosition.y)
+            }
+            else if (this.player.x > 2180){
+                //fill stuff in as it goes on 
+            }
+        }
+        this.speedMultiplier = this.playerSpeedMultiplier || 1;
+        this.jumpMultiplier = this.playerJumpMultiplier || 1
     }
-    
+
 }
 
-    
+
 
 
 // console.log('bossBattles loaded', bossBattles);
