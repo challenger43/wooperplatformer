@@ -315,11 +315,11 @@ export class GrumpigBoss extends BossBattle {
         this.playerSpeedMultiplier = 0.8;
         this.playerJumpMultiplier = 0.8;
         this.jumpSensorsActive = false
+        this.grumpigTeleporting = false
     }
     preload() {
         super.preload()
         this.load.spritesheet('grumpig', 'assets/grumpigsprite.png', { frameWidth: 32, frameHeight: 32 })
-        console.log("[PRELOAD] Attempting to load grumpig from 'assets/grumpigsprite.png'")
         this.load.on('complete', () => {
             console.log("[PRELOAD] All assets finished loading.");
         });
@@ -355,7 +355,7 @@ export class GrumpigBoss extends BossBattle {
     create() {
         super.create() //super refers to parent class-- basically calling the create() method from boss battle
         this.grumpig = this.physics.add.sprite(150, 400, 'grumpig').setScale(2)
-        console.log('[DEBUG] grumpig texture exists:', this.textures.exists('grumpig'));
+        // console.log('[DEBUG] grumpig texture exists:', this.textures.exists('grumpig'));
         this.sensor = this.physics.add.sprite(190, 400, 'grumpig').setScale(2).setAlpha(0.6)
         this.jumpSensors = this.physics.add.group()
         this.jumpInterval = 20
@@ -390,26 +390,26 @@ export class GrumpigBoss extends BossBattle {
         this.grumpig.setFrame(0);
     }
     moveGrumpig(delta) {
-        let deltaX = Math.abs(this.grumpig.x - this.grumpigPrevX)
+        let deltaX = Math.abs(this.grumpig.x - this.grumpigPrevX) //change in x value/coords for grumpig
         this.grumpig.isStandingStill = false
-        if (this.sensor.body.touching.down) {
+        if (this.grumpigTeleporting) {
+            this.grumpig.setVelocityX(0);
+            this.sensor.setVelocityX(0);
+            return;
+        }
+        if (this.sensor.body.touching.down) { //as long as sensor is touching down(meaning there is ground for grumpig to walk on, grumpig will walk)
             this.sensor.setVelocityX(80)
             this.grumpig.setVelocityX(80)
-
             this.grumpig.anims.play('grumpigForward', true);
-
             this.grumpig.isStandingStill = false
-            console.log(this.grumpig.isStandingStill)
+            // console.log(this.grumpig.isStandingStill)
             this.grumpig.isJumping = false
         }
         if (!this.sensor.body.touching.down && !this.grumpig.isJumping) {
             this.grumpig.setVelocityX(0);
             this.sensor.setVelocityX(0)
             this.sensor.y = this.grumpig.y
-            console.log('[ANIM] Attempting to play grumpigFaceForward');
             this.grumpig.anims.play('grumpigFaceForward', true);
-            console.log("played")
-
         }
         if (deltaX < 1) {//means is stuck 
             this.grumpig.isStandingStill = true
@@ -426,6 +426,11 @@ export class GrumpigBoss extends BossBattle {
         } else {
             this.grumpigStillTime = 0
             this.jumpSensorsActive = false
+        }
+        if (Math.abs(this.sensor.y - this.grumpig.y) > 100) {
+            // console.warn('sensor was too far below Grumpig. Resetting position.');
+            this.sensor.setPosition(this.grumpig.x + 40, this.grumpig.y); // offset for LH sensor
+            this.sensor.setVelocity(0); // stop weird physics
         }
         this.grumpigPrevX = this.grumpig.x
     }
@@ -445,6 +450,7 @@ export class GrumpigBoss extends BossBattle {
                 if (!clone.hasLanded) {  // only trigger once
                     clone.hasLanded = true;
                     clone.isJumping = false;
+                    this.jumpSensorResults.push(clone)
                     console.log(clone.hasLanded + " tester2 (overlap triggered)");
                 }
             });
@@ -452,52 +458,60 @@ export class GrumpigBoss extends BossBattle {
         }
     }
     updateJumpSensors() {
-        let landedClone = null
         if (!this.jumpSensorsActive || this.jumpSensors.getLength() === 0) return;
-        this.jumpSensors.children.iterate(clone => {
-            // console.log(`Clone at x=${clone.x}, y=${clone.y}, targetOffsetX=${clone.targetOffsetX}`); 
-            if (clone.hasLanded && !landedClone) {
-                landedClone = clone; // Take the first clone that landed as safe spot
-                console.log(`Clone landed at x=${clone.x}, y=${clone.y}`);
-                console.log(`Grumpig will teleport to x=${landedClone.x}`);
-                this.grumpig.anims.play('grumpigPowerUp', true);
-                this.time.delayedCall(500, () => {
-                    this.grumpig.anims.play('grumpigFade', true);
-                  });
-                this.time.delayedCall(2000, ()=> {
-                    this.grumpig.setPosition(landedClone.x, landedClone.y - this.grumpig.height / 2);
-                })
-                this.time.delayedCall(2500, () => {
-                    this.playAnimationBackwards(this.grumpig, 'grumpigFade');
-                })
-
-                this.grumpig.isJumping = true;
-                this.grumpigStillTime = 0;
-
-            }
-        })
-        if (landedClone) {
-            // Clear clones since jump is now decided
+    
+        if (this.jumpSensorResults.length > 0) {
+            let grumpigX = this.grumpig.x;
+            let landedClone = this.jumpSensorResults.reduce((furthest, clone) => {
+                return Math.abs(clone.x - grumpigX) > Math.abs(furthest.x - grumpigX) ? clone : furthest;
+            });
+    
+            console.log(`Clone landed at x=${landedClone.x}, y=${landedClone.y}`);
+            console.log(`Grumpig will teleport to x=${landedClone.x}`);
+    
+            this.grumpigTeleporting = true;
+            this.grumpig.anims.play('grumpigPowerUp', true);
+    
+            this.time.delayedCall(500, () => {
+                this.grumpig.anims.play('grumpigFade', true);
+            });
+    
+            this.time.delayedCall(2000, () => {
+                this.grumpig.setPosition(landedClone.x, landedClone.y - this.grumpig.height / 2);
+            });
+    
+            this.time.delayedCall(2500, () => {
+                this.playAnimationBackwards(this.grumpig, 'grumpigFade');
+            });
+    
+            this.time.delayedCall(3500, () => {
+                this.grumpigTeleporting = false;
+            });
+    
+            this.grumpig.isJumping = true;
+            this.grumpigStillTime = 0;
+    
+            // Clear sensors and results after teleport chosen
             this.jumpSensors.clear(true, true);
             this.jumpSensorResults = [];
-            return
+            return;
         }
-        if (!landedClone) { //no clone landed
-            let allDone = true
-            this.jumpSensors.children.iterate(clone => {
-                if (!clone.hasLanded && !clone.isJumping) {
-                    allDone = false
-                }
-            })
-            if (allDone) {
-                console.log("All clones finished jumping but no safe landing found. Increasing jumpInterval and retrying.");
-                // have failed
-                this.jumpSensors.clear(true, true)
-                this.jumpSensorResults = [];
-                this.createJumpSensors();
+    
+        // No clones landed, check if all finished jumping
+        let allDone = true;
+        this.jumpSensors.children.iterate(clone => {
+            if (!clone.hasLanded && !clone.isJumping) {
+                allDone = false;
             }
+        });
+    
+        if (allDone) {
+            console.log("All clones finished jumping but no safe landing found. Increasing jumpInterval and retrying.");
+            this.jumpSensors.clear(true, true);
+            this.jumpSensorResults = [];
+            this.createJumpSensors();
         }
-    }
+    }    
     update(time, delta) {
         super.update(time, delta)
         this.speedMultiplier = this.playerSpeedMultiplier || 1;
@@ -505,8 +519,12 @@ export class GrumpigBoss extends BossBattle {
         this.moveGrumpig(delta)
         this.updateJumpSensors();
     }
-
+    
 }
+
+    
+
+
 // console.log('bossBattles loaded', bossBattles);
 
 window.GrumpigBoss = GrumpigBoss;
