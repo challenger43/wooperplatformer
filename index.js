@@ -567,6 +567,3 @@ const config = {
 const game = new Phaser.Game(config);
 console.log('Scenes registered in SceneManager:', game.scene.scenes.map(s => s.scene.key));
 console.log(game.scene.keys)
-
-
-

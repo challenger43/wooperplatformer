@@ -18,7 +18,7 @@ export default class BossBattle extends Phaser.Scene {
         this.levels = levels
     }
     init(data) {
-        console.log('init data:', data);
+        // console.log('init data:', data);
         this.quagsire = data.quagsire ?? false;
         this.bossBattle = data.bossBattleData;
         console.log('this.bossBattle set to:', this.bossBattle);
@@ -441,10 +441,7 @@ export class GrumpigBoss extends BossBattle {
                 .setScale(1.5)
             clone.isJumping = false
             clone.hasLanded = false
-            // this.physics.add.collider(clone, this.platforms);
-            // console.log(clone.body)
             this.physics.add.overlap(clone, this.platforms, () => {
-                console.log("overlapping")
                 if (!clone.hasLanded) {  // only trigger once
                     clone.hasLanded = true;
                     clone.isJumping = false;
@@ -463,18 +460,20 @@ export class GrumpigBoss extends BossBattle {
                 landedClone = clone; // Take the first clone that landed as safe spot
                 console.log(`Clone landed at x=${clone.x}, y=${clone.y}`);
                 console.log(`Grumpig will teleport to x=${landedClone.x}`);
-                this.grumpig.anims.play('grumpigFade', true);
-
-                this.grumpig.once('animationcomplete-grumpigFade', () => {
-                    // Teleport AFTER fade out finishes
+                this.grumpig.anims.play('grumpigPowerUp', true);
+                this.time.delayedCall(500, () => {
+                    this.grumpig.anims.play('grumpigFade', true);
+                  });
+                this.time.delayedCall(2000, ()=> {
                     this.grumpig.setPosition(landedClone.x, landedClone.y - this.grumpig.height / 2);
-
-                    // Then play the fade in (backwards)
+                })
+                this.time.delayedCall(2500, () => {
                     this.playAnimationBackwards(this.grumpig, 'grumpigFade');
+                })
 
-                    this.grumpig.isJumping = true;
-                    this.grumpigStillTime = 0;
-                });
+                this.grumpig.isJumping = true;
+                this.grumpigStillTime = 0;
+
             }
         })
         if (landedClone) {
@@ -508,6 +507,6 @@ export class GrumpigBoss extends BossBattle {
     }
 
 }
-console.log('bossBattles loaded', bossBattles);
+// console.log('bossBattles loaded', bossBattles);
 
 window.GrumpigBoss = GrumpigBoss;
