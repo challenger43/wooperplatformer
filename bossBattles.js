@@ -353,9 +353,10 @@ export class GrumpigBoss extends BossBattle {
         this.sensor = this.physics.add.sprite(190, 400, 'grumpig').setScale(2).setAlpha(0.6)
         this.jumpSensors = this.physics.add.group()
         this.jumpInterval = 20
+        this.hasSpawnedJumpSensors = false
         this.physics.add.collider(this.sensor, this.platforms);
         this.physics.add.collider(this.grumpig, this.platforms);
-        this.physics.add.collider(this.jumpSensors, this.platforms)
+        // this.physics.add.collider(this.jumpSensors, this.platforms)
         this.anims.create({
             key: 'grumpigFaceForward',
             frames: [{ key: 'grumpig', frame: 0 }],
@@ -400,7 +401,7 @@ export class GrumpigBoss extends BossBattle {
         if (deltaX < 1) {//means is stuck 
             this.grumpig.isStandingStill = true
             this.grumpigStillTime += delta;
-            if (this.grumpigStillTime >= 3000) {
+            if (this.grumpigStillTime >= 3000 && !this.hasSpawnedJumpSensors && !this.jumpSensorsActive) {
                 console.log("Grumpig has been stuck for 3 seconds!");
                 this.createJumpSensors();
                 this.jumpSensorsActive = true
@@ -411,7 +412,7 @@ export class GrumpigBoss extends BossBattle {
             }
         } else {
             this.grumpigStillTime = 0
-            this.jumpSensorsActive = false 
+            this.jumpSensorsActive = false
         }
         this.grumpigPrevX = this.grumpig.x
     }
@@ -427,45 +428,40 @@ export class GrumpigBoss extends BossBattle {
                 .setScale(1.5)
             clone.isJumping = false
             clone.hasLanded = false
-            this.physics.add.collider(clone, this.platforms, () => {
-                clone.hasLanded = true;
-                clone.isJumping = false;
-            });
+            // this.physics.add.collider(clone, this.platforms);
+            // console.log(clone.body)
+            this.physics.add.overlap(clone, this.platforms, () => {
+                console.log("overlapping")
+                if (!clone.hasLanded) {  // only trigger once
+                    clone.hasLanded = true;
+                    clone.isJumping = false;
+                    console.log(clone.hasLanded + " tester2 (overlap triggered)");
+                }
+            }); 
             this.jumpSensors.add(clone)
         }
     }
     updateJumpSensors() {
         let landedClone = null
-        if (this.jumpSensors.getLength() === 0) return;
+        if (!this.jumpSensorsActive || this.jumpSensors.getLength() === 0) return;
         this.jumpSensors.children.iterate(clone => {
             // console.log(`Clone at x=${clone.x}, y=${clone.y}, targetOffsetX=${clone.targetOffsetX}`); 
             if (clone.hasLanded && !landedClone) {
                 landedClone = clone; // Take the first clone that landed as safe spot
                 console.log(`Clone landed at x=${clone.x}, y=${clone.y}`);
-                console.log(`Grumpig will jump to x=${landedClone.x}`);
-                this.grumpig.setVelocityX(landedClone.x - this.grumpig.x);
-                this.grumpig.setVelocityY(-300);  // jump velocity upwards
-                this.grumpigStillTime = 0 
-        
-                // Clear clones since jump is now decided
-                this.jumpSensors.clear(true, true);
-                this.jumpSensorResults = [];
-                return
+                console.log(`Grumpig will teleport to x=${landedClone.x}`);
+                this.grumpig.setPosition(landedClone.x, landedClone.y - this.grumpig.height / 2);
+                this.grumpig.isJumping = true;
+                this.grumpigStillTime = 0
             }
-            })
-            // if (landedClone) {
-            //     // Make Grumpig jump towards the landed clone's x-position
-            //     console.log(`Grumpig will jump to x=${landedClone.x}`);
-            //     this.grumpig.setVelocityX(landedClone.x - this.grumpig.x);
-            //     this.grumpig.setVelocityY(-300);  // jump velocity upwards
-            //     this.grumpigStillTime = 0 
-        
-            //     // Clear clones since jump is now decided
-            //     this.jumpSensors.clear(true, true);
-            //     this.jumpSensorResults = [];
-            //     return
-            // }
-        if(!landedClone) { //no clone landed
+        })
+        if(landedClone){
+               // Clear clones since jump is now decided
+               this.jumpSensors.clear(true, true);
+               this.jumpSensorResults = [];
+               return
+        }
+        if (!landedClone) { //no clone landed
             let allDone = true
             this.jumpSensors.children.iterate(clone => {
                 if (!clone.hasLanded && !clone.isJumping) {
