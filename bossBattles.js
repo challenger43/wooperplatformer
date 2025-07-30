@@ -30,6 +30,7 @@ export default class BossBattle extends Phaser.Scene {
         this.load.spritesheet('dude', 'assets/wooperspritesheet1a.png', { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet('quagsire', 'assets/quagsirespritesheet.png', { frameWidth: 32, frameHeight: 32 });
         this.load.image('bubble', 'assets/bubble.png');
+        this.load.spritesheet('grumpig', 'grumpigsprite.png', { frameWidth: 32, frameHeight: 32 })
     }
     enterPortal(_player, portal) {
         console.log("portal entered ")
@@ -318,6 +319,10 @@ export class GrumpigBoss extends BossBattle {
     preload() {
         super.preload()
         this.load.spritesheet('grumpig', 'assets/grumpigsprite.png', { frameWidth: 32, frameHeight: 32 })
+        console.log("[PRELOAD] Attempting to load grumpig from 'assets/grumpigsprite.png'")
+        this.load.on('complete', () => {
+            console.log("[PRELOAD] All assets finished loading.");
+        });
     }
     playAnimationBackwards(sprite, animKey) { //pretty much the name, plays animation backwards
         //pass in the sprite and the animation key you want to be played backwards
@@ -350,6 +355,7 @@ export class GrumpigBoss extends BossBattle {
     create() {
         super.create() //super refers to parent class-- basically calling the create() method from boss battle
         this.grumpig = this.physics.add.sprite(150, 400, 'grumpig').setScale(2)
+        console.log('[DEBUG] grumpig texture exists:', this.textures.exists('grumpig'));
         this.sensor = this.physics.add.sprite(190, 400, 'grumpig').setScale(2).setAlpha(0.6)
         this.jumpSensors = this.physics.add.group()
         this.jumpInterval = 20
@@ -357,6 +363,7 @@ export class GrumpigBoss extends BossBattle {
         this.physics.add.collider(this.sensor, this.platforms);
         this.physics.add.collider(this.grumpig, this.platforms);
         // this.physics.add.collider(this.jumpSensors, this.platforms)
+        this.grumpigReady = false;
         this.anims.create({
             key: 'grumpigFaceForward',
             frames: [{ key: 'grumpig', frame: 0 }],
@@ -380,6 +387,7 @@ export class GrumpigBoss extends BossBattle {
             repeat: -1,
             frameRate: 12
         })
+        this.grumpig.setFrame(0);
     }
     moveGrumpig(delta) {
         let deltaX = Math.abs(this.grumpig.x - this.grumpigPrevX)
@@ -387,7 +395,9 @@ export class GrumpigBoss extends BossBattle {
         if (this.sensor.body.touching.down) {
             this.sensor.setVelocityX(80)
             this.grumpig.setVelocityX(80)
-            this.grumpig.anims.play('grumpigForward', true)
+
+            this.grumpig.anims.play('grumpigForward', true);
+
             this.grumpig.isStandingStill = false
             console.log(this.grumpig.isStandingStill)
             this.grumpig.isJumping = false
@@ -396,7 +406,10 @@ export class GrumpigBoss extends BossBattle {
             this.grumpig.setVelocityX(0);
             this.sensor.setVelocityX(0)
             this.sensor.y = this.grumpig.y
-            this.grumpig.anims.play('grumpigFaceForward', true)
+            console.log('[ANIM] Attempting to play grumpigFaceForward');
+            this.grumpig.anims.play('grumpigFaceForward', true);
+            console.log("played")
+
         }
         if (deltaX < 1) {//means is stuck 
             this.grumpig.isStandingStill = true
@@ -437,7 +450,7 @@ export class GrumpigBoss extends BossBattle {
                     clone.isJumping = false;
                     console.log(clone.hasLanded + " tester2 (overlap triggered)");
                 }
-            }); 
+            });
             this.jumpSensors.add(clone)
         }
     }
@@ -450,16 +463,25 @@ export class GrumpigBoss extends BossBattle {
                 landedClone = clone; // Take the first clone that landed as safe spot
                 console.log(`Clone landed at x=${clone.x}, y=${clone.y}`);
                 console.log(`Grumpig will teleport to x=${landedClone.x}`);
-                this.grumpig.setPosition(landedClone.x, landedClone.y - this.grumpig.height / 2);
-                this.grumpig.isJumping = true;
-                this.grumpigStillTime = 0
+                this.grumpig.anims.play('grumpigFade', true);
+
+                this.grumpig.once('animationcomplete-grumpigFade', () => {
+                    // Teleport AFTER fade out finishes
+                    this.grumpig.setPosition(landedClone.x, landedClone.y - this.grumpig.height / 2);
+
+                    // Then play the fade in (backwards)
+                    this.playAnimationBackwards(this.grumpig, 'grumpigFade');
+
+                    this.grumpig.isJumping = true;
+                    this.grumpigStillTime = 0;
+                });
             }
         })
-        if(landedClone){
-               // Clear clones since jump is now decided
-               this.jumpSensors.clear(true, true);
-               this.jumpSensorResults = [];
-               return
+        if (landedClone) {
+            // Clear clones since jump is now decided
+            this.jumpSensors.clear(true, true);
+            this.jumpSensorResults = [];
+            return
         }
         if (!landedClone) { //no clone landed
             let allDone = true
