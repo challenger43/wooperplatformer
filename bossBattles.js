@@ -312,7 +312,7 @@ export class GrumpigBoss extends BossBattle {
     grumpig;
     constructor() {
         super('GrumpigBoss');
-        this.playerSpeedMultiplier = 0.8;
+        this.playerSpeedMultiplier = 1.6;
         this.playerJumpMultiplier = 0.8;
         this.jumpSensorsActive = false
         this.grumpigTeleporting = false
@@ -400,8 +400,8 @@ export class GrumpigBoss extends BossBattle {
             return;
         }
         if (this.sensor.body.touching.down) { //as long as sensor is touching down(meaning there is ground for grumpig to walk on, grumpig will walk)
-            this.sensor.setVelocityX(120)
-            this.grumpig.setVelocityX(120)
+            this.sensor.setVelocityX(260)
+            this.grumpig.setVelocityX(260)
             this.grumpig.anims.play('grumpigForward', true);
             this.grumpig.isStandingStill = false
             // console.log(this.grumpig.isStandingStill)

@@ -527,10 +527,10 @@ class Level extends Phaser.Scene {
                 let platformMovementY = movingPlatform.moveY;
                 let platformMovementSpeed = movingPlatform.speed;
                 if (movingPlatform.y >= (platformOriginY + platformMovementY)) {
-                    movingPlatform.directionY = -1; // move left
+                    movingPlatform.directionY = -1; // move up
                 }
                 else if (movingPlatform.y <= platformOriginY) {
-                    movingPlatform.directionY = 1; // move right
+                    movingPlatform.directionY = 1; // move down
                 }
                 movingPlatform.setVelocityY(platformMovementSpeed * movingPlatform.directionY);
             }

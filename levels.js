@@ -14,21 +14,55 @@ export const grumpigLevelData = {
             scaleX: 0.3,
         },
         {
-            x: 1550,
-            y: 700,
-            scaleX: 0.2,
-        },
-        {
-            x: 1623,
-            y: 600,
-            scaleX: 0.2,
-        },
-        {
-            x: 1572,
-            y: 500,
+            x: 1540,
+            y: 450,
             scaleX: 0.02,
-            scaleY: 2.6,
         },
+        {
+            x: 1700,
+            y: 570,
+            scaleX: 0.2,
+        },
+        {
+            x: 1900,
+            y: 698,
+            scaleX: 0.1,
+        },
+        {
+            x: 2050,
+            y: 575,
+            scaleX: 0.5,
+        },
+        {
+            x: 1570,
+            y: 400,
+            scaleX: 0.02,
+        },
+        {
+            x: 1618,
+            y: -1500,
+            scaleX: 0.02,
+            scaleY: 100,
+        },
+        {
+            x: 2000,
+            y: 698,
+            scaleX: 0.1,
+        },
+        {
+            x: 2090,
+            y: 698,
+            scaleX: 0.1,
+        },
+        {
+            x: 1970,
+            y: 250,
+            scaleX: 0.1,
+            scaleY: 20,
+        },
+        
+        
+        
     ],
     movingPlatforms: [
         // {
@@ -42,6 +76,19 @@ export const grumpigLevelData = {
         //     speed: 100,
         //     tint: 0x228B22,
         // }
+        {
+            x: 1555,
+            y: 1500,
+            scaleX: 0.1,
+            scaleY: 5,
+            movementType: 'updown',
+            moveY: 600,
+            speed: 700,
+            tint: 0xFFFFFF,
+            
+
+
+        },
     ],
     waters: [
         // { x: 300, y: 520, scaleX: 2, scaleY: 0.5, tint: 0x0000FF }
