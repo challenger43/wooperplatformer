@@ -40,7 +40,7 @@ export const grumpigLevelData = {
         },
         {
             x: 1618,
-            y: -1500,
+            y: -1300,
             scaleX: 0.02,
             scaleY: 100,
         },
@@ -56,7 +56,7 @@ export const grumpigLevelData = {
         },
         {
             x: 1970,
-            y: 250,
+            y: 700,
             scaleX: 0.1,
             scaleY: 20,
         },
@@ -80,7 +80,7 @@ export const grumpigLevelData = {
             x: 1555,
             y: 1500,
             scaleX: 0.1,
-            scaleY: 5,
+            scaleY: 10,
             movementType: 'updown',
             moveY: 600,
             speed: 700,

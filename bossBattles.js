@@ -394,10 +394,10 @@ export class GrumpigBoss extends BossBattle {
     moveGrumpig(delta) {
         let deltaX = Math.abs(this.grumpig.x - this.grumpigPrevX) //change in x value/coords for grumpig
         this.grumpig.isStandingStill = false
-        if (this.grumpigTeleporting) {
+        if (this.grumpigTeleporting) { //if grumpig is about to teleport stop everything's x motion
             this.grumpig.setVelocityX(0);
             this.sensor.setVelocityX(0);
-            return;
+            return; //go back to start
         }
         if (this.sensor.body.touching.down) { //as long as sensor is touching down(meaning there is ground for grumpig to walk on, grumpig will walk)
             this.sensor.setVelocityX(260)
@@ -408,16 +408,16 @@ export class GrumpigBoss extends BossBattle {
             this.grumpig.isJumping = false
         }
         if (!this.sensor.body.touching.down && !this.grumpig.isJumping) {
-            this.grumpig.setVelocityX(0);
+            this.grumpig.setVelocityX(0); 
             this.sensor.setVelocityX(0)
             this.sensor.y = this.grumpig.y
-            this.grumpig.anims.play('grumpigFaceForward', true);
+            this.grumpig.anims.play('grumpigFaceForward', true); //grumpig stops moving horizontally and plays the face forward anim
         }
-        if (deltaX < 1) {//means is stuck 
+        if (deltaX < 1) {//means is stuck (grumpig's change in X is less than 1, and thus has barely moved)
             this.grumpig.isStandingStill = true
-            this.grumpigStillTime += delta;
-            if (this.grumpigStillTime >= 200 && !this.hasSpawnedJumpSensors && !this.jumpSensorsActive) { //if has been standing still for longer than 0.5 seconds
-                console.log("Grumpig has been stuck for 0.5 seconds!");
+            this.grumpigStillTime += delta; //for every millisecond grumpig is stuck it will add 1 millisecond until it arrives at 200(which then triggers the if loop)
+            if (this.grumpigStillTime >= 200 && !this.hasSpawnedJumpSensors && !this.jumpSensorsActive) { //if has been standing still for longer than 200 milliseconds
+                console.log("Grumpig has been stuck for 0.2 seconds!");
                 this.createJumpSensors();
                 this.jumpSensorsActive = true
                 console.log("jumpsensors spawning")
@@ -426,10 +426,10 @@ export class GrumpigBoss extends BossBattle {
                 }
             }
         } else {
-            this.grumpigStillTime = 0
-            this.jumpSensorsActive = false
+            this.grumpigStillTime = 0 //if deltaX is no longer less than 1 reset the timer
+            this.jumpSensorsActive = false //jump sensors deactivate as they are not needed
         }
-        if (Math.abs(this.sensor.y - this.grumpig.y) > 100) {
+        if (Math.abs(this.sensor.y - this.grumpig.y) > 100) {//if sensor gets too far below grumpig
             // console.warn('sensor was too far below Grumpig. Resetting position.');
             this.sensor.setPosition(this.grumpig.x + 40, this.grumpig.y); // offset for LH sensor
             this.sensor.setVelocity(0); // stop weird physics
@@ -439,10 +439,10 @@ export class GrumpigBoss extends BossBattle {
     createJumpSensors() {
         console.log("createjumpsensors called")
         this.jumpSensorResults = [];
-        for (let i = 0; i < 10; i++) {
-            let offsetX = Phaser.Math.Between(60, 300);
-            let spawnX = this.grumpig.x + offsetX;
-            let spawnY = this.grumpig.y - 300;
+        for (let i = 0; i < 10; i++) { //will create 10 jump sensors
+            let offsetX = Phaser.Math.Between(60, 300); //picks a random offset to jump at 
+            let spawnX = this.grumpig.x + offsetX; //where jumpsensor will appear(it will go anywhere between 60 to 300 pixels to the right of grumpig)
+            let spawnY = this.grumpig.y - 300; //spawns it 300 pixels above grumpig
             let clone = this.physics.add.sprite(spawnX, spawnY, 'grumpig')
                 .setAlpha(0.3)
                 .setScale(1.5)
@@ -451,52 +451,49 @@ export class GrumpigBoss extends BossBattle {
             clone.hasLanded = false
             this.physics.add.overlap(clone, this.platforms, () => {
                 if (!clone.hasLanded) {  // only trigger once
-                    clone.hasLanded = true;
+                    clone.hasLanded = true; //makes sure this clone only counts as 1 
+                    //(the first time a clone touches platform hasLanded is false, but once it hasLanded it will change the flag to true so the landing logic will only run once)
                     clone.isJumping = false;
-                    this.jumpSensorResults.push(clone)
+                    this.jumpSensorResults.push(clone) //push the clone data into jumpSensorResults
                     console.log(clone.hasLanded + " tester2 (overlap triggered)");
                 }
             });
-            this.jumpSensors.add(clone)
+            this.jumpSensors.add(clone) //adds the clone to the group of jumpSensors so can destroy them/use them all at once
         }
     }
     updateJumpSensors() {
-        if (!this.jumpSensorsActive || this.jumpSensors.getLength() === 0) return;
-        if (this.jumpSensorResults.length > 0) {
+        if (!this.jumpSensorsActive || this.jumpSensors.getLength() === 0) return; //if there aren't jump sensors active no point in calling this
+        if (this.jumpSensorResults.length > 0) { //if the results array has at least 1 result
             let grumpigX = this.grumpig.x;
-            let landedClone = this.jumpSensorResults.reduce((furthest, clone) => {
-                return Math.abs(clone.x - grumpigX) > Math.abs(furthest.x - grumpigX) ? clone : furthest;
-            });
-
+            let landedClone = this.jumpSensorResults.reduce((furthest, clone) => {       //reduce takes parameters accumulator and current, meaning it goes through every element in an array and compares it to the accumulator(or farthest one in our case)
+                return Math.abs(clone.x - grumpigX) > Math.abs(furthest.x - grumpigX) ? clone : furthest; 
+                //distance from grumpig's current x to this current clone's x, then compares to distance from grumpig's current x to furthest clone's x
+                //if current clone is farther from grumpig, replace it with the furthest clone, else keep the OG furthest
+            }); //after this whole loop landedClone will be the furthest one from grumpig.
             console.log(`Clone landed at x=${landedClone.x}, y=${landedClone.y}`);
             console.log(`Grumpig will teleport to x=${landedClone.x}`);
-
             this.grumpigTeleporting = true;
-            this.sensor.body.reset(this.grumpig.x + 50, this.grumpig.y);
+            this.sensor.body.reset(this.grumpig.x + 50, this.grumpig.y); //resets the sensor(instantly move physics body+ reset velocity)
             this.grumpig.anims.play('grumpigPowerUp', true);
-
-            this.time.delayedCall(200, () => {
+            this.time.delayedCall(200, () => { //wait 200 milliseconds
                 this.grumpig.anims.play('grumpigFade', true);
             });
-
             this.time.delayedCall(600, () => {
                 this.grumpig.setPosition(landedClone.x, landedClone.y - this.grumpig.height / 2);
                 this.sensor.body.reset(this.grumpig.x + 50, this.grumpig.y);
             });
-
             this.time.delayedCall(1000, () => {
                 this.playAnimationBackwards(this.grumpig, 'grumpigFade');
             });
-
             this.time.delayedCall(1600, () => {
                 this.grumpigTeleporting = false;
             });
-            this.sensor.body.reset(this.grumpig.x + 50, this.grumpig.y);
+            this.sensor.body.reset(this.grumpig.x + 50, this.grumpig.y); //reset again for good measure
             this.grumpig.isJumping = true;
-            this.grumpigStillTime = 0;
+            this.grumpigStillTime = 0; //resets timer counting how long grumpig has been still for
 
             // Clear sensors and results after teleport chosen
-            this.jumpSensors.clear(true, true);
+            this.jumpSensors.clear(true, true);  //group.clear(removeFromScene, destroyChildren);
             this.jumpSensorResults = [];
             return;
         }

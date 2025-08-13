@@ -534,9 +534,7 @@ class Level extends Phaser.Scene {
                 }
                 movingPlatform.setVelocityY(platformMovementSpeed * movingPlatform.directionY);
             }
-
         })
-
         this.isInWater = false;
     }
 }
