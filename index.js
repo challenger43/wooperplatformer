@@ -1,8 +1,8 @@
 const GRAVITY_DEFAULT = 500; //default gravity settings
 const GRAVITY_QUAGSIRE = 900;
 const GRAVITY_WATER = 0;
-import {GrumpigBoss} from './bossBattles.js';
-import {bossBattles} from './levels.js'
+import { GrumpigBoss } from './bossBattles.js';
+import { bossBattles } from './levels.js'
 import { levels } from './levels.js';
 class MenuScene extends Phaser.Scene { //the menu
     cursor;
@@ -17,11 +17,12 @@ class MenuScene extends Phaser.Scene { //the menu
         this.load.image('ground', 'assets/platform.png');
         this.load.image('star', 'assets/WooperBall.png'); //they don't actually look like stars in 'real life' 
         this.load.image('bomb', 'assets/bomb.png');
-        this.load.image('portal', 'assets/Nether-Portal.png');
         this.load.image('bubble', 'assets/bubble.png');
         this.load.spritesheet('dude', 'assets/wooperspritesheet1a.png', { frameWidth: 32, frameHeight: 32 }); //sets the height of sprite
         this.load.spritesheet('quagsire', 'assets/quagsirespritesheet.png', { frameWidth: 32, frameHeight: 32 });
+        this.load.image('portal', 'assets/Nether-Portal.png');
         this.load.image('sleepingWooper', 'assets/toBeContinuedWooperImage.png')
+        this.load.audio('portalSound', 'Sounds/portalSound.mp3')
         //use a sprite sheet for easier animations--with a sprite you download not just one image but a bunch of images all in one file that it can switch in between
     }
     create() {
@@ -165,30 +166,53 @@ class Level extends Phaser.Scene {
     }
 
     enterPortal(_player, portal) {
-        console.log("portal entered ")
+        console.log("portal entered");
+        this.portalSound.play();
+
+        // Determine destination
         portal.destination = portal.getData('destination');
         portal.boss = portal.getData('boss');
         let target = portal.destination ?? portal.boss;
-        console.log('portal object in enterPortal:', portal);
-        console.log('portal.destination:', portal.destination);
-        console.log('portal.boss:', portal.boss);
-        console.log("Trying to start scene:", target);
-        let bossBattleData = null
+
+        let bossBattleData = null;
         if (portal.boss && this.bossBattles) {
             bossBattleData = this.bossBattles[portal.boss];
-            console.log('Found bossBattleData:', bossBattleData);
         }
-        if (!bossBattleData) {
-            console.warn(`No bossBattle data found for boss key: ${portal.boss}`);
-        }
-        if (target) {
-            this.scene.start(target, {
-                quagsire: this.quagsire,
-                boss: portal.boss ?? null,
-                bossBattleData: bossBattleData ?? null
-            });
-        }
+
+        // Freeze physics and disable player body
+        this.physics.world.pause();
+        if (_player.body) _player.body.enable = false;
+        _player.setPosition(portal.x, portal.y);
+        // Camera zoom toward portal
+        this.cameras.main.zoomTo(2, 2000); // zoom in over 2 seconds
+        this.cameras.main.pan(portal.x, portal.y, 2000, 'Cubic.easeInOut'); // center camera on portal
+        this.cameras.main.fadeOut(2000, 0, 0, 0) //fadeOut(duration, red, green, blue)
+        // Tween: shrink and spin Wooper
+        this.tweens.add({
+            targets: _player,
+            scaleX: 0,
+            scaleY: 0,
+            angle: 720, // 2 spins
+            duration: 2000,
+            ease: 'Cubic.easeInOut'
+        });
+
+        // After 2 seconds, switch scene
+        this.time.delayedCall(2000, () => {
+            // Reset camera zoom for next scene
+            this.cameras.main.setZoom(1);
+            this.physics.world.resume();
+
+            if (target) {
+                this.scene.start(target, {
+                    quagsire: this.quagsire,
+                    boss: portal.boss ?? null,
+                    bossBattleData: bossBattleData ?? null
+                });
+            }
+        });
     }
+
     waterFrame = 0;
     enterWater(_player, water) {
         this.isInWater = true;
@@ -202,6 +226,7 @@ class Level extends Phaser.Scene {
     create() {
         this.bossBattles = bossBattles
         this.keys = this.input.keyboard.addKeys("W,A,S,D,Q,P,O,V,SPACE,")
+        this.portalSound = this.sound.add('portalSound')
         //an object is a collection of properties and values--properties are like labels
         let sky = this.add.image(900, -100, 'sky').setScale(4);
         //adds images to things-the preload function loads them, this thing makes it actually happen
@@ -277,12 +302,8 @@ class Level extends Phaser.Scene {
                 ease: '{Power2}'
             },
         });
-
-        // The player and its settings
-        this.player = this.physics.add.sprite(100, 450, 'dude');    //use a sprite sheet for easier animations--with a sprite you download not just one image but a bunch of images all in one file that it can switch in between
-        // animates player walking left/right
-
-        // Make water
+        this.player = this.physics.add.sprite(100, 450, 'dude')
+            .setDepth(10);
         this.waters = this.physics.add.staticGroup();
         for (let waterData of this.level.waters) {
             this.waters.create(waterData.x, waterData.y, 'ground')
@@ -297,8 +318,8 @@ class Level extends Phaser.Scene {
             let portal = this.portals.create(portalData.x, portalData.y, 'portal')
                 .setScale(0.3, 0.3)
                 .setTint(portalData.tint ?? 0xffffff)
-                .refreshBody();
-
+                .refreshBody()
+                .setDepth(5)
             portal.setData('destination', portalData.destination);
             portal.setData('boss', portalData.boss);
 
@@ -436,7 +457,7 @@ class Level extends Phaser.Scene {
                 this.scoreText.setText("Find the portal!")
             }
         }
-        if (!this.playerMode){
+        if (!this.playerMode) {
             this.scoreText.setText("x: " + Math.floor(this.player.x) + " y: " + Math.floor(this.player.y))
         }
         this.scoreText.x = this.player.x + 80;
