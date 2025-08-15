@@ -13,11 +13,11 @@ export const grumpigLevelData = {
             y: 450,
             scaleX: 0.02,
         },
-        {   
-            x: 1360,
-            y: 550,
-            scaleX: 0.089,
-        },
+        // {   
+        //     x: 1360,
+        //     y: 550,
+        //     scaleX: 0.089,
+        // },
         {
             x: 1700,
             y: 570,
@@ -28,6 +28,12 @@ export const grumpigLevelData = {
             y: 698,
             scaleX: 0.1,
         },
+        {
+            x: 1900,
+            y: 610,
+            scaleX: 0.1,
+        },
+
         // {
         //     x: 2050,
         //     y: 575,
@@ -44,25 +50,85 @@ export const grumpigLevelData = {
             scaleX: 0.1,
             scaleY: 100,
         },
-        
-       
-        
-        
-        
-        
+        {
+            x: 1850,
+            y: 200,
+            scaleX: 0.075,
+            scaleY: 16,
+        },
+        {
+            x: 1882,
+            y: 570,
+            scaleX: 0.01,
+            scaleY: 1.1,
+        },
+        {
+            x: 2075,
+            y: 430,
+            scaleX: 0.1,
+            scaleY: 0.7
+        },
+        {
+            x: 2150,
+            y: 325,
+            scaleX: 1.5,
+            scaleY: 0.5
+        },
+        {
+            x: 2055,
+            y: 780,
+            scaleX: 0.025,
+            scaleY: 20
+        },
+        {
+            x: 2350,
+            y: 473,
+            scaleX: 0.1,
+            scaleY: 1
+        },
+        {
+            x: 2450,
+            y: 473,
+            scaleX: 0.1,
+            scaleY: 1
+        },
+        {
+            x: 2558,
+            y: 325,
+            scaleX: 0.1,
+            scaleY: 1
+        },
+        {
+            x: 2658,
+            y: 325,
+            scaleX: 0.025,
+            scaleY: 1
+        },
+        {
+            x: 2758,
+            y: 325,
+            scaleX: 0.025,
+            scaleY: 1
+        },
+        {
+            x: 2858,
+            y: 325,
+            scaleX: 0.025,
+            scaleY: 1
+        },
+        {
+            x: 3145,
+            y: 400,
+            scaleX: 0.5,
+            scaleY: 1
+        },
+
+
+
+
+
     ],
     movingPlatforms: [
-        // {
-        //     x: 400,
-        //     y: 350,
-        //     scaleX: 1,
-        //     scaleY: 1,
-        //     movementType: 'pingpong',
-        //     moveX: 200,
-        //     moveY: 0,
-        //     speed: 100,
-        //     tint: 0x228B22,
-        // }
         {
             x: 1555,
             y: 2100,
@@ -70,9 +136,9 @@ export const grumpigLevelData = {
             scaleY: 5,
             movementType: 'updown',
             moveY: 600,
-            speed: 700,
+            speed: 650,
             tint: 0xFFFFFF,
-            
+
 
 
         },
@@ -83,21 +149,18 @@ export const grumpigLevelData = {
             scaleY: 10,
             movementType: 'updown',
             moveY: 600,
-            speed: 700,
+            speed: 650,
             tint: 0xFFFFFF,
-            
-
-
         },
-        
+
         {
             x: 1243,
-            y: 515,
+            y: 460,
             scaleX: 0.1,
             scaleY: 16,
             movementType: 'updown',
             moveY: 600,
-            speed: 760,
+            speed: 650,
             tint: 0xFFFFFF,
 
         },
@@ -108,22 +171,70 @@ export const grumpigLevelData = {
             scaleY: 16,
             movementType: 'updown',
             moveY: 600,
-            speed: 800,
+            speed: 650,
+            tint: 0xFFFFFF,
+
+        },
+
+        {
+            x: 1384,
+            y: 518,
+            scaleX: 0.089,
+            movementType: 'pingpong',
+            moveX: 100,
+            speed: 80
+
+        },
+        {
+            x: 1970,
+            y: 460,
+            scaleX: 0.02,
+            movementType: 'pingpong',
+            moveX: 25,
+            speed: 80,
+
+        },
+        {
+            x: 2282,
+            y: 625,
+            scaleX: 0.1,
+            scaleY: 0.1,
+            movementType: 'circular',
+            radius: 75,
+            centerX: 2282,
+            centerY: 625,
+            speed: 0.5,
+            angle: 0,
+            startingAngle: 0,
+
+        },
+        {
+            x: 2512,
+            y: 321,
+            scaleX: 0.1,
+            scaleY: 3,
+            movementType: 'updown',
+            moveY: 700,
+            speed: 300,
             tint: 0xFFFFFF,
 
         },
         {
-            x: 2050,            
-            y: 900,
-            scaleX: 0.5,
-            scaleY: 0.25,
+            x: 2512,
+            y: 371,
+            scaleX: 0.1,
+            scaleY: 3,
             movementType: 'updown',
-            moveY: 400,
-            speed: 800,
+            moveY: 700,
+            speed: 300,
             tint: 0xFFFFFF,
 
         },
-//note to myself(and other people) models for parameters: need to pass in this stuff to be safe
+
+
+
+
+        //note to myself(and other people) models for parameters: need to pass in this stuff to be safe
         // {
         //         x: 500,
         //         y: 490,
@@ -132,6 +243,17 @@ export const grumpigLevelData = {
         //         moveX: 200,
         //         speed: 80
         // },
+        //{
+        //     x: 400,
+        //     y: 350,
+        //     scaleX: 1,
+        //     scaleY: 1,
+        //     movementType: 'pingpong',
+        //     moveX: 200,
+        //     moveY: 0,
+        //     speed: 100,
+        //     tint: 0x228B22,
+        // }
         // {
         //     x: 300,
         //     y: 500,
@@ -144,9 +266,6 @@ export const grumpigLevelData = {
         //     angle: 0,
         //     startingAngle: 0,
         // },
-        
-        
-        
     ],
     waters: [
         // { x: 300, y: 520, scaleX: 2, scaleY: 0.5, tint: 0x0000FF }
@@ -356,8 +475,8 @@ export const levels = {
                 scaleX: 0.05,
                 scaleY: 0.05,
             },
-            
-        
+
+
         ],
         floatingStars: [
             {

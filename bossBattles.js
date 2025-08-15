@@ -279,14 +279,7 @@ export default class BossBattle extends Phaser.Scene {
 
                 movingPlatform.centerX = centerX;
                 movingPlatform.centerY = centerY;
-                // console.log('Creating circular tween for platform:', {
-                //     x: movingPlatform.x,
-                //     y: movingPlatform.y,
-                //     radius: movingPlatform.radius,
-                //     centerX: movingPlatform.centerX,
-                //     centerY: movingPlatform.centerY,
-                //     orbitAngle: movingPlatform.orbitAngle
-                //   }); //use for testing purposes
+
                 this.tweens.add({
                     targets: movingPlatform,
                     orbitAngle: movingPlatform.orbitAngle + 2 * Math.PI,
@@ -416,8 +409,8 @@ export class GrumpigBoss extends BossBattle {
             return; //go back to start
         }
         if (this.sensor.body.touching.down) { //as long as sensor is touching down(meaning there is ground for grumpig to walk on, grumpig will walk)
-            this.sensor.setVelocityX(260)
-            this.grumpig.setVelocityX(260)
+            this.sensor.setVelocityX(230)
+            this.grumpig.setVelocityX(230)
             this.grumpig.anims.play('grumpigForward', true);
             this.grumpig.isStandingStill = false
             this.grumpig.isJumping = false
@@ -454,7 +447,7 @@ export class GrumpigBoss extends BossBattle {
         console.log("createjumpsensors called")
         this.jumpSensorResults = [];
         for (let i = 0; i < 10; i++) { //will create 10 jump sensors
-            let offsetX = Phaser.Math.Between(60, 500); //picks a random offset to jump at 
+            let offsetX = Phaser.Math.Between(60, 400); //picks a random offset to jump at 
             let spawnX = this.grumpig.x + offsetX; //where jumpsensor will appear(it will go anywhere between 60 to 300 pixels to the right of grumpig)
             let spawnY = this.grumpig.y - 300; //spawns it 300 pixels above grumpig
             let clone = this.physics.add.sprite(spawnX, spawnY, 'grumpig')
@@ -489,7 +482,7 @@ export class GrumpigBoss extends BossBattle {
             this.grumpigTeleporting = true;
             this.sensor.body.reset(this.grumpig.x + 50, this.grumpig.y); //resets the sensor(instantly move physics body+ reset velocity)
             this.grumpig.anims.play('grumpigPowerUp', true);
-            this.time.delayedCall(200, () => { //wait 200 milliseconds
+            this.time.delayedCall(300, () => { //wait 200 milliseconds
                 this.grumpig.anims.play('grumpigFade', true);
             });
             this.time.delayedCall(600, () => {
@@ -541,16 +534,19 @@ export class GrumpigBoss extends BossBattle {
         this.moveGrumpig(delta)
         this.updateJumpSensors();
         if (this.player.y > 700) {
-            if (this.player.x > 780) {
+            if (this.player.x > 2180) {
+                this.lastCheckpointPosition = { x: 1690, y: 430 };
                 this.player.setPosition(this.lastCheckpointPosition.x, this.lastCheckpointPosition.y)
-            }
-            else if (this.player.x > 1480) {
-                this.lastCheckpointPosition = { x: 1400, y: 518 };
-                this.player.setPosition(this.lastCheckpointPosition.x, this.lastCheckpointPosition.y)
-            }
-            else if (this.player.x > 2180) {
                 //fill stuff in as it goes on 
             }
+            else if (this.player.x > 1680) {
+                this.lastCheckpointPosition = { x: 1690, y: 430 };
+                this.player.setPosition(this.lastCheckpointPosition.x, this.lastCheckpointPosition.y)
+            }
+            else if (this.player.x > 780) {
+                this.player.setPosition(this.lastCheckpointPosition.x, this.lastCheckpointPosition.y)
+            }
+            
         }
         this.speedMultiplier = this.playerSpeedMultiplier || 1;
         this.jumpMultiplier = this.playerJumpMultiplier || 1
