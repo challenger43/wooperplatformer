@@ -238,22 +238,30 @@ export default class BossBattle extends Phaser.Scene {
         }
         this.movingPlatforms.children.iterate(movingPlatform => {
             if (movingPlatform.movementType === 'pingpong') {
-                if (movingPlatform.originX === undefined) {
-                    movingPlatform.originX = movingPlatform.x
-                    movingPlatform.originY = movingPlatform.y
+                // console.log('PINGPONG UPDATE RUNNING for', movingPlatform.x, movingPlatform.y);
+
+                // store spawn position instead of using originX
+                if (movingPlatform.spawnX === undefined) {
+                    movingPlatform.spawnX = movingPlatform.x;
+                    movingPlatform.spawnY = movingPlatform.y;
                 }
+                console.log(movingPlatform.spawnX);
+
                 if (movingPlatform.directionX === undefined) {
-                    movingPlatform.directionX = 1
+                    movingPlatform.directionX = 1;
                 }
-                let platformOriginX = movingPlatform.originX;
+
+                let platformOriginX = movingPlatform.spawnX;
                 let platformMovementX = movingPlatform.moveX;
                 let platformMovementSpeed = movingPlatform.speed;
+
                 if (movingPlatform.x >= (platformOriginX + platformMovementX)) {
                     movingPlatform.directionX = -1; // move left
                 }
                 else if (movingPlatform.x <= platformOriginX) {
                     movingPlatform.directionX = 1; // move right
                 }
+
                 movingPlatform.setVelocityX(platformMovementSpeed * movingPlatform.directionX);
             }
             else if (movingPlatform.movementType === 'circular') {
@@ -271,6 +279,14 @@ export default class BossBattle extends Phaser.Scene {
 
                 movingPlatform.centerX = centerX;
                 movingPlatform.centerY = centerY;
+                // console.log('Creating circular tween for platform:', {
+                //     x: movingPlatform.x,
+                //     y: movingPlatform.y,
+                //     radius: movingPlatform.radius,
+                //     centerX: movingPlatform.centerX,
+                //     centerY: movingPlatform.centerY,
+                //     orbitAngle: movingPlatform.orbitAngle
+                //   }); //use for testing purposes
                 this.tweens.add({
                     targets: movingPlatform,
                     orbitAngle: movingPlatform.orbitAngle + 2 * Math.PI,
@@ -316,7 +332,7 @@ export class GrumpigBoss extends BossBattle {
         this.playerJumpMultiplier = 0.8;
         this.jumpSensorsActive = false
         this.grumpigTeleporting = false
-        this.lastCheckpointPosition = {x: 774, y:450}
+        this.lastCheckpointPosition = { x: 774, y: 450 }
     }
     preload() {
         super.preload()
@@ -356,7 +372,7 @@ export class GrumpigBoss extends BossBattle {
     create() {
         super.create() //super refers to parent class-- basically calling the create() method from boss battle
         this.scoreText = this.add.text(600, 300, 'score: 0', { fontSize: '28px', fill: '#FFF' });
-        this.grumpig = this.physics.add.sprite(150, 400, 'grumpig').setScale(2)
+        this.grumpig = this.physics.add.sprite(150, 550, 'grumpig').setScale(2)
         // console.log('[DEBUG] grumpig texture exists:', this.textures.exists('grumpig'));
         this.sensor = this.physics.add.sprite(190, 400, 'grumpig').setScale(2).setAlpha(0.6)
         this.jumpSensors = this.physics.add.group()
@@ -404,11 +420,10 @@ export class GrumpigBoss extends BossBattle {
             this.grumpig.setVelocityX(260)
             this.grumpig.anims.play('grumpigForward', true);
             this.grumpig.isStandingStill = false
-            // console.log(this.grumpig.isStandingStill)
             this.grumpig.isJumping = false
         }
         if (!this.sensor.body.touching.down && !this.grumpig.isJumping) {
-            this.grumpig.setVelocityX(0); 
+            this.grumpig.setVelocityX(0);
             this.sensor.setVelocityX(0)
             this.sensor.y = this.grumpig.y
             this.grumpig.anims.play('grumpigFaceForward', true); //grumpig stops moving horizontally and plays the face forward anim
@@ -427,7 +442,6 @@ export class GrumpigBoss extends BossBattle {
             }
         } else {
             this.grumpigStillTime = 0 //if deltaX is no longer less than 1 reset the timer
-            this.jumpSensorsActive = false //jump sensors deactivate as they are not needed
         }
         if (Math.abs(this.sensor.y - this.grumpig.y) > 100) {//if sensor gets too far below grumpig
             // console.warn('sensor was too far below Grumpig. Resetting position.');
@@ -440,7 +454,7 @@ export class GrumpigBoss extends BossBattle {
         console.log("createjumpsensors called")
         this.jumpSensorResults = [];
         for (let i = 0; i < 10; i++) { //will create 10 jump sensors
-            let offsetX = Phaser.Math.Between(60, 300); //picks a random offset to jump at 
+            let offsetX = Phaser.Math.Between(60, 500); //picks a random offset to jump at 
             let spawnX = this.grumpig.x + offsetX; //where jumpsensor will appear(it will go anywhere between 60 to 300 pixels to the right of grumpig)
             let spawnY = this.grumpig.y - 300; //spawns it 300 pixels above grumpig
             let clone = this.physics.add.sprite(spawnX, spawnY, 'grumpig')
@@ -466,7 +480,7 @@ export class GrumpigBoss extends BossBattle {
         if (this.jumpSensorResults.length > 0) { //if the results array has at least 1 result
             let grumpigX = this.grumpig.x;
             let landedClone = this.jumpSensorResults.reduce((furthest, clone) => {       //reduce takes parameters accumulator and current, meaning it goes through every element in an array and compares it to the accumulator(or farthest one in our case)
-                return Math.abs(clone.x - grumpigX) > Math.abs(furthest.x - grumpigX) ? clone : furthest; 
+                return Math.abs(clone.x - grumpigX) > Math.abs(furthest.x - grumpigX) ? clone : furthest;
                 //distance from grumpig's current x to this current clone's x, then compares to distance from grumpig's current x to furthest clone's x
                 //if current clone is farther from grumpig, replace it with the furthest clone, else keep the OG furthest
             }); //after this whole loop landedClone will be the furthest one from grumpig.
@@ -487,29 +501,35 @@ export class GrumpigBoss extends BossBattle {
             });
             this.time.delayedCall(1600, () => {
                 this.grumpigTeleporting = false;
+                this.grumpig.isJumping = true
+                this.grumpigStillTime = 0; //resets timer counting how long grumpig has been still for
             });
             this.sensor.body.reset(this.grumpig.x + 50, this.grumpig.y); //reset again for good measure
-            this.grumpig.isJumping = true;
-            this.grumpigStillTime = 0; //resets timer counting how long grumpig has been still for
+
+
 
             // Clear sensors and results after teleport chosen
             this.jumpSensors.clear(true, true);  //group.clear(removeFromScene, destroyChildren);
             this.jumpSensorResults = [];
+            this.jumpSensorsActive = false
             return;
         }
 
         // No clones landed, check if all finished jumping
         let allDone = true;
+        let hadSensors = false
         this.jumpSensors.children.iterate(clone => {
-            if (!clone.hasLanded && !clone.isJumping) {
+            hadSensors = true;
+            let outOfBounds = clone.y > 700;
+            if (!clone.hasLanded && !outOfBounds && !clone.isJumping) {
                 allDone = false;
             }
         });
-
-        if (allDone) {
+        if (hadSensors && allDone) {
             console.log("All clones finished jumping but no safe landing found. Increasing jumpInterval and retrying.");
             this.jumpSensors.clear(true, true);
             this.jumpSensorResults = [];
+            this.jumpSensorsActive = false
             this.createJumpSensors();
         }
     }
@@ -520,15 +540,15 @@ export class GrumpigBoss extends BossBattle {
         this.scoreText.y = this.player.y - 250;
         this.moveGrumpig(delta)
         this.updateJumpSensors();
-        if (this.player.y > 700){
-            if (this.player.x > 780){
+        if (this.player.y > 700) {
+            if (this.player.x > 780) {
                 this.player.setPosition(this.lastCheckpointPosition.x, this.lastCheckpointPosition.y)
             }
             else if (this.player.x > 1480) {
-                this.lastCheckpointPosition = {x: 1400, y: 518};
+                this.lastCheckpointPosition = { x: 1400, y: 518 };
                 this.player.setPosition(this.lastCheckpointPosition.x, this.lastCheckpointPosition.y)
             }
-            else if (this.player.x > 2180){
+            else if (this.player.x > 2180) {
                 //fill stuff in as it goes on 
             }
         }

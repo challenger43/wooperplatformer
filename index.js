@@ -13,7 +13,8 @@ class MenuScene extends Phaser.Scene { //the menu
     preload() {
         this.load.image("quagball", "assets/quagball.png");
         this.load.image('quagsireLoadScreen', 'assets/quagsireStartGame.png')
-        this.load.image('sky', 'assets/sky.png'); //the assets/ takes an object from a folder--in this case the folder is assets, the id is sky.png
+        this.load.image('sky', 'assets/sky.png');
+        this.load.image('desert', 'assets/desertBG.png')
         this.load.image('ground', 'assets/platform.png');
         this.load.image('star', 'assets/WooperBall.png'); //they don't actually look like stars in 'real life' 
         this.load.image('bomb', 'assets/bomb.png');
@@ -181,7 +182,7 @@ class Level extends Phaser.Scene {
 
         // Freeze physics and disable player body
         this.physics.world.pause();
-        if (_player.body) _player.body.enable = false;
+        if (_player.body) _player.body.enable = false; //(underscore refers to the player object passed in and not neccesarily the scene's main this.player)
         _player.setPosition(portal.x, portal.y);
         // Camera zoom toward portal
         this.cameras.main.zoomTo(2, 2000); // zoom in over 2 seconds
@@ -229,9 +230,8 @@ class Level extends Phaser.Scene {
         this.portalSound = this.sound.add('portalSound')
         //an object is a collection of properties and values--properties are like labels
         let sky = this.add.image(900, -100, 'sky').setScale(4);
-        //adds images to things-the preload function loads them, this thing makes it actually happen
-
-        //creates stars
+        // let sky = this.add.image(900, 130, 'desert')
+        // sky.scaleX = 0.7;
         this.stars = this.physics.add.group();
         for (let starData of this.level.stars) {
             this.stars.create(starData.x, starData.y, 'star')
@@ -358,6 +358,7 @@ class Level extends Phaser.Scene {
         this.physics.add.overlap(this.player, this.waters, this.enterWater, null, this)
         // this.physics.add.collider(player, bombs, hitBomb, null, this); //don't need this code cause no bomb
         this.cameras.main.fadeIn(1000, 0, 0, 0)
+        console.log('All moving platforms:', this.movingPlatforms.getChildren());
     }
     update(time, delta) {
         let deltaSeconds = delta / 1000
@@ -484,22 +485,30 @@ class Level extends Phaser.Scene {
         }
         this.movingPlatforms.children.iterate(movingPlatform => {
             if (movingPlatform.movementType === 'pingpong') {
-                if (movingPlatform.originX === undefined) {
-                    movingPlatform.originX = movingPlatform.x
-                    movingPlatform.originY = movingPlatform.y
+                // console.log('PINGPONG UPDATE RUNNING for', movingPlatform.x, movingPlatform.y);
+
+                // store spawn position instead of using originX
+                if (movingPlatform.spawnX === undefined) {
+                    movingPlatform.spawnX = movingPlatform.x;
+                    movingPlatform.spawnY = movingPlatform.y;
                 }
+                console.log(movingPlatform.spawnX);
+
                 if (movingPlatform.directionX === undefined) {
-                    movingPlatform.directionX = 1
+                    movingPlatform.directionX = 1;
                 }
-                let platformOriginX = movingPlatform.originX;
+
+                let platformOriginX = movingPlatform.spawnX;
                 let platformMovementX = movingPlatform.moveX;
                 let platformMovementSpeed = movingPlatform.speed;
+
                 if (movingPlatform.x >= (platformOriginX + platformMovementX)) {
                     movingPlatform.directionX = -1; // move left
                 }
                 else if (movingPlatform.x <= platformOriginX) {
                     movingPlatform.directionX = 1; // move right
                 }
+
                 movingPlatform.setVelocityX(platformMovementSpeed * movingPlatform.directionX);
             }
             else if (movingPlatform.movementType === 'circular') {
@@ -569,7 +578,7 @@ const config = {
         default: 'arcade',
         arcade: { //arcade is object
             gravity: { y: GRAVITY_DEFAULT },
-            debug: false
+            debug: true
         }
     },
     scene: [

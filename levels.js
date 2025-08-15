@@ -9,14 +9,14 @@ export const grumpigLevelData = {
             scaleX: 0.6
         },
         {
-            x: 1350,
-            y: 550,
-            scaleX: 0.3,
-        },
-        {
             x: 1540,
             y: 450,
             scaleX: 0.02,
+        },
+        {   
+            x: 1360,
+            y: 550,
+            scaleX: 0.089,
         },
         {
             x: 1700,
@@ -28,38 +28,25 @@ export const grumpigLevelData = {
             y: 698,
             scaleX: 0.1,
         },
-        {
-            x: 2050,
-            y: 575,
-            scaleX: 0.5,
-        },
+        // {
+        //     x: 2050,
+        //     y: 575,
+        //     scaleX: 0.5,
+        // },
         {
             x: 1570,
             y: 400,
             scaleX: 0.02,
         },
         {
-            x: 1618,
-            y: -1300,
-            scaleX: 0.02,
+            x: 1605,
+            y: -1310,
+            scaleX: 0.1,
             scaleY: 100,
         },
-        {
-            x: 2000,
-            y: 698,
-            scaleX: 0.1,
-        },
-        {
-            x: 2090,
-            y: 698,
-            scaleX: 0.1,
-        },
-        {
-            x: 1970,
-            y: 700,
-            scaleX: 0.1,
-            scaleY: 20,
-        },
+        
+       
+        
         
         
         
@@ -78,6 +65,19 @@ export const grumpigLevelData = {
         // }
         {
             x: 1555,
+            y: 2100,
+            scaleX: 0.1,
+            scaleY: 5,
+            movementType: 'updown',
+            moveY: 600,
+            speed: 700,
+            tint: 0xFFFFFF,
+            
+
+
+        },
+        {
+            x: 1555,
             y: 1500,
             scaleX: 0.1,
             scaleY: 10,
@@ -89,6 +89,64 @@ export const grumpigLevelData = {
 
 
         },
+        
+        {
+            x: 1243,
+            y: 515,
+            scaleX: 0.1,
+            scaleY: 16,
+            movementType: 'updown',
+            moveY: 600,
+            speed: 760,
+            tint: 0xFFFFFF,
+
+        },
+        {
+            x: 1809,
+            y: 550,
+            scaleX: 0.1,
+            scaleY: 16,
+            movementType: 'updown',
+            moveY: 600,
+            speed: 800,
+            tint: 0xFFFFFF,
+
+        },
+        {
+            x: 2050,            
+            y: 900,
+            scaleX: 0.5,
+            scaleY: 0.25,
+            movementType: 'updown',
+            moveY: 400,
+            speed: 800,
+            tint: 0xFFFFFF,
+
+        },
+//note to myself(and other people) models for parameters: need to pass in this stuff to be safe
+        // {
+        //         x: 500,
+        //         y: 490,
+        //         scaleX: 0.1,
+        //         movementType: 'pingpong',
+        //         moveX: 200,
+        //         speed: 80
+        // },
+        // {
+        //     x: 300,
+        //     y: 500,
+        //     scaleX: 0.1,
+        //     movementType: 'circular',
+        //     radius: 80,
+        //     centerX: 300,
+        //     centerY: 300,
+        //     speed: 0.1,
+        //     angle: 0,
+        //     startingAngle: 0,
+        // },
+        
+        
+        
     ],
     waters: [
         // { x: 300, y: 520, scaleX: 2, scaleY: 0.5, tint: 0x0000FF }
