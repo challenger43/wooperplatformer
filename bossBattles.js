@@ -409,8 +409,8 @@ export class GrumpigBoss extends BossBattle {
             return; //go back to start
         }
         if (this.sensor.body.touching.down) { //as long as sensor is touching down(meaning there is ground for grumpig to walk on, grumpig will walk)
-            this.sensor.setVelocityX(230)
-            this.grumpig.setVelocityX(230)
+            this.sensor.setVelocityX(210)
+            this.grumpig.setVelocityX(210)
             this.grumpig.anims.play('grumpigForward', true);
             this.grumpig.isStandingStill = false
             this.grumpig.isJumping = false

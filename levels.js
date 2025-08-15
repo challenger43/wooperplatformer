@@ -3,6 +3,7 @@ export const grumpigLevelData = {
         { x: 200, y: 600, scaleX: 3, scaleY: 1, tint: 0xFFFFFF }, //0x8B4513
         // big ground platform
         // { x: 600, y: 400, scaleX: 1.5, scaleY: 1 },
+        //Finish line is at 2757 293
         {
             x: 1030,
             y: 500,
@@ -76,7 +77,7 @@ export const grumpigLevelData = {
         },
         {
             x: 2055,
-            y: 780,
+            y: 750,
             scaleX: 0.025,
             scaleY: 20
         },
@@ -117,9 +118,21 @@ export const grumpigLevelData = {
             scaleY: 1
         },
         {
-            x: 3145,
+            x: 3245,
             y: 400,
-            scaleX: 0.5,
+            scaleX: 1,
+            scaleY: 1
+        },
+        {
+            x: 3545,
+            y: 350,
+            scaleX: 1,
+            scaleY: 1
+        },
+        {
+            x: 3845,
+            y: 301,
+            scaleX: 1,
             scaleY: 1
         },
 
@@ -203,7 +216,7 @@ export const grumpigLevelData = {
             radius: 75,
             centerX: 2282,
             centerY: 625,
-            speed: 0.5,
+            speed: 0.29,
             angle: 0,
             startingAngle: 0,
 
@@ -230,6 +243,18 @@ export const grumpigLevelData = {
             tint: 0xFFFFFF,
 
         },
+        {
+            x: 2942,
+            y: 300,
+            scaleX: 0.1,
+            scaleY: 7,
+            movementType: 'updown',
+            moveY: 500,
+            speed: 650,
+            tint: 0xFFFFFF,
+
+        },
+        
 
 
 
