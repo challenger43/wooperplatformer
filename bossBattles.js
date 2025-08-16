@@ -27,6 +27,7 @@ export default class BossBattle extends Phaser.Scene {
         this.load.image('sky', 'assets/sky.png'); //the assets/ takes an object from a folder--in this case the folder is assets, the id is sky.png
         this.load.image('ground', 'assets/platform.png');
         this.load.image('portal', 'assets/Nether-Portal.png');
+        this.load.image('finishLine', 'assets/finishLine.png' )
         this.load.spritesheet('dude', 'assets/wooperspritesheet1a.png', { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet('quagsire', 'assets/quagsirespritesheet.png', { frameWidth: 32, frameHeight: 32 });
         this.load.image('bubble', 'assets/bubble.png');
@@ -365,6 +366,7 @@ export class GrumpigBoss extends BossBattle {
     create() {
         super.create() //super refers to parent class-- basically calling the create() method from boss battle
         this.scoreText = this.add.text(600, 300, 'score: 0', { fontSize: '28px', fill: '#FFF' });
+        this.add.image(4005, 256, 'finishLine').setScale(2)
         this.grumpig = this.physics.add.sprite(150, 550, 'grumpig').setScale(2)
         // console.log('[DEBUG] grumpig texture exists:', this.textures.exists('grumpig'));
         this.sensor = this.physics.add.sprite(190, 400, 'grumpig').setScale(2).setAlpha(0.6)
@@ -409,8 +411,8 @@ export class GrumpigBoss extends BossBattle {
             return; //go back to start
         }
         if (this.sensor.body.touching.down) { //as long as sensor is touching down(meaning there is ground for grumpig to walk on, grumpig will walk)
-            this.sensor.setVelocityX(210)
-            this.grumpig.setVelocityX(210)
+            this.sensor.setVelocityX(195)
+            this.grumpig.setVelocityX(195)
             this.grumpig.anims.play('grumpigForward', true);
             this.grumpig.isStandingStill = false
             this.grumpig.isJumping = false
@@ -534,8 +536,8 @@ export class GrumpigBoss extends BossBattle {
         this.moveGrumpig(delta)
         this.updateJumpSensors();
         if (this.player.y > 700) {
-            if (this.player.x > 2180) {
-                this.lastCheckpointPosition = { x: 1690, y: 430 };
+            if (this.player.x > 2063) {
+                this.lastCheckpointPosition = { x: 2064, y: 402 };
                 this.player.setPosition(this.lastCheckpointPosition.x, this.lastCheckpointPosition.y)
                 //fill stuff in as it goes on 
             }
