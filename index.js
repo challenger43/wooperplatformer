@@ -1,9 +1,8 @@
 const GRAVITY_DEFAULT = 500; //default gravity settings
 const GRAVITY_QUAGSIRE = 900;
 const GRAVITY_WATER = 0;
-import { grumpigLevelData } from './levels.js'; 
-import GrumpigBoss from './bossBattles.js'; 
-import {bossBattles} from './levels.js';
+import { GrumpigBoss } from './bossBattles.js';
+import { bossBattles } from './levels.js'
 import { levels } from './levels.js';
 class MenuScene extends Phaser.Scene { //the menu
     cursor;
@@ -14,15 +13,17 @@ class MenuScene extends Phaser.Scene { //the menu
     preload() {
         this.load.image("quagball", "assets/quagball.png");
         this.load.image('quagsireLoadScreen', 'assets/quagsireStartGame.png')
-        this.load.image('sky', 'assets/sky.png'); //the assets/ takes an object from a folder--in this case the folder is assets, the id is sky.png
+        this.load.image('sky', 'assets/sky.png');
+        this.load.image('desert', 'assets/desertBG.png')
         this.load.image('ground', 'assets/platform.png');
         this.load.image('star', 'assets/WooperBall.png'); //they don't actually look like stars in 'real life' 
         this.load.image('bomb', 'assets/bomb.png');
-        this.load.image('portal', 'assets/Nether-Portal.png');
         this.load.image('bubble', 'assets/bubble.png');
         this.load.spritesheet('dude', 'assets/wooperspritesheet1a.png', { frameWidth: 32, frameHeight: 32 }); //sets the height of sprite
         this.load.spritesheet('quagsire', 'assets/quagsirespritesheet.png', { frameWidth: 32, frameHeight: 32 });
+        this.load.image('portal', 'assets/Nether-Portal.png');
         this.load.image('sleepingWooper', 'assets/toBeContinuedWooperImage.png')
+        this.load.audio('portalSound', 'Sounds/portalSound.mp3')
         //use a sprite sheet for easier animations--with a sprite you download not just one image but a bunch of images all in one file that it can switch in between
     }
     create() {
@@ -137,12 +138,14 @@ class Level extends Phaser.Scene {
     isInWater = false;
     quagsire = false;
     wasODownLastFrame = false;
+    wasVDownLastFrame = false;
     waters;
     frameCount = 0
     timeAccumulator = 0
     constructor(key, level) {
         super({ key: key });
         this.level = level;
+        this.playerMode = !this.playerMode
     }
     init(data) {
         this.quagsire = data.quagsire ?? false;
@@ -164,27 +167,53 @@ class Level extends Phaser.Scene {
     }
 
     enterPortal(_player, portal) {
-        console.log("portal entered ")
+        console.log("portal entered");
+        this.portalSound.play();
+
+        // Determine destination
         portal.destination = portal.getData('destination');
         portal.boss = portal.getData('boss');
         let target = portal.destination ?? portal.boss;
-        console.log('portal object in enterPortal:', portal);
-        console.log('portal.destination:', portal.destination);
-        console.log('portal.boss:', portal.boss);
-        console.log("Trying to start scene:", target);
-        let bossBattleData = null
+
+        let bossBattleData = null;
         if (portal.boss && this.bossBattles) {
             bossBattleData = this.bossBattles[portal.boss];
-            console.log('Found bossBattleData:', bossBattleData);
-        }   
-        if (target) {
-            this.scene.start(target, {
-                quagsire: this.quagsire,
-                boss: portal.boss ?? null,
-                bossBattleData: bossBattleData ?? null
-            });
         }
+
+        // Freeze physics and disable player body
+        this.physics.world.pause();
+        if (_player.body) _player.body.enable = false; //(underscore refers to the player object passed in and not neccesarily the scene's main this.player)
+        _player.setPosition(portal.x, portal.y);
+        // Camera zoom toward portal
+        this.cameras.main.zoomTo(2, 2000); // zoom in over 2 seconds
+        this.cameras.main.pan(portal.x, portal.y, 2000, 'Cubic.easeInOut'); // center camera on portal
+        this.cameras.main.fadeOut(2000, 0, 0, 0) //fadeOut(duration, red, green, blue)
+        // Tween: shrink and spin Wooper
+        this.tweens.add({
+            targets: _player,
+            scaleX: 0,
+            scaleY: 0,
+            angle: 720, // 2 spins
+            duration: 2000,
+            ease: 'Cubic.easeInOut'
+        });
+
+        // After 2 seconds, switch scene
+        this.time.delayedCall(2000, () => {
+            // Reset camera zoom for next scene
+            this.cameras.main.setZoom(1);
+            this.physics.world.resume();
+
+            if (target) {
+                this.scene.start(target, {
+                    quagsire: this.quagsire,
+                    boss: portal.boss ?? null,
+                    bossBattleData: bossBattleData ?? null
+                });
+            }
+        });
     }
+
     waterFrame = 0;
     enterWater(_player, water) {
         this.isInWater = true;
@@ -196,12 +225,13 @@ class Level extends Phaser.Scene {
     }
 
     create() {
-        this.keys = this.input.keyboard.addKeys("W,A,S,D,Q,P,O,SPACE,")
+        this.bossBattles = bossBattles
+        this.keys = this.input.keyboard.addKeys("W,A,S,D,Q,P,O,V,SPACE,")
+        this.portalSound = this.sound.add('portalSound')
         //an object is a collection of properties and values--properties are like labels
         let sky = this.add.image(900, -100, 'sky').setScale(4);
-        //adds images to things-the preload function loads them, this thing makes it actually happen
-
-        //creates stars
+        // let sky = this.add.image(900, 130, 'desert')
+        // sky.scaleX = 0.7;
         this.stars = this.physics.add.group();
         for (let starData of this.level.stars) {
             this.stars.create(starData.x, starData.y, 'star')
@@ -272,12 +302,8 @@ class Level extends Phaser.Scene {
                 ease: '{Power2}'
             },
         });
-
-        // The player and its settings
-        this.player = this.physics.add.sprite(100, 450, 'dude');    //use a sprite sheet for easier animations--with a sprite you download not just one image but a bunch of images all in one file that it can switch in between
-        // animates player walking left/right
-
-        // Make water
+        this.player = this.physics.add.sprite(100, 450, 'dude')
+            .setDepth(10);
         this.waters = this.physics.add.staticGroup();
         for (let waterData of this.level.waters) {
             this.waters.create(waterData.x, waterData.y, 'ground')
@@ -292,12 +318,12 @@ class Level extends Phaser.Scene {
             let portal = this.portals.create(portalData.x, portalData.y, 'portal')
                 .setScale(0.3, 0.3)
                 .setTint(portalData.tint ?? 0xffffff)
-                .refreshBody();
+                .refreshBody()
+                .setDepth(5)
+            portal.setData('destination', portalData.destination);
+            portal.setData('boss', portalData.boss);
 
-                portal.setData('destination', portalData.destination);
-                portal.setData('boss', portalData.boss);
-            
-                console.log('Portal data:', portal.getData('destination'), portal.getData('boss'));
+            console.log('Portal data:', portal.getData('destination'), portal.getData('boss'));
             portal.disableBody(true, true);
         }
 
@@ -332,6 +358,7 @@ class Level extends Phaser.Scene {
         this.physics.add.overlap(this.player, this.waters, this.enterWater, null, this)
         // this.physics.add.collider(player, bombs, hitBomb, null, this); //don't need this code cause no bomb
         this.cameras.main.fadeIn(1000, 0, 0, 0)
+        console.log('All moving platforms:', this.movingPlatforms.getChildren());
     }
     update(time, delta) {
         let deltaSeconds = delta / 1000
@@ -419,15 +446,23 @@ class Level extends Phaser.Scene {
             this.spawnPortal();
             this.portalSpawned = true;
         }
-        // this.scoreText.setText("x: " + Math.floor(this.player.x) + " y: " + Math.floor(this.player.y))
-        if ((activeStars + activeFloatingStars) > 0) {
-            this.scoreText.setText("WoopBalls Remaining: " + (activeStars + activeFloatingStars))
+        if (this.keys.V.isDown && !this.wasVDownLastFrame) {
+            this.playerMode = !this.playerMode
         }
-        else {
-            this.scoreText.setText("Find the portal!")
+        this.wasVDownLastFrame = this.keys.V.isDown;
+        if (this.playerMode) {
+            if ((activeStars + activeFloatingStars) > 0) {
+                this.scoreText.setText("WoopBalls Remaining: " + (activeStars + activeFloatingStars))
+            }
+            else {
+                this.scoreText.setText("Find the portal!")
+            }
         }
-        this.scoreText.x = this.player.x + 100;
-        this.scoreText.y = this.player.y - 200;
+        if (!this.playerMode) {
+            this.scoreText.setText("x: " + Math.floor(this.player.x) + " y: " + Math.floor(this.player.y))
+        }
+        this.scoreText.x = this.player.x + 80;
+        this.scoreText.y = this.player.y - 250;
 
         if (this.isInWater) {
             if (this.keys.S.isDown || this.cursors.down.isDown && this.quagsire == true) {
@@ -450,22 +485,30 @@ class Level extends Phaser.Scene {
         }
         this.movingPlatforms.children.iterate(movingPlatform => {
             if (movingPlatform.movementType === 'pingpong') {
-                if (movingPlatform.originX === undefined) {
-                    movingPlatform.originX = movingPlatform.x
-                    movingPlatform.originY = movingPlatform.y
+                // console.log('PINGPONG UPDATE RUNNING for', movingPlatform.x, movingPlatform.y);
+
+                // store spawn position instead of using originX
+                if (movingPlatform.spawnX === undefined) {
+                    movingPlatform.spawnX = movingPlatform.x;
+                    movingPlatform.spawnY = movingPlatform.y;
                 }
+                console.log(movingPlatform.spawnX);
+
                 if (movingPlatform.directionX === undefined) {
-                    movingPlatform.directionX = 1
+                    movingPlatform.directionX = 1;
                 }
-                let platformOriginX = movingPlatform.originX;
+
+                let platformOriginX = movingPlatform.spawnX;
                 let platformMovementX = movingPlatform.moveX;
                 let platformMovementSpeed = movingPlatform.speed;
+
                 if (movingPlatform.x >= (platformOriginX + platformMovementX)) {
                     movingPlatform.directionX = -1; // move left
                 }
                 else if (movingPlatform.x <= platformOriginX) {
                     movingPlatform.directionX = 1; // move right
                 }
+
                 movingPlatform.setVelocityX(platformMovementSpeed * movingPlatform.directionX);
             }
             else if (movingPlatform.movementType === 'circular') {
@@ -514,16 +557,14 @@ class Level extends Phaser.Scene {
                 let platformMovementY = movingPlatform.moveY;
                 let platformMovementSpeed = movingPlatform.speed;
                 if (movingPlatform.y >= (platformOriginY + platformMovementY)) {
-                    movingPlatform.directionY = -1; // move left
+                    movingPlatform.directionY = -1; // move up
                 }
                 else if (movingPlatform.y <= platformOriginY) {
-                    movingPlatform.directionY = 1; // move right
+                    movingPlatform.directionY = 1; // move down
                 }
                 movingPlatform.setVelocityY(platformMovementSpeed * movingPlatform.directionY);
             }
-
         })
-
         this.isInWater = false;
     }
 }
@@ -542,11 +583,11 @@ const config = {
     },
     scene: [
         MenuScene,
-        ToBeContinued,  
+        ToBeContinued,
         QuagBallIntro,
         GrumpigBoss,
         new Level('LevelOne', levels.LevelOne), new Level('LevelTwo', levels.LevelTwo), new Level('LevelThree', levels.LevelThree), new Level('LevelFour', levels.LevelFour), new Level('LevelFive', levels.LevelFive),
-       
+
     ]
 };
 
@@ -554,5 +595,3 @@ const config = {
 const game = new Phaser.Game(config);
 console.log('Scenes registered in SceneManager:', game.scene.scenes.map(s => s.scene.key));
 console.log(game.scene.keys)
-
-
