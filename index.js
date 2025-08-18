@@ -578,7 +578,7 @@ const config = {
         default: 'arcade',
         arcade: { //arcade is object
             gravity: { y: GRAVITY_DEFAULT },
-            debug: true
+            debug: false
         }
     },
     scene: [

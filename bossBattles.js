@@ -27,7 +27,7 @@ export default class BossBattle extends Phaser.Scene {
         this.load.image('sky', 'assets/sky.png'); //the assets/ takes an object from a folder--in this case the folder is assets, the id is sky.png
         this.load.image('ground', 'assets/platform.png');
         this.load.image('portal', 'assets/Nether-Portal.png');
-        this.load.image('finishLine', 'assets/finishLine.png' )
+        this.load.image('finishLine', 'assets/finishLine.png')
         this.load.spritesheet('dude', 'assets/wooperspritesheet1a.png', { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet('quagsire', 'assets/quagsirespritesheet.png', { frameWidth: 32, frameHeight: 32 });
         this.load.image('bubble', 'assets/bubble.png');
@@ -44,15 +44,6 @@ export default class BossBattle extends Phaser.Scene {
         if (portal.destination) {
             console.log('portal.destination:', portal.destination);
         }
-        // if (portal.boss && this.bossBattles[portal.boss]) {
-        //     levelDataToPass = this.bossBattles[portal.boss];
-        //     sceneToStart = portal.boss
-        //     console.log('boss: ', portal.boss)
-        // } else if (portal.destination && this.bossBattles[portal.destination]) {
-        //     levelDataToPass = this.bossBattles[portal.destination];
-        //     sceneToStart = portal.destination
-        //     console.log('destination: ', portal.destination)
-        // }
         if (portal.boss && this.scene.get(portal.boss)) {
             sceneToStart = portal.boss;
             levelDataToPass = this.bossBattles[portal.boss];
@@ -67,6 +58,11 @@ export default class BossBattle extends Phaser.Scene {
         }
         this.scene.start(sceneToStart, { quagsire: this.quagsire, bossBattleData: levelDataToPass });
     }
+    spawnPortal() {
+        console.log('portal spawned')
+        this.portals.children.iterate((portal) => portal.enableBody(false, 0, 0, true, true));
+        //false tells them we don't want to change position, 0,0 are coords, true true is invisible and active. 
+    }
     waterFrame = 0;
     enterWater(_player, water) {
         this.isInWater = true;
@@ -80,9 +76,9 @@ export default class BossBattle extends Phaser.Scene {
     create() {
         this.frameCount = 0
         this.timeAccumulator = 0
-        this.player = this.physics.add.sprite(100, 450, 'dude');
+        this.player = this.physics.add.sprite(100, 450, 'dude').setDepth(10);
         this.cameras.cameras[0].startFollow(this.player)
-        this.keys = this.input.keyboard.addKeys("W,A,S,D,P,O,SPACE,")
+        this.keys = this.input.keyboard.addKeys("W,A,S,D,P,O,Q,G,SPACE,")
         this.cursors = this.input.keyboard.createCursorKeys();
         this.platforms = this.physics.add.staticGroup();
         // add platforms
@@ -246,7 +242,6 @@ export default class BossBattle extends Phaser.Scene {
                     movingPlatform.spawnX = movingPlatform.x;
                     movingPlatform.spawnY = movingPlatform.y;
                 }
-                console.log(movingPlatform.spawnX);
 
                 if (movingPlatform.directionX === undefined) {
                     movingPlatform.directionX = 1;
@@ -320,16 +315,20 @@ export default class BossBattle extends Phaser.Scene {
 }
 export class GrumpigBoss extends BossBattle {
     grumpig;
+    portalSpawned = false;
     constructor() {
         super('GrumpigBoss');
         this.playerSpeedMultiplier = 1.6;
         this.playerJumpMultiplier = 0.8;
         this.jumpSensorsActive = false
         this.grumpigTeleporting = false
+        this.finishLineX = 4005;
+        this.raceOver = false;
         this.lastCheckpointPosition = { x: 774, y: 450 }
     }
     preload() {
         super.preload()
+        this.load.audio('wompSound', 'Sounds/wompSound.mp3')
         this.load.spritesheet('grumpig', 'assets/grumpigsprite.png', { frameWidth: 32, frameHeight: 32 })
         this.load.on('complete', () => {
             console.log("[PRELOAD] All assets finished loading.");
@@ -365,9 +364,11 @@ export class GrumpigBoss extends BossBattle {
     }
     create() {
         super.create() //super refers to parent class-- basically calling the create() method from boss battle
+        this.raceOver = false;
+        this.wompSound = this.sound.add('wompSound')
         this.scoreText = this.add.text(600, 300, 'score: 0', { fontSize: '28px', fill: '#FFF' });
-        this.add.image(4005, 256, 'finishLine').setScale(2)
-        this.grumpig = this.physics.add.sprite(150, 550, 'grumpig').setScale(2)
+        this.add.image(4005, 236, 'finishLine').setScale(3)
+        this.grumpig = this.physics.add.sprite(150, 550, 'grumpig').setScale(2).setDepth(5)
         // console.log('[DEBUG] grumpig texture exists:', this.textures.exists('grumpig'));
         this.sensor = this.physics.add.sprite(190, 400, 'grumpig').setScale(2).setAlpha(0.6)
         this.jumpSensors = this.physics.add.group()
@@ -403,6 +404,11 @@ export class GrumpigBoss extends BossBattle {
         this.grumpig.setFrame(0);
     }
     moveGrumpig(delta) {
+        if (this.raceOver) {
+            this.grumpig.setVelocityX(0); // stop horizontal movement
+            this.sensor.setVelocityX(0);  // stop sensor
+            return; // skip all AI logic
+        }
         let deltaX = Math.abs(this.grumpig.x - this.grumpigPrevX) //change in x value/coords for grumpig
         this.grumpig.isStandingStill = false
         if (this.grumpigTeleporting) { //if grumpig is about to teleport stop everything's x motion
@@ -411,8 +417,8 @@ export class GrumpigBoss extends BossBattle {
             return; //go back to start
         }
         if (this.sensor.body.touching.down) { //as long as sensor is touching down(meaning there is ground for grumpig to walk on, grumpig will walk)
-            this.sensor.setVelocityX(195)
-            this.grumpig.setVelocityX(195)
+            this.sensor.setVelocityX(185)
+            this.grumpig.setVelocityX(185)
             this.grumpig.anims.play('grumpigForward', true);
             this.grumpig.isStandingStill = false
             this.grumpig.isJumping = false
@@ -464,7 +470,6 @@ export class GrumpigBoss extends BossBattle {
                     //(the first time a clone touches platform hasLanded is false, but once it hasLanded it will change the flag to true so the landing logic will only run once)
                     clone.isJumping = false;
                     this.jumpSensorResults.push(clone) //push the clone data into jumpSensorResults
-                    console.log(clone.hasLanded + " tester2 (overlap triggered)");
                 }
             });
             this.jumpSensors.add(clone) //adds the clone to the group of jumpSensors so can destroy them/use them all at once
@@ -484,7 +489,7 @@ export class GrumpigBoss extends BossBattle {
             this.grumpigTeleporting = true;
             this.sensor.body.reset(this.grumpig.x + 50, this.grumpig.y); //resets the sensor(instantly move physics body+ reset velocity)
             this.grumpig.anims.play('grumpigPowerUp', true);
-            this.time.delayedCall(300, () => { //wait 200 milliseconds
+            this.time.delayedCall(300, () => { //wait 300 milliseconds
                 this.grumpig.anims.play('grumpigFade', true);
             });
             this.time.delayedCall(600, () => {
@@ -500,16 +505,12 @@ export class GrumpigBoss extends BossBattle {
                 this.grumpigStillTime = 0; //resets timer counting how long grumpig has been still for
             });
             this.sensor.body.reset(this.grumpig.x + 50, this.grumpig.y); //reset again for good measure
-
-
-
             // Clear sensors and results after teleport chosen
             this.jumpSensors.clear(true, true);  //group.clear(removeFromScene, destroyChildren);
             this.jumpSensorResults = [];
             this.jumpSensorsActive = false
             return;
         }
-
         // No clones landed, check if all finished jumping
         let allDone = true;
         let hadSensors = false
@@ -528,6 +529,54 @@ export class GrumpigBoss extends BossBattle {
             this.createJumpSensors();
         }
     }
+
+    checkRaceOutcome() {
+        if (this.player.x >= this.finishLineX && this.grumpig.x < this.finishLineX) { //in case of tie wooper should win
+            this.wooperWins();
+        }
+        else if (this.grumpig.x >= this.finishLineX && this.player.x < this.finishLineX) {
+            this.grumpigWins();
+        }
+    }
+    wooperWins() {
+        console.log("wooper has won this test")
+        this.raceOver = true;
+        let winText = this.add.text(this.player.x - 60, this.player.y - 200, 'You Win!', { fontSize: '72px', color: '#fff' })
+        this.tweens.add({
+            targets: winText,
+            y: winText.y - 80,
+            alpha: 0,
+            duration: 2000,
+            ease: 'Power1',
+            onComplete: () => winText.destroy()
+        });
+        if (this.portalSpawned === false) {
+            this.spawnPortal();
+        }
+        this.portalSpawned = true;
+    }
+    grumpigWins() {
+        console.log("grumpig wins")
+        this.wompSound.play()
+        this.raceOver = true;
+        let loseText = this.add.text(this.player.x - 60, this.player.y - 200, 'You Lose :(', { fontSize: '72px', color: '#ff5555', fontStyle: 'bold', })
+        this.tweens.add({
+            targets: loseText,
+            y: loseText.y + 300,   // falls down
+            alpha: 0,           // fades out
+            angle: 15,          // rotates a bit while falling
+            duration: 2400,
+            ease: 'Power2',
+            onComplete: () => loseText.destroy()
+        });
+        this.time.delayedCall(2700, () => { //wait 300 milliseconds
+            this.cameras.main.fade(700, 0, 0, 0); // duration, red, green, blue (black fade)
+        });
+        this.cameras.main.once('camerafadeoutcomplete', () => {
+            this.scene.restart();
+        });
+        
+    }
     update(time, delta) {
         super.update(time, delta)
         this.scoreText.setText("x: " + Math.floor(this.player.x) + " y: " + Math.floor(this.player.y))
@@ -535,6 +584,12 @@ export class GrumpigBoss extends BossBattle {
         this.scoreText.y = this.player.y - 250;
         this.moveGrumpig(delta)
         this.updateJumpSensors();
+        if (this.keys.Q.isDown) {
+            this.player.setPosition(this.finishLineX - 100, 150);
+        }
+        if (this.keys.G.isDown) {
+            this.grumpig.setPosition(this.finishLineX - 100, 150);
+        }
         if (this.player.y > 700) {
             if (this.player.x > 2063) {
                 this.lastCheckpointPosition = { x: 2064, y: 402 };
@@ -548,16 +603,15 @@ export class GrumpigBoss extends BossBattle {
             else if (this.player.x > 780) {
                 this.player.setPosition(this.lastCheckpointPosition.x, this.lastCheckpointPosition.y)
             }
-            
+        }
+        if (!this.raceOver) {
+            this.checkRaceOutcome()
         }
         this.speedMultiplier = this.playerSpeedMultiplier || 1;
         this.jumpMultiplier = this.playerJumpMultiplier || 1
     }
 
 }
-
-
-
 
 // console.log('bossBattles loaded', bossBattles);
 
