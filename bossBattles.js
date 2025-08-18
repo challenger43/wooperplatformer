@@ -329,6 +329,7 @@ export class GrumpigBoss extends BossBattle {
         super.preload()
         this.load.audio('wompSound', 'Sounds/wompSound.mp3')
         this.load.audio('yaySound', 'Sounds/yaySound.mp3')
+        this.load.image('gorge', 'assets/gorge.png')
         this.load.spritesheet('grumpig', 'assets/grumpigsprite.png', { frameWidth: 32, frameHeight: 32 })
         this.load.on('complete', () => {
             console.log("[PRELOAD] All assets finished loading.");
@@ -383,6 +384,7 @@ export class GrumpigBoss extends BossBattle {
         this.raceOver = false;
         this.wompSound = this.sound.add('wompSound')
         this.yaySound = this.sound.add('yaySound')
+        // this.add.image(2005, 300, 'gorge').setDepth(-4)
         this.scoreText = this.add.text(600, 300, 'score: 0', { fontSize: '28px', fill: '#FFF' });
         this.add.image(4005, 236, 'finishLine').setScale(3)
         this.grumpig = this.physics.add.sprite(150, 550, 'grumpig').setScale(2).setDepth(5)
@@ -620,6 +622,20 @@ export class GrumpigBoss extends BossBattle {
             }
             else if (this.player.x > 780) {
                 this.player.setPosition(this.lastCheckpointPosition.x, this.lastCheckpointPosition.y)
+            }
+        }
+        if (this.grumpig.y > 700) {
+            if (this.grumpig.x > 2063) {
+                this.lastCheckpointPosition = { x: 2064, y: 402 };
+                this.grumpig.setPosition(this.lastCheckpointPosition.x, this.lastCheckpointPosition.y)
+                //fill stuff in as it goes on 
+            }
+            else if (this.grumpig.x > 1680) {
+                this.lastCheckpointPosition = { x: 1690, y: 430 };
+                this.grumpig.setPosition(this.lastCheckpointPosition.x, this.lastCheckpointPosition.y)
+            }
+            else if (this.grumpig.x > 780) {
+                this.grumpig.setPosition(this.lastCheckpointPosition.x, this.lastCheckpointPosition.y)
             }
         }
         if (!this.raceOver) {
