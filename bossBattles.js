@@ -329,6 +329,7 @@ export class GrumpigBoss extends BossBattle {
     preload() {
         super.preload()
         this.load.audio('wompSound', 'Sounds/wompSound.mp3')
+        this.load.audio('yaySound', 'Sounds/yaySound.mp3')
         this.load.spritesheet('grumpig', 'assets/grumpigsprite.png', { frameWidth: 32, frameHeight: 32 })
         this.load.on('complete', () => {
             console.log("[PRELOAD] All assets finished loading.");
@@ -366,6 +367,7 @@ export class GrumpigBoss extends BossBattle {
         super.create() //super refers to parent class-- basically calling the create() method from boss battle
         this.raceOver = false;
         this.wompSound = this.sound.add('wompSound')
+        this.yaySound = this.sound.add('yaySound')
         this.scoreText = this.add.text(600, 300, 'score: 0', { fontSize: '28px', fill: '#FFF' });
         this.add.image(4005, 236, 'finishLine').setScale(3)
         this.grumpig = this.physics.add.sprite(150, 550, 'grumpig').setScale(2).setDepth(5)
@@ -541,6 +543,7 @@ export class GrumpigBoss extends BossBattle {
     wooperWins() {
         console.log("wooper has won this test")
         this.raceOver = true;
+        this.yaySound.play()
         let winText = this.add.text(this.player.x - 60, this.player.y - 200, 'You Win!', { fontSize: '72px', color: '#fff' })
         this.tweens.add({
             targets: winText,
