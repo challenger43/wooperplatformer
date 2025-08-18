@@ -310,7 +310,6 @@ export default class BossBattle extends Phaser.Scene {
         })
 
         this.isInWater = false;
-
     }
 }
 export class GrumpigBoss extends BossBattle {
@@ -365,6 +364,22 @@ export class GrumpigBoss extends BossBattle {
     }
     create() {
         super.create() //super refers to parent class-- basically calling the create() method from boss battle
+        if (!window.grumpigIntroShown) {
+            window.grumpigIntroShown = true;
+            let introText = this.add.text(
+                this.cameras.main.centerX,
+                this.cameras.main.centerY - 100,
+                "Beat Grumpig in a race!",
+                { fontSize: "48px", fill: "#ffcc00", fontStyle: "bold" }
+            ).setOrigin(0.5).setScrollFactor(0).setDepth(20);
+            this.tweens.add({
+                targets: introText,
+                alpha: 0,
+                duration: 2000,
+                delay: 2000,
+                onComplete: () => introText.destroy()
+            });
+        }
         this.raceOver = false;
         this.wompSound = this.sound.add('wompSound')
         this.yaySound = this.sound.add('yaySound')
@@ -372,7 +387,7 @@ export class GrumpigBoss extends BossBattle {
         this.add.image(4005, 236, 'finishLine').setScale(3)
         this.grumpig = this.physics.add.sprite(150, 550, 'grumpig').setScale(2).setDepth(5)
         // console.log('[DEBUG] grumpig texture exists:', this.textures.exists('grumpig'));
-        this.sensor = this.physics.add.sprite(190, 400, 'grumpig').setScale(2).setAlpha(0.6)
+        this.sensor = this.physics.add.sprite(190, 400, 'grumpig').setScale(2).setAlpha(0)
         this.jumpSensors = this.physics.add.group()
         this.jumpInterval = 20
         this.hasSpawnedJumpSensors = false
@@ -419,8 +434,8 @@ export class GrumpigBoss extends BossBattle {
             return; //go back to start
         }
         if (this.sensor.body.touching.down) { //as long as sensor is touching down(meaning there is ground for grumpig to walk on, grumpig will walk)
-            this.sensor.setVelocityX(185)
-            this.grumpig.setVelocityX(185)
+            this.sensor.setVelocityX(205)
+            this.grumpig.setVelocityX(205)
             this.grumpig.anims.play('grumpigForward', true);
             this.grumpig.isStandingStill = false
             this.grumpig.isJumping = false
@@ -461,7 +476,7 @@ export class GrumpigBoss extends BossBattle {
             let spawnX = this.grumpig.x + offsetX; //where jumpsensor will appear(it will go anywhere between 60 to 300 pixels to the right of grumpig)
             let spawnY = this.grumpig.y - 300; //spawns it 300 pixels above grumpig
             let clone = this.physics.add.sprite(spawnX, spawnY, 'grumpig')
-                .setAlpha(0.3)
+                .setAlpha(0) //0.3 when developing
                 .setScale(1.5)
             clone.setVelocityY(2400)
             clone.isJumping = false
@@ -572,8 +587,8 @@ export class GrumpigBoss extends BossBattle {
             ease: 'Power2',
             onComplete: () => loseText.destroy()
         });
-        this.time.delayedCall(2700, () => { //wait 300 milliseconds
-            this.cameras.main.fade(700, 0, 0, 0); // duration, red, green, blue (black fade)
+        this.time.delayedCall(2900, () => { //wait 300 milliseconds
+            this.cameras.main.fade(900, 0, 0, 0); // duration, red, green, blue (black fade)
         });
         this.cameras.main.once('camerafadeoutcomplete', () => {
             this.scene.restart();
