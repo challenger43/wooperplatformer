@@ -78,7 +78,7 @@ export default class BossBattle extends Phaser.Scene {
         this.timeAccumulator = 0
         this.player = this.physics.add.sprite(100, 450, 'dude').setDepth(10);
         this.cameras.cameras[0].startFollow(this.player)
-        this.keys = this.input.keyboard.addKeys("W,A,S,D,P,O,Q,G,SPACE,")
+        this.keys = this.input.keyboard.addKeys("W,A,S,D,P,O,Q,V,G,SPACE,")
         this.cursors = this.input.keyboard.createCursorKeys();
         this.platforms = this.physics.add.staticGroup();
         // add platforms
@@ -315,6 +315,7 @@ export default class BossBattle extends Phaser.Scene {
 export class GrumpigBoss extends BossBattle {
     grumpig;
     portalSpawned = false;
+    wasVDownLastFrame = false;
     constructor() {
         super('GrumpigBoss');
         this.playerSpeedMultiplier = 1.6;
@@ -323,6 +324,7 @@ export class GrumpigBoss extends BossBattle {
         this.grumpigTeleporting = false
         this.finishLineX = 4005;
         this.raceOver = false;
+        this.playerMode =!this.playerMode
         this.lastCheckpointPosition = { x: 774, y: 450 }
     }
     preload() {
@@ -602,8 +604,21 @@ export class GrumpigBoss extends BossBattle {
         this.scoreText.setText("x: " + Math.floor(this.player.x) + " y: " + Math.floor(this.player.y))
         this.scoreText.x = this.player.x + 80;
         this.scoreText.y = this.player.y - 250;
-        this.moveGrumpig(delta)
+        this.moveGrumpig(delta);
         this.updateJumpSensors();
+        
+        // Toggle dev mode on V press (edge-triggered)
+        if (this.keys.V.isDown && !this.wasVDownLastFrame) {
+            this.playerMode = !this.playerMode;
+        }
+        this.wasVDownLastFrame = this.keys.V.isDown;
+        
+        // Always update sensor visibility based on mode
+        this.jumpSensors.children.iterate(clone => {
+            if (clone) clone.setAlpha(this.playerMode ? 0 : 0.7);
+        });
+        this.sensor.setAlpha(this.playerMode ? 0: 0.7);
+        
         if (this.keys.Q.isDown) {
             this.player.setPosition(this.finishLineX - 100, 150);
         }
