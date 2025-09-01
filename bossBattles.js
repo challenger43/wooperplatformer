@@ -606,14 +606,10 @@ export class GrumpigBoss extends BossBattle {
         this.scoreText.y = this.player.y - 250;
         this.moveGrumpig(delta);
         this.updateJumpSensors();
-        
-        // Toggle dev mode on V press (edge-triggered)
         if (this.keys.V.isDown && !this.wasVDownLastFrame) {
             this.playerMode = !this.playerMode;
         }
         this.wasVDownLastFrame = this.keys.V.isDown;
-        
-        // Always update sensor visibility based on mode
         this.jumpSensors.children.iterate(clone => {
             if (clone) clone.setAlpha(this.playerMode ? 0 : 0.7);
         });
