@@ -20,7 +20,13 @@ class testScene extends Phaser.Scene {
         this.load.image('star', 'assets/WooperBall.png'); //they don't actually look like stars in 'real life' 
         this.load.image('bomb', 'assets/bomb.png');
     }
-
+    collectStar(star) {
+        star.disableBody(true, true); //the star no longer has a 'physical body'
+    }
+    collectFloatingStar(floatingStar) {
+        floatingStar.disableBody(true, true);
+        this.score += 10;
+    }
     create() {
         this.keys = this.input.keyboard.addKeys('W,A,S,D,Q,P,O,V,SPACE');
         this.anims.create({
@@ -63,6 +69,17 @@ class testScene extends Phaser.Scene {
         this.movingPlatforms = this.physics.add.group();
         this.player = this.physics.add.sprite(100, 450, 'dude')
         this.enemy = this.physics.add.sprite(200,450, 'dude').setTint(0x0000FF)
+        this.physics.add.collider(this.player, this.platforms); //these are the things you want to collide with--the first code takes parameters player and platforms, so then player and platforms will collide
+        this.physics.add.collider(this.stars, this.platforms);//parameters are stars and platforms, so adds a collide rule to the relationship between stars and platforms 
+        // this.physics.add.collider(this.bombs, this.platforms);
+        this.physics.add.collider(this.floatingStars, this.platforms);
+        this.physics.add.collider(this.player, this.movingPlatforms);
+        this.physics.add.collider(this.enemy, this.platforms);
+        this.physics.add.collider(this.enemy, this.movingPlatforms)
+        this.physics.add.overlap(this.player, this.stars, this.collectStar, null, this);
+        this.physics.add.overlap(this.player, this.floatingStars, this.collectFloatingStar, null, this)
+        this.physics.add.overlap(this.enemy, this.stars, this.collectStar, null, this);
+        this.physics.add.overlap(this.enemy, this.floatingStars, this.collectFloatingStar, null, this)
     }
 
     update() {
