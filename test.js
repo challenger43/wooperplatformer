@@ -1,5 +1,5 @@
 import { trials } from './testCoords.js'
-const GRAVITY_DEFAULT = 500;
+const GRAVITY_DEFAULT = 350;
 class testScene extends Phaser.Scene {
     player; //cannot use const for these because will need to change them later
     stars;
@@ -20,10 +20,10 @@ class testScene extends Phaser.Scene {
         this.load.image('star', 'assets/WooperBall.png'); //they don't actually look like stars in 'real life' 
         this.load.image('bomb', 'assets/bomb.png');
     }
-    collectStar(star) {
+    collectStar(player, star) {
         star.disableBody(true, true); //the star no longer has a 'physical body'
     }
-    collectFloatingStar(floatingStar) {
+    collectFloatingStar(player, floatingStar) {
         floatingStar.disableBody(true, true);
         this.score += 10;
     }
@@ -83,7 +83,103 @@ class testScene extends Phaser.Scene {
     }
 
     update() {
-        // Update logic here
+        if (this.keys.A.isDown){
+            this.player.setVelocityX(-80)
+            this.player.anims.play('left', true)
+        }
+        else if (this.keys.D.isDown){
+            this.player.setVelocityX(80)
+            this.player.anims.play('right', true);
+        }
+        else{
+            this.player.setVelocityX(0)
+            this.player.anims.play('turn', true)
+        }
+        if ((this.keys.W.isDown || this.keys.SPACE.isDown) && this.player.body.touching.down){
+            this.player.setVelocityY(-200);
+        }
+        this.movingPlatforms.children.iterate(movingPlatform => {
+            if (movingPlatform.movementType === 'pingpong') {
+                // console.log('PINGPONG UPDATE RUNNING for', movingPlatform.x, movingPlatform.y);
+
+                // store spawn position instead of using originX
+                if (movingPlatform.spawnX === undefined) {
+                    movingPlatform.spawnX = movingPlatform.x;
+                    movingPlatform.spawnY = movingPlatform.y;
+                }
+                console.log(movingPlatform.spawnX);
+
+                if (movingPlatform.directionX === undefined) {
+                    movingPlatform.directionX = 1;
+                }
+
+                let platformOriginX = movingPlatform.spawnX;
+                let platformMovementX = movingPlatform.moveX;
+                let platformMovementSpeed = movingPlatform.speed;
+
+                if (movingPlatform.x >= (platformOriginX + platformMovementX)) {
+                    movingPlatform.directionX = -1; // move left
+                }
+                else if (movingPlatform.x <= platformOriginX) {
+                    movingPlatform.directionX = 1; // move right
+                }
+
+                movingPlatform.setVelocityX(platformMovementSpeed * movingPlatform.directionX);
+            }
+            else if (movingPlatform.movementType === 'circular') {
+                let spawnX = movingPlatform.x;
+                let spawnY = movingPlatform.y;
+                let radius = movingPlatform.radius;
+                let startingAngle = movingPlatform.angle ?? 0;
+                if (typeof movingPlatform.orbitAngle !== 'number') {
+                    movingPlatform.orbitAngle = movingPlatform.startingAngle ?? 0;
+                }
+                let originX = movingPlatform.originX ?? movingPlatform.x;
+                let originY = movingPlatform.originY ?? movingPlatform.y;
+                let centerX = spawnX - movingPlatform.radius * Math.cos(movingPlatform.orbitAngle);
+                let centerY = spawnY - movingPlatform.radius * Math.sin(movingPlatform.orbitAngle);
+
+                movingPlatform.centerX = centerX;
+                movingPlatform.centerY = centerY;
+                // console.log('Creating circular tween for platform:', {
+                //     x: movingPlatform.x,
+                //     y: movingPlatform.y,
+                //     radius: movingPlatform.radius,
+                //     centerX: movingPlatform.centerX,
+                //     centerY: movingPlatform.centerY,
+                //     orbitAngle: movingPlatform.orbitAngle
+                //   }); //use for testing purposes
+                this.tweens.add({
+                    targets: movingPlatform,
+                    orbitAngle: movingPlatform.orbitAngle + 2 * Math.PI,
+                    duration: 1 / movingPlatform.speed * 1000, // calculate duration from speed
+                    repeat: -1, //makes it loop
+                    onUpdate: () => { //this is what actually moves it 
+                        movingPlatform.x = centerX + movingPlatform.radius * Math.cos(movingPlatform.orbitAngle);
+                        movingPlatform.y = centerY + movingPlatform.radius * Math.sin(movingPlatform.orbitAngle);
+                    }
+                });
+            }
+            else if (movingPlatform.movementType === 'updown') {
+                if (movingPlatform.originY === undefined) {
+                    movingPlatform.originX = movingPlatform.x
+                    movingPlatform.originY = movingPlatform.y
+                }
+                if (movingPlatform.directionY === undefined) {
+                    movingPlatform.directionY = 1
+                }
+                let platformOriginY = movingPlatform.originY;
+                let platformMovementY = movingPlatform.moveY;
+                let platformMovementSpeed = movingPlatform.speed;
+                if (movingPlatform.y >= (platformOriginY + platformMovementY)) {
+                    movingPlatform.directionY = -1; // move up
+                }
+                else if (movingPlatform.y <= platformOriginY) {
+                    movingPlatform.directionY = 1; // move down
+                }
+                movingPlatform.setVelocityY(platformMovementSpeed * movingPlatform.directionY);
+            }
+        })
     }
 }
 

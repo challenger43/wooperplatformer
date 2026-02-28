@@ -420,6 +420,14 @@ class Level extends Phaser.Scene {
                 this.player.anims.play('turn');
             }
         }
+        if (
+            (this.keys.W.isDown || this.keys.SPACE.isDown || this.cursors.up.isDown) && (
+                (this.isInWater || this.player.body.touching.down)
+            )
+        ) { //checks if you can jump--the space/w key has to be pushed and the player body has to be touching
+            this.player.setVelocityY(this.isInWater ? -100 : -430);
+            // this.scene.start('testScene'); -- a tester code, in this if the player jumps it moves you to another scene called Test Scene
+        }
         if (!["LevelOne", "LevelTwo"].includes(this.scene.key)) {
             if (this.keys.P.isDown && !this.wasPDownLastFrame) {
                 this.quagsire = !this.quagsire;
@@ -431,14 +439,7 @@ class Level extends Phaser.Scene {
             }
             this.wasPDownLastFrame = this.keys.P.isDown;
         }
-        if (
-            (this.keys.W.isDown || this.keys.SPACE.isDown || this.cursors.up.isDown) && (
-                (this.isInWater || this.player.body.touching.down)
-            )
-        ) { //checks if you can jump--the space/w key has to be pushed and the player body has to be touching
-            this.player.setVelocityY(this.isInWater ? -100 : -430);
-            // this.scene.start('testScene'); -- a tester code, in this if the player jumps it moves you to another scene called Test Scene
-        }
+        
         let activeFloatingStars = this.floatingStars.countActive(true);
         let activeStars = this.stars.countActive(true);
         // console.log(activeFloatingStars + activeStars)
