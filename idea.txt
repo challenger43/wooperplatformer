@@ -1,0 +1,72 @@
+full revamp of platformer: (aka my excuse for why i haven't updated in 1/2 year bc ive been brainstorming(read: super busy))
+
+new game concept:
+    instead of merely collecting all the stars, need to collect stars against my ai/npc thingie and bring them back to your "charge thing" to charge that up
+    once that's charged then your portal will spawn. 
+
+    Combat system:
+    idk if ill actually make this or anything but basically quagsire can shoot mud balls. if ai/you gets hit by one then if its holding a star it will
+    drop the star(and the star will disappear off into the distance to prevent an infinite loop of getting shot), vice versa for you but the AI has a pretty
+    sick gun. 
+
+    there will likely not be enough stars for both of you to survive 
+
+new graphics:
+    better background pictures in general
+    variants of platforms and stuff based off "biome" 
+    more sprite animations
+
+Stuff to add:
+    guns, bullets, charge anchors(with multiple anims/textures for each "level" of charge (but wait what if there's too many levels....))
+    difficulties? e.g. peaceful = no gun violence
+    drop star/ pick up star function
+    charge function(when you have a star)
+
+Stuff needed (for me):
+    a "developer" mode: (slap in a password and get this stuff)
+        ability to toggle camera from character / npc
+        bypass guns
+        infinite gun reloading
+        the infamous "q" key to speedrun
+        flight
+        aka cheats
+    npc ai system:
+        have a general idea of max jump height / distance travellable to do math and stuff 
+        while starsRemaining != 0
+            searchForStar()
+            collectStar()
+            bringStarHome()
+        searchForStar (within grumpig's camera range / sight){
+            go through stars + see if any are in range, in range = in array of "stars viewed
+            if in range solve distance for each, shortest distance = star to collect
+        }
+        collectStar:
+            star collected = false
+            stepsMade = []
+            if star is in jumping range + no platforms obstructing it: case 1
+                go to star.x and jump. set starcollected = true
+                bringStarHome or pass or continue or whatever its called
+            else if star is in jumping range but platform obstructing it: case 2 
+                walk to the "end" of platform, jump until you pass that platform's highest y value (or those platforms idk how imma make it do parkour cause i suck)
+                then swap x until you are on the platform. walk until star collected. then go bring it back
+            else if star is not in jumping range and there are platforms to parkour to it: case 3
+                jump to nearest jumpable platform (see step one of case 2) 
+                scan to see how much further: if needs to make it to another platform, jump to the next platform
+                    maybe spawn clones to see exactly which jump sequence needed using arrays, whichever one successfully triggers physics.overlap to called
+                    function is the correct array, so then grumpig will execute each step of that array and collect the star 
+        bringStarHome():
+            go through stepsMade and retrace steps ig?
+            useStar():
+                aka another function i gotta write
+        then repeat this whole thing
+
+        useStar: 
+            if holdingStar && overlapping with chargeAnchor (or maybe just the purple light rays/general halo): 
+                star.disable body
+                chargeanchor value += starValue
+        dropStar:
+            if holdingstar:
+                don't be holding star(it might bounce a lil tho)
+        carryStar
+            not really a function but basically set speed + jump height a lot lower. also you can't shoot guns while you're holding a star
+    better management (i.e. do i need to make more js files with each level as one bc index.js is kinda chonky rn)
