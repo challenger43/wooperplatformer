@@ -1,51 +1,88 @@
-const GRAVITY_DEFAULT = 500
-    let player, stars, floatingStars, platforms, keys, enemies, bullets;
-function preload() {
-    this.load.image('ground', 'assets/platform.png');
-    this.load.spritesheet('dude', 'assets/wooperspritesheet1a.png', { frameWidth: 32, frameHeight: 32 }); //sets the height of sprite
+import { trials } from './testCoords.js'
+const GRAVITY_DEFAULT = 500;
+class testScene extends Phaser.Scene {
+    player; //cannot use const for these because will need to change them later
+    stars;
+    floatingStars;
+    bombs;
+    platforms;
+    movingPlatforms;
+    cursors;
+    score = 0;
+    keys;
+    constructor() {
+        super({ key: 'testScene' });
+    }
 
+    preload() {
+        this.load.image('ground', 'assets/platform.png');
+        this.load.spritesheet('dude', 'assets/wooperspritesheet1a.png', { frameWidth: 32, frameHeight: 32 });
+        this.load.image('star', 'assets/WooperBall.png'); //they don't actually look like stars in 'real life' 
+        this.load.image('bomb', 'assets/bomb.png');
+    }
+
+    create() {
+        this.keys = this.input.keyboard.addKeys('W,A,S,D,Q,P,O,V,SPACE');
+        this.anims.create({
+            key: 'left',
+            frames: this.anims.generateFrameNumbers('dude', { start: 1, end: 4 }),
+            frameRate: 20,
+            repeat: -1
+        });
+        this.anims.create({
+            key: 'turn',
+            frames: [{ key: 'dude', frame: 0 }],
+            frameRate: 20
+        });
+
+        this.anims.create({
+            key: 'right',
+            frames: this.anims.generateFrameNumbers('dude', { start: 5, end: 8 }),
+            frameRate: 20,
+            repeat: -1
+        });
+        this.stars = this.physics.add.group();
+        for (let starData of trials.stars) {
+            this.stars.create(starData.x, starData.y, 'star')
+                .setBounceY(Phaser.Math.FloatBetween(0.2, 0.6))
+                // .setImmovable(!starData.gravity ?? false)
+                .setScale(0.05, 0.05);
+        }
+        this.floatingStars = this.physics.add.group();
+        for (let fStarData of trials.floatingStars){
+            this.floatingStars.create(fStarData.x, fStarData.y, 'star')
+            .setScale(0.05,0.05)
+        }
+        this.platforms = this.physics.add.staticGroup();
+        for (let platformData of trials.platforms){
+            this.platforms.create(platformData.x, platformData.y, 'ground')
+            .setScale(platformData.scaleX ?? 1, platformData.scaleY ?? 1)
+                .setTint(platformData.tint ?? 0xffffff)
+                .refreshBody();
+        }
+        this.movingPlatforms = this.physics.add.group();
+        this.player = this.physics.add.sprite(100, 450, 'dude')
+        this.enemy = this.physics.add.sprite(200,450, 'dude').setTint(0x0000FF)
+    }
+
+    update() {
+        // Update logic here
+    }
 }
-function create() {
-    this.anims.create({
-        key: 'left',
-        frames: this.anims.generateFrameNumbers('dude', { start: 1, end: 4 }),
-        frameRate: 20,
-        repeat: -1
-    });
 
-    this.anims.create({
-        key: 'turn',
-        frames: [{ key: 'dude', frame: 0 }],
-        frameRate: 20
-    });
-
-    this.anims.create({
-        key: 'right',
-        frames: this.anims.generateFrameNumbers('dude', { start: 5, end: 8 }),
-        frameRate: 20,
-        repeat: -1
-    });
-
-}
-function update() {
-
-}
 const config = {
     type: Phaser.AUTO,
     width: 1100,
     height: 1100,
     parent: 'game',
-    physics: { //sets up the physics system
-        default: 'arcade',
-        arcade: { //arcade is object
-            gravity: { y: GRAVITY_DEFAULT },
-            debug: false,
+    physics: {
+        default: 'arcade', 
+        arcade: {
+            gravity: { y: GRAVITY_DEFAULT }, 
+            debug: false
         }
     },
-    scene: {
-        preload: preload,
-        create: create,
-        update: update
-    }
+    scene: testScene,
 };
+
 const game = new Phaser.Game(config);
