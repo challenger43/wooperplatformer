@@ -1,4 +1,5 @@
 import { trials } from './testCoords.js'
+import EnemyAI from './enemy.js'
 const GRAVITY_DEFAULT = 380;
 const GRAVITY_QUAGSIRE = 500
 class testScene extends Phaser.Scene {
@@ -33,7 +34,10 @@ class testScene extends Phaser.Scene {
     create() {
         this.cursors = this.input.keyboard.createCursorKeys();
         this.keys = this.input.keyboard.addKeys('W,A,S,D,Q,P,O,V,SPACE');
-                this.anims.create({
+        this.player = this.physics.add.sprite(100, 450, 'dude')
+        this.enemy = this.physics.add.sprite(200,450, 'dude').setTint(0x0000FF)
+        this.enemyAI = new EnemyAI(this, this.enemy);
+        this.anims.create({
             key: 'left',
             frames: this.anims.generateFrameNumbers('dude', { start: 1, end: 4 }),
             frameRate: 20,
@@ -89,8 +93,6 @@ class testScene extends Phaser.Scene {
                 .refreshBody();
         }
         this.movingPlatforms = this.physics.add.group();
-        this.player = this.physics.add.sprite(100, 450, 'dude')
-        this.enemy = this.physics.add.sprite(200,450, 'dude').setTint(0x0000FF)
         this.physics.add.collider(this.player, this.platforms); //these are the things you want to collide with--the first code takes parameters player and platforms, so then player and platforms will collide
         this.physics.add.collider(this.stars, this.platforms);//parameters are stars and platforms, so adds a collide rule to the relationship between stars and platforms 
         // this.physics.add.collider(this.bombs, this.platforms);
@@ -208,14 +210,6 @@ class testScene extends Phaser.Scene {
 
                 movingPlatform.centerX = centerX;
                 movingPlatform.centerY = centerY;
-                // console.log('Creating circular tween for platform:', {
-                //     x: movingPlatform.x,
-                //     y: movingPlatform.y,
-                //     radius: movingPlatform.radius,
-                //     centerX: movingPlatform.centerX,
-                //     centerY: movingPlatform.centerY,
-                //     orbitAngle: movingPlatform.orbitAngle
-                //   }); //use for testing purposes
                 this.tweens.add({
                     targets: movingPlatform,
                     orbitAngle: movingPlatform.orbitAngle + 2 * Math.PI,
