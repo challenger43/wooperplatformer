@@ -53,37 +53,37 @@ export const trials = {
     movingPlatforms: [],
     stars:[
         {
-                x: 224,
+                x: 300,
                 y: 100,
                 scaleX: 0.05,
                 scaleY: 0.05,
             },
-            {
-                x: 590,
-                y: -30,
-                scaleX: 0.05,
-                scaleY: 0.05,
-            },
+            // {
+            //     x: 590,
+            //     y: -30,
+            //     scaleX: 0.05,
+            //     scaleY: 0.05,
+            // },
     ],
     floatingStars: [
-        {
-                x: 48,
-                y: 686,
-                scaleX: 0.05,
-                scaleY: 0.05,
-            },
-            {
-                x: 48,
-                y: 750,
-                scaleX: 0.05,
-                scaleY: 0.05,
-            },
-            {
-                x: 415,
-                y: 720,
-                scaleX: 0.05,
-                scaleY: 0.05,
-            },
+        // {
+        //         x: 48,
+        //         y: 686,
+        //         scaleX: 0.05,
+        //         scaleY: 0.05,
+        //     },
+        //     {
+        //         x: 48,
+        //         y: 750,
+        //         scaleX: 0.05,
+        //         scaleY: 0.05,
+        //     },
+        //     {
+        //         x: 415,
+        //         y: 720,
+        //         scaleX: 0.05,
+        //         scaleY: 0.05,
+        //     },
     ],
 
 }

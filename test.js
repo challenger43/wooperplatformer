@@ -1,6 +1,6 @@
 import { trials } from './testCoords.js'
 import EnemyAI from './enemy.js'
-const GRAVITY_DEFAULT = 380;
+const GRAVITY_DEFAULT = 400;
 const GRAVITY_QUAGSIRE = 500
 class testScene extends Phaser.Scene {
     player; //cannot use const for these because will need to change them later
@@ -10,6 +10,7 @@ class testScene extends Phaser.Scene {
     platforms;
     movingPlatforms;
     cursors;
+    enemy;
     score = 0;
     keys;
     cursors; 
@@ -35,7 +36,7 @@ class testScene extends Phaser.Scene {
         this.cursors = this.input.keyboard.createCursorKeys();
         this.keys = this.input.keyboard.addKeys('W,A,S,D,Q,P,O,V,SPACE');
         this.player = this.physics.add.sprite(100, 450, 'dude')
-        this.enemy = this.physics.add.sprite(200,450, 'dude').setTint(0x0000FF)
+        this.enemy = this.physics.add.sprite(200,450, 'dude').setTint(0x0000FF);
         this.enemyAI = new EnemyAI(this, this.enemy);
         this.anims.create({
             key: 'left',
@@ -76,7 +77,7 @@ class testScene extends Phaser.Scene {
         this.stars = this.physics.add.group();
         for (let starData of trials.stars) {
             this.stars.create(starData.x, starData.y, 'star')
-                .setBounceY(Phaser.Math.FloatBetween(0.2, 0.6))
+                .setBounceY(Phaser.Math.FloatBetween(0.1, 0.4))
                 // .setImmovable(!starData.gravity ?? false)
                 .setScale(0.05, 0.05);
         }
@@ -105,8 +106,8 @@ class testScene extends Phaser.Scene {
         this.physics.add.overlap(this.enemy, this.stars, this.collectStar, null, this);
         this.physics.add.overlap(this.enemy, this.floatingStars, this.collectFloatingStar, null, this)
     }
-
     update() {
+        this.enemyAI.update()
         if (this.quagsire) {
             this.physics.world.gravity.y = GRAVITY_QUAGSIRE;
         }
