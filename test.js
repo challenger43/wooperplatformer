@@ -1,23 +1,23 @@
 import { trials } from './testCoords.js'
 import EnemyAI from './enemy.js'
-const GRAVITY_DEFAULT = 400;
+const GRAVITY_DEFAULT = 700;
 const GRAVITY_QUAGSIRE = 500
 class testScene extends Phaser.Scene {
-    player; //cannot use const for these because will need to change them later
+    player; 
+    enemy;
     stars;
     floatingStars;
     bombs;
     platforms;
     movingPlatforms;
     cursors;
-    enemy;
     score = 0;
     keys;
     cursors; 
     constructor() {
         super({ key: 'testScene' });
     }
-
+ 
     preload() {
         this.load.image('ground', 'assets/platform.png');
         this.load.spritesheet('quagsire', 'assets/quagsirespritesheet.png', { frameWidth: 32, frameHeight: 32 });
@@ -35,9 +35,6 @@ class testScene extends Phaser.Scene {
     create() {
         this.cursors = this.input.keyboard.createCursorKeys();
         this.keys = this.input.keyboard.addKeys('W,A,S,D,Q,P,O,V,SPACE');
-        this.player = this.physics.add.sprite(100, 450, 'dude')
-        this.enemy = this.physics.add.sprite(200,450, 'dude').setTint(0x0000FF);
-        this.enemyAI = new EnemyAI(this, this.enemy);
         this.anims.create({
             key: 'left',
             frames: this.anims.generateFrameNumbers('dude', { start: 1, end: 4 }),
@@ -74,6 +71,16 @@ class testScene extends Phaser.Scene {
             frames: [{ key: 'quagsire', frame: 0, }],
             frameRate: 20,
         })
+        // this.player = this.physics.add.sprite(100, 450, 'dude')
+        // this.enemy = this.physics.add.sprite(200,450, 'dude').setTint(0x0000FF);
+        for (let enemyData of trials.enemy){
+            this.enemy = this.physics.add.sprite(enemyData.x, enemyData.y, 'dude')
+            .setTint(enemyData.tint)
+        }
+        for (let playerData of trials.player){
+            this.player = this.physics.add.sprite(playerData.x, playerData.y, 'dude')
+        }
+        this.enemyAI = new EnemyAI(this, this.enemy);
         this.stars = this.physics.add.group();
         for (let starData of trials.stars) {
             this.stars.create(starData.x, starData.y, 'star')

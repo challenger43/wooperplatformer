@@ -49,7 +49,7 @@ export const trials = {
                 scaleY: 21,
                 tint: 0x3c6529,
             },
-    ],
+    ], 
     movingPlatforms: [],
     stars:[
         {
@@ -85,5 +85,18 @@ export const trials = {
         //         scaleY: 0.05,
         //     },
     ],
+    player: [
+        {
+            x: 100,
+            y: 450,
+        }
+    ],
+    enemy: [
+        {
+            x:200,
+            y:450,
+            tint: 0x0000FF,
+        }
+    ]
 
 }
