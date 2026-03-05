@@ -16,11 +16,10 @@ export default class EnemyAI {
         }
     }
     searchForStar(){
-        let testArray = []
-        for (let star of trials.stars){
-            testArray.push(star.x, star.y)
-        }
-        let viewArray = testArray.filter((x)=>(x.x <= (enemy.x +rangeOfViewX) && x.x >= -rangeOfViewX) && (x.y <= rangeOfViewY && x.y >= -rangeOfViewY))
+        let viewArray = trials.stars.filter((star) =>
+        Math.abs(star.x - this.enemy.x) <= rangeOfViewX &&
+        Math.abs(star.y - this.enemy.y) <= rangeOfViewY
+    ) //checks if star is in grumpig's supposed range of view
         console.log(viewArray)
     }
     findDistance() {
