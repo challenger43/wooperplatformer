@@ -49,6 +49,13 @@ export const trials = {
                 scaleY: 21,
                 tint: 0x3c6529,
             },
+            { //test platform
+                x: 400,
+                y: 750,  
+                scaleX: 0.3,
+                scaleY: 0.1,
+
+            },
     ], 
     movingPlatforms: [],
     stars:[
