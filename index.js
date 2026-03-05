@@ -9,7 +9,7 @@ class MenuScene extends Phaser.Scene { //the menu
     keys;
     constructor() { //super() inherits all the characteristics of the Phaser 'scene' class
         super({ key: 'MainMenu' });
-    }
+    } 
     preload() {
         this.load.image("quagball", "assets/quagball.png");
         this.load.image('quagsireLoadScreen', 'assets/quagsireStartGame.png')

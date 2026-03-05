@@ -31,7 +31,7 @@ export default class BossBattle extends Phaser.Scene {
         this.load.spritesheet('dude', 'assets/wooperspritesheet1a.png', { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet('quagsire', 'assets/quagsirespritesheet.png', { frameWidth: 32, frameHeight: 32 });
         this.load.image('bubble', 'assets/bubble.png');
-        this.load.spritesheet('grumpig', 'grumpigsprite.png', { frameWidth: 32, frameHeight: 32 })
+        this.load.spritesheet('grumpig', 'assets/grumpigsprite.png', { frameWidth: 32, frameHeight: 32 })
     }
     enterPortal(_player, portal) {
         console.log("portal entered ")
