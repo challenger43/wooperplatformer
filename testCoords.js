@@ -58,12 +58,12 @@ export const trials = {
                 scaleX: 0.05,
                 scaleY: 0.05,
             },
-            // {
-            //     x: 590,
-            //     y: -30,
-            //     scaleX: 0.05,
-            //     scaleY: 0.05,
-            // },
+            {
+                x: 590,
+                y: -30,
+                scaleX: 0.05,
+                scaleY: 0.05,
+            },
     ],
     floatingStars: [
         // {
