@@ -1,6 +1,7 @@
 import { trials } from './testCoords.js'
 const rangeOfViewX = 1100;
 const rangeOfViewY = 1100;
+const maxJump = 50;
 export default class EnemyAI {
     //stuff
     constructor(scene, enemySprite) {

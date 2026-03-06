@@ -3,7 +3,7 @@ import EnemyAI from './enemy.js'
 const GRAVITY_DEFAULT = 700;
 const GRAVITY_QUAGSIRE = 500
 class testScene extends Phaser.Scene {
-    player; 
+    player;
     enemy;
     stars;
     floatingStars;
@@ -13,11 +13,12 @@ class testScene extends Phaser.Scene {
     cursors;
     score = 0;
     keys;
-    cursors; 
+    cursors;
+    playerCoordText;
     constructor() {
         super({ key: 'testScene' });
     }
- 
+
     preload() {
         this.load.image('ground', 'assets/platform.png');
         this.load.spritesheet('quagsire', 'assets/quagsirespritesheet.png', { frameWidth: 32, frameHeight: 32 });
@@ -35,6 +36,7 @@ class testScene extends Phaser.Scene {
     create() {
         this.cursors = this.input.keyboard.createCursorKeys();
         this.keys = this.input.keyboard.addKeys('W,A,S,D,Q,P,O,V,SPACE');
+        this.playerCoordText = this.add.text(600, 300, 'score: 0', { fontSize: '16px', fill: '#FFF' });
         this.anims.create({
             key: 'left',
             frames: this.anims.generateFrameNumbers('dude', { start: 1, end: 4 }),
@@ -73,11 +75,11 @@ class testScene extends Phaser.Scene {
         })
         // this.player = this.physics.add.sprite(100, 450, 'dude')
         // this.enemy = this.physics.add.sprite(200,450, 'dude').setTint(0x0000FF);
-        for (let enemyData of trials.enemy){
+        for (let enemyData of trials.enemy) {
             this.enemy = this.physics.add.sprite(enemyData.x, enemyData.y, 'dude')
-            .setTint(enemyData.tint)
+                .setTint(enemyData.tint)
         }
-        for (let playerData of trials.player){
+        for (let playerData of trials.player) {
             this.player = this.physics.add.sprite(playerData.x, playerData.y, 'dude')
         }
         this.enemyAI = new EnemyAI(this, this.enemy);
@@ -89,14 +91,14 @@ class testScene extends Phaser.Scene {
                 .setScale(0.05, 0.05);
         }
         this.floatingStars = this.physics.add.group();
-        for (let fStarData of trials.floatingStars){
+        for (let fStarData of trials.floatingStars) {
             this.floatingStars.create(fStarData.x, fStarData.y, 'star')
-            .setScale(0.05,0.05)
+                .setScale(0.05, 0.05)
         }
         this.platforms = this.physics.add.staticGroup();
-        for (let platformData of trials.platforms){
+        for (let platformData of trials.platforms) {
             this.platforms.create(platformData.x, platformData.y, 'ground')
-            .setScale(platformData.scaleX ?? 1, platformData.scaleY ?? 1)
+                .setScale(platformData.scaleX ?? 1, platformData.scaleY ?? 1)
                 .setTint(platformData.tint ?? 0xffffff)
                 .refreshBody();
         }
@@ -161,7 +163,7 @@ class testScene extends Phaser.Scene {
                 this.player.anims.play('turn');
             }
         }
-        if ((this.keys.W.isDown || this.keys.SPACE.isDown || this.cursors.up.isDown) && ((this.isInWater || this.player.body.touching.down))) { 
+        if ((this.keys.W.isDown || this.keys.SPACE.isDown || this.cursors.up.isDown) && ((this.isInWater || this.player.body.touching.down))) {
             this.player.setVelocityY(this.isInWater ? -100 : -280);
         }
         if (!["LevelOne", "LevelTwo"].includes(this.scene.key)) {
@@ -249,6 +251,9 @@ class testScene extends Phaser.Scene {
                 movingPlatform.setVelocityY(platformMovementSpeed * movingPlatform.directionY);
             }
         })
+        this.playerCoordText.setText("x: " + Math.floor(this.player.x) + " y: " + Math.floor(this.player.y))
+        this.playerCoordText.x = this.player.x - 60;
+        this.playerCoordText.y = this.player.y - 50;
     }
 }
 
@@ -258,9 +263,9 @@ const config = {
     height: 1100,
     parent: 'game',
     physics: {
-        default: 'arcade', 
+        default: 'arcade',
         arcade: {
-            gravity: { y: GRAVITY_DEFAULT }, 
+            gravity: { y: GRAVITY_DEFAULT },
             debug: false
         }
     },
