@@ -70,3 +70,7 @@ Stuff needed (for me):
         carryStar
             not really a function but basically set speed + jump height a lot lower. also you can't shoot guns while you're holding a star
     better management (i.e. do i need to make more js files with each level as one bc index.js is kinda chonky rn)
+
+Other general stuff: 
+    Swap to typescript
+    upgrade phaser version (why am i still using 3.11)
