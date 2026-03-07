@@ -102,6 +102,7 @@ class testScene extends Phaser.Scene {
             this.player = this.physics.add.sprite(playerData.x, playerData.y, 'dude')
         }
         this.enemyAI = new EnemyAI(this, this.enemy);
+        this.enemyAI.create()
         this.stars = this.physics.add.group();
         for (let starData of trials.stars) {
             let star = this.stars.create(starData.x, starData.y, 'star')

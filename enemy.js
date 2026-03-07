@@ -18,6 +18,7 @@ export default class EnemyAI {
             this.enemyCollectStar(this.targetStar)
         }
     }
+    create(){}
     searchForStar() {
         console.log("searching for a star....")
         let viewArray = trials.stars.filter((star) =>

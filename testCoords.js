@@ -61,7 +61,7 @@ export const trials = {
     stars:[ 
         {
                 x: 300,
-                y: 700,
+                y: 720,
                 scaleX: 0.05,
                 scaleY: 0.05,
                 collected: false,
@@ -69,29 +69,29 @@ export const trials = {
             },
             {
                 x: 590,
-                y: 700,
+                y: 720,
                 scaleX: 0.05,
                 scaleY: 0.05,
                 collected: false,
                 floating: false,
 
             },
-            {
-                x: 700,
-                y: 700,
-                scaleX: 0.05,
-                scaleY: 0.05,
-                collected: false,
-                floating: false,
-            },
             // {
-            //     x:48,
-            //     y:720,
+            //     x: 600,
+            //     y: 700,
             //     scaleX: 0.05,
             //     scaleY: 0.05,
             //     collected: false,
-            //     floating: true, 
-            // }
+            //     floating: false,
+            // },
+            {
+                x:48,
+                y:720,
+                scaleX: 0.05,
+                scaleY: 0.05,
+                collected: false,
+                floating: true, 
+            }
     ],
     player: [
         {
