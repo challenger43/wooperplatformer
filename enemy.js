@@ -31,9 +31,30 @@ export default class EnemyAI {
     distance(star) {
         return Math.sqrt(Math.pow((star.x - this.enemy.x), 2) + Math.pow((star.y - this.enemy.y), 2))
     }
+
     collectStar(closestStar) {
-    }
+        if (!closestStar) return
+        let distanceX = Math.abs(this.enemy.x - closestStar.x)
+        if (closestStar.y <= this.enemy.y + maxJump) { // in jump range
+            if (distanceX <= 10){
+                this.targetStar = null;
+                this.enemy.setVelocityX(0)
+                this.bringStarHome()
+                return
+            }
+            if (distanceX > 10) {
+                if (this.enemy.x >= closestStar.x) {
+                    this.enemy.setVelocityX(-100)
+                }
+                else if (this.enemy.x <= closestStar.x) {
+                    this.enemy.setVelocityX(100)
+                }
+            }
+        }
+    }   
     bringStarHome() {
+        console.log("we brought the star home yippee")
 
     }
-} 
+
+}
