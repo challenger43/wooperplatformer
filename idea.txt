@@ -74,3 +74,20 @@ Stuff needed (for me):
 Other general stuff: 
     Swap to typescript
     upgrade phaser version (why am i still using 3.11)
+Order of branches to complete:
+    addAI
+    upgrade phaser version
+    swap to typescript
+    make legacy version
+    add menu screen ( to get to said developer mode)
+    add "developer mode"
+    add collection mechanics
+    add combat system
+    rebuild all the levels
+    add tutorial
+    add settings (for left hand people)
+    graphics revamp
+    release
+    i dunno if ill make it this far but if we do
+    add multiplayer(on same computer)
+    gamemodes and difficulty
