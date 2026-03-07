@@ -84,14 +84,14 @@ export const trials = {
                 collected: false,
                 floating: false,
             },
-            {
-                x:48,
-                y:600,
-                scaleX: 0.05,
-                scaleY: 0.05,
-                collected: false,
-                floating: true, 
-            }
+            // {
+            //     x:48,
+            //     y:720,
+            //     scaleX: 0.05,
+            //     scaleY: 0.05,
+            //     collected: false,
+            //     floating: true, 
+            // }
     ],
     player: [
         {
@@ -101,7 +101,7 @@ export const trials = {
     ],
     enemy: [
         {
-            x:200,
+            x:700,
             y:700,
             tint: 0x0000FF,
         }

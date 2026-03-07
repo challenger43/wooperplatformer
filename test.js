@@ -109,6 +109,7 @@ class testScene extends Phaser.Scene {
                 // .setImmovable(!starData.gravity ?? false)
                 .setScale(0.05, 0.05);
             star.floating = starData.floating
+            star.collected = starData.collected
             if (star.floating == true) {
                 star.body.setGravity(0, 0)
                 star.body.allowGravity = false
@@ -282,7 +283,7 @@ const config = {
         default: 'arcade',
         arcade: {
             gravity: { y: GRAVITY_DEFAULT },
-            debug: false
+            debug: true
         }
     },
     scene: testScene,
