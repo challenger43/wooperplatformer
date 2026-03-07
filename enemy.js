@@ -41,7 +41,6 @@ export default class EnemyAI {
 
     enemyCollectStar(closestStar) {
         if (!closestStar || closestStar.collected) {
-            console.log("WHYYYY")
             this.targetStar = null
             return
         }
@@ -49,7 +48,6 @@ export default class EnemyAI {
         let distanceY = Math.abs(this.enemy.y - closestStar.y)
         // let heightDiff = this.enemy.y - closestStar.y
         if (distanceX <= 20 && distanceY <= 20) {
-            console.log("idekerlafhjejaiofj;ewaifjewioj")
             closestStar.collected = true
             this.targetStar = null;
             this.enemy.anims.play('turn')
@@ -61,18 +59,15 @@ export default class EnemyAI {
         if (distanceY >= 0 && distanceY <= maxJump) { // in jump range(above) + no obstructions
             if (distanceX > 10) {
                 if (this.enemy.x >= closestStar.x) {
-                    console.log("i hate this")
                     this.enemy.anims.play('left', true);
                     this.enemy.setVelocityX(-100);
                 }
                 else if (this.enemy.x <= closestStar.x) {
-                    console.log("Fu")
                     this.enemy.anims.play('right', true);
                     this.enemy.setVelocityX(100);
                 }
             }
             if (distanceX <= 10 && distanceY > 10 && distanceY <= maxJump && this.enemy.body.touching.down) {
-                console.log("f")
                 this.enemy.setVelocityX(0)
                 this.enemy.setVelocityY(-280)
             }
@@ -80,8 +75,8 @@ export default class EnemyAI {
         else {
             console.log("Welp")
         }
-        console.log("target:", closestStar.x, closestStar.y)
-        console.log("enemy:", this.enemy.x, this.enemy.y)
+        // console.log("target:", closestStar.x, closestStar.y)
+        // console.log("enemy:", this.enemy.x, this.enemy.y)
     }
     bringStarHome() {
         console.log("we brought the star home yippee")
