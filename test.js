@@ -28,6 +28,7 @@ class testScene extends Phaser.Scene {
     }
     collectStar(player, star) {
         star.disableBody(true, true); //the star no longer has a 'physical body'
+        star.collected = true
     }
     collectFloatingStar(player, floatingStar) {
         floatingStar.disableBody(true, true);

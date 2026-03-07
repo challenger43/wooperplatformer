@@ -58,19 +58,29 @@ export const trials = {
             },
     ], 
     movingPlatforms: [],
-    stars:[
+    stars:[ 
         {
                 x: 300,
-                y: 100,
+                y: 700,
                 scaleX: 0.05,
                 scaleY: 0.05,
+                collected: false,
             },
             {
                 x: 590,
-                y: -30,
+                y: 700,
                 scaleX: 0.05,
                 scaleY: 0.05,
+                collected: false,
+
             },
+            {
+                x: 700,
+                y: 700,
+                scaleX: 0.05,
+                scaleY: 0.05,
+                collected: false,
+            }
     ],
     floatingStars: [
         // {
