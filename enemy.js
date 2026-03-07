@@ -48,7 +48,7 @@ export default class EnemyAI {
         let distanceX = Math.abs(this.enemy.x - closestStar.x)
         let distanceY = Math.abs(this.enemy.y - closestStar.y)
         // let heightDiff = this.enemy.y - closestStar.y
-        if (distanceX <= 40 && distanceY <= 40) {
+        if (distanceX <= 20 && distanceY <= 20) {
             console.log("idekerlafhjejaiofj;ewaifjewioj")
             closestStar.collected = true
             this.targetStar = null;
@@ -73,6 +73,7 @@ export default class EnemyAI {
             }
             if (distanceX <= 10 && distanceY > 10 && distanceY <= maxJump && this.enemy.body.touching.down) {
                 console.log("f")
+                this.enemy.setVelocityX(0)
                 this.enemy.setVelocityY(-280)
             }
         }

@@ -86,7 +86,7 @@ export const trials = {
             // },
             {
                 x:48,
-                y:720,
+                y:700,
                 scaleX: 0.05,
                 scaleY: 0.05,
                 collected: false,
