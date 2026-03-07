@@ -40,19 +40,22 @@ export default class EnemyAI {
     collectStar(closestStar) {
         if (!closestStar || closestStar.collected == true) return
         let distanceX = Math.abs(this.enemy.x - closestStar.x)
-        if (closestStar.y <= this.enemy.y + maxJump) { // in jump range
+        if (closestStar.y <= this.enemy.y + maxJump) { // in jump range + no obstructions
             if (distanceX <= 10){
                 this.targetStar = null;
                 closestStar.collected = true
+                this.enemy.anims.play('turn')
                 this.enemy.setVelocityX(0)
                 this.bringStarHome()
                 return
             }
             if (distanceX > 10) {
                 if (this.enemy.x >= closestStar.x) {
+                    this.enemy.anims.play('left')
                     this.enemy.setVelocityX(-100)
                 }
                 else if (this.enemy.x <= closestStar.x) {
+                    this.enemy.anims.play('right')
                     this.enemy.setVelocityX(100)
                 }
             }

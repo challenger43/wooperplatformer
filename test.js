@@ -25,6 +25,7 @@ class testScene extends Phaser.Scene {
         this.load.spritesheet('dude', 'assets/wooperspritesheet1a.png', { frameWidth: 32, frameHeight: 32 });
         this.load.image('star', 'assets/WooperBall.png'); //they don't actually look like stars in 'real life' 
         this.load.image('bomb', 'assets/bomb.png');
+        this.load.spritesheet('grumpig', 'assets/grumpigsprite.png', { frameWidth: 32, frameHeight: 32 })
     }
     collectStar(player, star) {
         star.disableBody(true, true); //the star no longer has a 'physical body'
@@ -74,8 +75,30 @@ class testScene extends Phaser.Scene {
             frames: [{ key: 'quagsire', frame: 0, }],
             frameRate: 20,
         })
-        // this.player = this.physics.add.sprite(100, 450, 'dude')
-        // this.enemy = this.physics.add.sprite(200,450, 'dude').setTint(0x0000FF);
+        this.anims.create({
+            key: 'grumpigFaceForward',
+            frames: [{ key: 'grumpig', frame: 0 }],
+            frameRate: 20
+        })
+        this.anims.create({
+            key: 'grumpigPowerUp',
+            frames: this.anims.generateFrameNumbers('grumpig', { start: 1, end: 2 }),
+            repeat: 5, //total plays 1(auto) + 5 = 6 times
+            frameRate: 25
+        })
+        this.anims.create({
+            key: 'grumpigFade',
+            frames: this.anims.generateFrameNumbers('grumpig', { start: 3, end: 33 }),
+            repeat: 0, //plays once, is default
+            frameRate: 70
+        })
+        this.anims.create({
+            key: 'grumpigForward',
+            frames: this.anims.generateFrameNumbers('grumpig', { start: 34, end: 35 }),
+            repeat: -1,
+            frameRate: 12
+        })
+        //need to add grumpig backwards now.....
         for (let enemyData of trials.enemy) {
             this.enemy = this.physics.add.sprite(enemyData.x, enemyData.y, 'dude')
                 .setTint(enemyData.tint)

@@ -80,6 +80,13 @@ export const trials = {
                 scaleX: 0.05,
                 scaleY: 0.05,
                 collected: false,
+            },
+            {
+                x:48,
+                y:700,
+                scaleX: 0.05,
+                scaleY: 0.05,
+                collected: false,
             }
     ],
     floatingStars: [
