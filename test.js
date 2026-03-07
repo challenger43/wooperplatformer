@@ -6,7 +6,6 @@ class testScene extends Phaser.Scene {
     player;
     enemy;
     stars;
-    floatingStars;
     bombs;
     platforms;
     movingPlatforms;
@@ -30,10 +29,6 @@ class testScene extends Phaser.Scene {
     collectStar(player, star) {
         star.disableBody(true, true); //the star no longer has a 'physical body'
         star.collected = true
-    }
-    collectFloatingStar(player, floatingStar) {
-        floatingStar.disableBody(true, true);
-        this.score += 10;
     }
     create() {
         this.cursors = this.input.keyboard.createCursorKeys();
@@ -109,15 +104,15 @@ class testScene extends Phaser.Scene {
         this.enemyAI = new EnemyAI(this, this.enemy);
         this.stars = this.physics.add.group();
         for (let starData of trials.stars) {
-            this.stars.create(starData.x, starData.y, 'star')
-                .setBounceY(Phaser.Math.FloatBetween(0.1, 0.4))
+            let star = this.stars.create(starData.x, starData.y, 'star')
+                // .setBounceY(Phaser.Math.FloatBetween(0.1, 0.4))
                 // .setImmovable(!starData.gravity ?? false)
                 .setScale(0.05, 0.05);
-        }
-        this.floatingStars = this.physics.add.group();
-        for (let fStarData of trials.floatingStars) {
-            this.floatingStars.create(fStarData.x, fStarData.y, 'star')
-                .setScale(0.05, 0.05)
+            star.floating = starData.floating
+            if (star.floating == true) {
+                star.body.setGravity(0, 0)
+                star.body.allowGravity = false
+            }
         }
         this.platforms = this.physics.add.staticGroup();
         for (let platformData of trials.platforms) {
@@ -130,14 +125,11 @@ class testScene extends Phaser.Scene {
         this.physics.add.collider(this.player, this.platforms); //these are the things you want to collide with--the first code takes parameters player and platforms, so then player and platforms will collide
         this.physics.add.collider(this.stars, this.platforms);//parameters are stars and platforms, so adds a collide rule to the relationship between stars and platforms 
         // this.physics.add.collider(this.bombs, this.platforms);
-        this.physics.add.collider(this.floatingStars, this.platforms);
         this.physics.add.collider(this.player, this.movingPlatforms);
         this.physics.add.collider(this.enemy, this.platforms);
         this.physics.add.collider(this.enemy, this.movingPlatforms)
         this.physics.add.overlap(this.player, this.stars, this.collectStar, null, this);
-        this.physics.add.overlap(this.player, this.floatingStars, this.collectFloatingStar, null, this)
         this.physics.add.overlap(this.enemy, this.stars, this.collectStar, null, this);
-        this.physics.add.overlap(this.enemy, this.floatingStars, this.collectFloatingStar, null, this)
     }
     update() {
         this.enemyAI.update()
@@ -154,7 +146,7 @@ class testScene extends Phaser.Scene {
         }
         if (this.keys.Q.isDown) {
             this.stars.children.iterate((star) => this.collectStar(this.player, star));
-            this.floatingStars.children.iterate((star) => this.collectFloatingStar(this.player, star));
+            // this.floatingStars.children.iterate((star) => this.collectFloatingStar(this.player, star));
         } // put this back in after presentation
         if (this.keys.A.isDown || this.cursors.left.isDown) {
             if (this.quagsire == true) {

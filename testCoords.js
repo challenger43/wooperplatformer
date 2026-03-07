@@ -65,6 +65,7 @@ export const trials = {
                 scaleX: 0.05,
                 scaleY: 0.05,
                 collected: false,
+                floating: false,
             },
             {
                 x: 590,
@@ -72,6 +73,7 @@ export const trials = {
                 scaleX: 0.05,
                 scaleY: 0.05,
                 collected: false,
+                floating: false,
 
             },
             {
@@ -80,45 +82,27 @@ export const trials = {
                 scaleX: 0.05,
                 scaleY: 0.05,
                 collected: false,
+                floating: false,
             },
             {
                 x:48,
-                y:700,
+                y:600,
                 scaleX: 0.05,
                 scaleY: 0.05,
                 collected: false,
+                floating: true, 
             }
-    ],
-    floatingStars: [
-        // {
-        //         x: 48,
-        //         y: 686,
-        //         scaleX: 0.05,
-        //         scaleY: 0.05,
-        //     },
-        //     {
-        //         x: 48,
-        //         y: 750,
-        //         scaleX: 0.05,
-        //         scaleY: 0.05,
-        //     },
-        //     {
-        //         x: 415,
-        //         y: 720,
-        //         scaleX: 0.05,
-        //         scaleY: 0.05,
-        //     },
     ],
     player: [
         {
             x: 100,
-            y: 450,
+            y: 700,
         }
     ],
     enemy: [
         {
             x:200,
-            y:450,
+            y:700,
             tint: 0x0000FF,
         }
     ]
