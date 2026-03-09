@@ -23,7 +23,8 @@ export default class EnemyAI {
     searchForStar() {
         console.log("searching for a star....")
         this.enemy.setVelocityX(0)
-        this.enemy.setVelocityY(0)
+        this.enemy.anims.play('turn')
+        // this.enemy.setVelocityY(0)
         let viewArray = this.scene.stars.children.entries.filter((star) =>
             (star.collected == false) &&
             Math.abs(star.x - this.enemy.x) <= rangeOfViewX &&

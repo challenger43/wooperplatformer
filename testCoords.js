@@ -76,14 +76,14 @@ export const trials = {
             floating: false,
 
         },
-        // {
-        //     x: 600,
-        //     y: 700,
-        //     scaleX: 0.05,
-        //     scaleY: 0.05,
-        //     collected: false,
-        //     floating: false,
-        // },
+        {
+            x: 600,
+            y: 784,
+            scaleX: 0.05,
+            scaleY: 0.05,
+            collected: false,
+            floating: false,
+        },
         {
             x: 48,
             y: 703,
