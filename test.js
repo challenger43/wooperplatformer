@@ -29,7 +29,7 @@ class testScene extends Phaser.Scene {
     collectStar(player, star) {
         star.disableBody(true, true); //the star no longer has a 'physical body'
         star.collected = true
-    }
+    } 
     create() {
         this.cursors = this.input.keyboard.createCursorKeys();
         this.keys = this.input.keyboard.addKeys('W,A,S,D,Q,P,O,V,SPACE');

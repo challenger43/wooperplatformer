@@ -1,7 +1,8 @@
 import { trials } from './testCoords.js'
 const rangeOfViewX = 1100;
 const rangeOfViewY = 1100;
-const maxJump = 82;
+const starCollectJump = 82;
+const floorY = 784
 export default class EnemyAI {
     //stuff
     constructor(scene, enemySprite) {
@@ -21,7 +22,9 @@ export default class EnemyAI {
     create(){}
     searchForStar() {
         console.log("searching for a star....")
-        let viewArray = trials.stars.filter((star) =>
+        this.enemy.setVelocityX(0)
+        this.enemy.setVelocityY(0)
+        let viewArray = this.scene.stars.children.entries.filter((star) =>
             (star.collected == false) &&
             Math.abs(star.x - this.enemy.x) <= rangeOfViewX &&
             Math.abs(star.y - this.enemy.y) <= rangeOfViewY
@@ -56,7 +59,7 @@ export default class EnemyAI {
             this.bringStarHome()
             return
         }
-        if (distanceY >= 0 && distanceY <= maxJump) { // in jump range(above) + no obstructions
+        if (distanceY >= 0 && distanceY <= starCollectJump) { // in jump range(above) + no obstructions
             if (distanceX > 10) {
                 if (this.enemy.x >= closestStar.x) {
                     this.enemy.anims.play('left', true);
@@ -67,7 +70,7 @@ export default class EnemyAI {
                     this.enemy.setVelocityX(100);
                 }
             }
-            if (distanceX <= 10 && distanceY > 10 && distanceY <= maxJump && this.enemy.body.touching.down) {
+            if (distanceX <= 5 && distanceY > 10 && distanceY <= starCollectJump && this.enemy.body.touching.down) {
                 this.enemy.setVelocityX(0)
                 this.enemy.setVelocityY(-280)
             }
@@ -75,7 +78,7 @@ export default class EnemyAI {
         else {
             console.log("Welp")
         }
-        // console.log("target:", closestStar.x, closestStar.y)
+        console.log("target:", closestStar.x, closestStar.y)
         // console.log("enemy:", this.enemy.x, this.enemy.y)
     }
     bringStarHome() {
