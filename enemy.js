@@ -2,35 +2,56 @@ import { trials } from './testCoords.js'
 const rangeOfViewX = 1100;
 const rangeOfViewY = 1100;
 const starCollectJump = 82;
+const platformJump = 50
 const floorY = 784
+const worldBorderLeft = 25
+const worldBorderRight = 1023
+const yLevelOne = 784
+const yLevelTwo = 732
 export default class EnemyAI {
-    //stuff
     constructor(scene, enemySprite) {
         this.scene = scene;
         this.enemy = enemySprite;
         this.targetStar = null;
+        this.yLevel = yLevelOne //sweep whole ylevel; if no more stars found and total stars isn't 0. 
     }
     update() {
         if (!this.targetStar) {
             this.targetStar = this.searchForStar()
-            console.log("no targetStar")
         }
         if (this.targetStar) {
             this.enemyCollectStar(this.targetStar)
         }
     }
     create(){}
+    searched = {
+        yLevelOne: false,
+        yLevelTwo: false,
+        yLevelThree: false,
+        //etc
+    }
     searchForStar() {
-        console.log("searching for a star....")
+        if ((this.scene.stars.children.entries.filter((star)=> star.collected == false)).length == 0){
+            console.log("no more stars rip")
+        }
         this.enemy.setVelocityX(0)
         this.enemy.anims.play('turn')
-        // this.enemy.setVelocityY(0)
         let viewArray = this.scene.stars.children.entries.filter((star) =>
             (star.collected == false) &&
             Math.abs(star.x - this.enemy.x) <= rangeOfViewX &&
             Math.abs(star.y - this.enemy.y) <= rangeOfViewY
         ) //checks if star is in grumpig's supposed range of view
         if (viewArray.length == 0) {
+            if (this.enemy.x  >= ((worldBorderLeft + worldBorderRight)/2)){
+                console.log("Left 1: " + this.enemy.x)
+                this.enemy.setVelocityX(-100)
+                console.log("Left 2: " + this.enemy.x)
+            }
+            else if ((this.enemy.x) < ((worldBorderLeft + worldBorderRight)/2)){
+                console.log("Right 1: " +  this.enemy.x)
+                this.enemy.setVelocityX(100)
+                console.log("Right 2: " +  this.enemy.x)
+            }
             console.log('no stars in sight')
         }
         console.log("stars left:", viewArray.length)
@@ -39,6 +60,7 @@ export default class EnemyAI {
         let closestStar = viewArray.shift()
         return closestStar
     }
+    ascendYLevel(){}
     distance(star) {
         return Math.sqrt(Math.pow((star.x - this.enemy.x), 2) + Math.pow((star.y - this.enemy.y), 2))
     }
