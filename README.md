@@ -1,2 +1,1 @@
-Very basic platformer featuring totally legally obtained Wooper + Quagsire + other pokemon built using JS's Phaser library. 
-This is a WIP 
+Platformer game built using Phaser JS's library, featuring Nintendo(and Game Freak's) Wooper, Quagsire, (goated pokemon) and Grumpig pokemon(bleh no offense). Currently under heavy development, as I am remaking the entire game. 
