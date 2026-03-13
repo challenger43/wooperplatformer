@@ -56,6 +56,14 @@ export const trials = {
             scaleY: 0.1,
 
         },
+        { // a thick test platform
+            x:200,
+            y: 760,
+            scaleX: 0.3,
+            scaleY: 0.5,
+            
+
+        },
     ],
     movingPlatforms: [],
     stars: [

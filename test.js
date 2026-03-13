@@ -1,5 +1,6 @@
 import { trials } from './testCoords.js'
 import EnemyAI from './enemy.js'
+import Navigation from './navigation.js'
 const GRAVITY_DEFAULT = 700;
 const GRAVITY_QUAGSIRE = 500
 class testScene extends Phaser.Scene {
@@ -29,7 +30,7 @@ class testScene extends Phaser.Scene {
     collectStar(player, star) {
         star.disableBody(true, true); //the star no longer has a 'physical body'
         star.collected = true
-    } 
+    }
     create() {
         this.cursors = this.input.keyboard.createCursorKeys();
         this.keys = this.input.keyboard.addKeys('W,A,S,D,Q,P,O,V,SPACE');
@@ -132,6 +133,9 @@ class testScene extends Phaser.Scene {
         this.physics.add.collider(this.enemy, this.movingPlatforms)
         this.physics.add.overlap(this.player, this.stars, this.collectStar, null, this);
         this.physics.add.overlap(this.enemy, this.stars, this.collectStar, null, this);
+        this.navigation = new Navigation(this)
+        this.navigation.generateNodesFromPlatform(this.platforms)
+        this.navigation.connectNodes()
     }
     update() {
         this.enemyAI.update()

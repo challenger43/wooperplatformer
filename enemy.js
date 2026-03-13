@@ -6,16 +6,18 @@ const platformJump = 50
 const floorY = 784
 const worldBorderLeft = 16
 const worldBorderRight = 1023
-const yLevelOne = 784
-const yLevelTwo = 732
+// const yLevelOne = 784
+// const yLevelTwo = 732 
 export default class EnemyAI {
     constructor(scene, enemySprite) {
         this.scene = scene;
         this.enemy = enemySprite;
         this.targetStar = null;
-        this.yLevel = yLevelOne //sweep whole ylevel; if no more stars found and total stars isn't 0. 
     }
     update() {
+        //if no star, find one
+        //no path go make one
+        //have path then follow it
         if (!this.targetStar) {
             this.targetStar = this.searchForStar()
         }
@@ -24,13 +26,6 @@ export default class EnemyAI {
         }
     }
     create() { }
-    searched = {
-        yLevelOne: false,
-        yLevelTwo: false,
-        // yLevelThree: false,
-        //etc
-    }
-    yLevelOneExplored = []
     searchForStar() {
         if ((this.scene.stars.children.entries.filter((star) => star.collected == false)).length == 0) {
             console.log("no more stars rip")
@@ -43,7 +38,7 @@ export default class EnemyAI {
             Math.abs(star.y - this.enemy.y) <= rangeOfViewY
         ) //checks if star is in grumpig's supposed range of view
         if (viewArray.length == 0) {
-            this.sweep()
+            // this.sweep()
         }
         console.log("stars left:", viewArray.length)
         viewArray.sort((a, b) => this.distance(a) - this.distance(b))
@@ -51,45 +46,6 @@ export default class EnemyAI {
         let closestStar = viewArray.shift()
         return closestStar
     }
-    sweep() {
-        //need to add check to reverse directions and somehow remember which direction it was previously going
-        let distanceFromWorldBorderLeft = Math.abs(this.enemy.x - worldBorderLeft) 
-        let distanceFromWorldBorderRight = Math.abs(this.enemy.x - worldBorderRight)
-        let direction;
-        if (distanceFromWorldBorderLeft > distanceFromWorldBorderRight){
-            direction = "right"
-        }
-        else{
-            direction = "left"
-        }
-        if (direction == "right"){
-            while (this.enemy.x != worldBorderRight){
-                this.enemy.setVelocityX(100)
-            }
-        }
-        else if (direction == "left"){
-            while (this.enemy.x != worldBorderLeft){
-                this.enemy.setVelocityX(-100)
-            }
-        }
-
-        // if (this.enemy.x <= ((worldBorderLeft + worldBorderRight) / 2)) {
-        //     this.enemy.setVelocityX(-100)
-        //     console.log("Left 2: " + this.enemy.x)
-        // }
-        // else if ((this.enemy.x) >= ((worldBorderLeft + worldBorderRight) / 2)) {
-        //     console.log("Right 1: " + this.enemy.x)
-        //     this.enemy.setVelocityX(100)
-        //     console.log("Right 2: " + this.enemy.x)
-        // }
-        // if (this.enemy.x == worldBorderLeft) {
-        //     this.enemy.setVelocity(100)
-        // }
-        // else if (this.enemy.x == worldBorderRight) {
-        //     this.enemy.setVelocity(-100)
-        // }
-    }
-    ascendYLevel(yLevel) { }
     distance(star) {
         return Math.sqrt(Math.pow((star.x - this.enemy.x), 2) + Math.pow((star.y - this.enemy.y), 2))
     }
