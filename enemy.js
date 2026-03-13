@@ -28,7 +28,7 @@ export default class EnemyAI {
     create() { }
     searchForStar() {
         if ((this.scene.stars.children.entries.filter((star) => star.collected == false)).length == 0) {
-            console.log("no more stars rip")
+            // console.log("no more stars rip")
         }
         this.enemy.setVelocityX(0)
         this.enemy.anims.play('turn')
@@ -84,7 +84,7 @@ export default class EnemyAI {
             }
         }
         else {
-            console.log("Welp")
+            
         }
         console.log("target:", closestStar.x, closestStar.y)
         // console.log("enemy:", this.enemy.x, this.enemy.y)
