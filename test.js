@@ -136,6 +136,7 @@ class testScene extends Phaser.Scene {
         this.navigation = new Navigation(this)
         this.navigation.generateNodesFromPlatform(this.platforms)
         this.navigation.connectNodes()
+        this.cameras.main.startFollow(this.player)
     }
     update() {
         this.enemyAI.update()
@@ -184,6 +185,12 @@ class testScene extends Phaser.Scene {
             else {
                 this.player.anims.play('turn');
             }
+        }
+        if (this.keys.V.isDown){ //later gotta make it so it's the same as quagsires where if v was down last frame etc so you can toggle
+            this.cameras.main.startFollow(this.enemy)
+        }
+        else{
+            this.cameras.main.startFollow(this.player)
         }
         if ((this.keys.W.isDown || this.keys.SPACE.isDown || this.cursors.up.isDown) && ((this.isInWater || this.player.body.touching.down))) {
             this.player.setVelocityY(this.isInWater ? -100 : -280);

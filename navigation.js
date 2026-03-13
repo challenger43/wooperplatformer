@@ -41,9 +41,4 @@ export default class Navigation {
             //         if dx is within max horizontal jump AND dy is within max vertical jump:
             //             nodeA.connections.push(nodeB)
     }
-    debugDraw() {
-        this.nodes.forEach(node => {
-            this.scene.add.circle(node.x, node.y, 50, 0xff0000)
-        })
-    }
 }
