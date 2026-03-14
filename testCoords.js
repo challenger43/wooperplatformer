@@ -1,19 +1,36 @@
 export const trials = {
     platforms: [
-        { //leftmost ground
+        { //test platform
             x: 400,
+            y: 750,
+            scaleX: 0.3,
+            scaleY: 0.1,
+
+        },
+        { // a thick test platform
+            x:200,
+            y: 760,
+            scaleX: 0.3,
+            scaleY: 0.5,
+            
+
+        },
+    ],
+    grounds: [
+         { //leftmost ground
+            x: 480,
             y: 832,
-            scaleX: 2,
+            scaleX: 2.9,
             scaleY: 2,
             tint: 0x3c6529
         },
-        { //middle ground
-            x: 900,
-            y: 832,
-            scaleX: 2,
-            scaleY: 2,
-            tint: 0x3c6529
-        },
+        // { //middle ground
+        //     x: 900,
+        //     y: 832,
+        //     scaleX: 2,
+        //     scaleY: 2,
+        //     tint: 0x3c6529
+        // },
         {//world bounds left 
             x: -20,
             y: 500,
@@ -48,21 +65,6 @@ export const trials = {
             scaleX: 0.1,
             scaleY: 21,
             tint: 0x3c6529,
-        },
-        { //test platform
-            x: 400,
-            y: 750,
-            scaleX: 0.3,
-            scaleY: 0.1,
-
-        },
-        { // a thick test platform
-            x:200,
-            y: 760,
-            scaleX: 0.3,
-            scaleY: 0.5,
-            
-
         },
     ],
     movingPlatforms: [],

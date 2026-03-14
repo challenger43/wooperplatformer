@@ -9,6 +9,7 @@ class testScene extends Phaser.Scene {
     stars;
     bombs;
     platforms;
+    grounds;
     movingPlatforms;
     cursors;
     score = 0;
@@ -124,12 +125,22 @@ class testScene extends Phaser.Scene {
                 .setTint(platformData.tint ?? 0xffffff)
                 .refreshBody();
         }
+        this.grounds = this.physics.add.staticGroup();
+        for (let groundData of trials.grounds) {
+            this.grounds.create(groundData.x, groundData.y, 'ground')
+                .setScale(groundData.scaleX ?? 1, groundData.scaleY ?? 1)
+                .setTint(0x0000FF)
+                .refreshBody();
+        }
         this.movingPlatforms = this.physics.add.group();
-        this.physics.add.collider(this.player, this.platforms); //these are the things you want to collide with--the first code takes parameters player and platforms, so then player and platforms will collide
-        this.physics.add.collider(this.stars, this.platforms);//parameters are stars and platforms, so adds a collide rule to the relationship between stars and platforms 
+        this.physics.add.collider(this.player, this.platforms); 
+        this.physics.add.collider(this.stars, this.platforms);
         // this.physics.add.collider(this.bombs, this.platforms);
-        this.physics.add.collider(this.player, this.movingPlatforms);
         this.physics.add.collider(this.enemy, this.platforms);
+        this.physics.add.collider(this.player, this.grounds)
+        this.physics.add.collider(this.enemy, this.grounds)
+        this.physics.add.collider(this.stars, this.grounds)
+        this.physics.add.collider(this.player, this.movingPlatforms);
         this.physics.add.collider(this.enemy, this.movingPlatforms)
         this.physics.add.overlap(this.player, this.stars, this.collectStar, null, this);
         this.physics.add.overlap(this.enemy, this.stars, this.collectStar, null, this);
@@ -186,10 +197,10 @@ class testScene extends Phaser.Scene {
                 this.player.anims.play('turn');
             }
         }
-        if (this.keys.V.isDown){ //later gotta make it so it's the same as quagsires where if v was down last frame etc so you can toggle
+        if (this.keys.V.isDown) { //later gotta make it so it's the same as quagsires where if v was down last frame etc so you can toggle
             this.cameras.main.startFollow(this.enemy)
         }
-        else{
+        else {
             this.cameras.main.startFollow(this.player)
         }
         if ((this.keys.W.isDown || this.keys.SPACE.isDown || this.cursors.up.isDown) && ((this.isInWater || this.player.body.touching.down))) {
