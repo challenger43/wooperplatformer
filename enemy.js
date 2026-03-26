@@ -7,7 +7,7 @@ const floorY = 784
 const worldBorderLeft = 16
 const worldBorderRight = 1023
 // const yLevelOne = 784
-// const yLevelTwo = 732 
+// const yLevelTwo = 732  
 export default class EnemyAI {
     constructor(scene, enemySprite) {
         this.scene = scene;

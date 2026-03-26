@@ -8,16 +8,21 @@ export const trials = {
 
         },
         { // a thick test platform
-            x:200,
+            x: 150,
             y: 760,
-            scaleX: 0.3,
+            scaleX: 0.5,
             scaleY: 0.5,
-            
-
         },
+
+        {
+            x: 600,
+            y: 680,
+            scaleX: 0.1,
+            scaleY: 0.5
+        }
     ],
     grounds: [
-         { //leftmost ground
+        { //leftmost ground
             x: 480,
             y: 832,
             scaleX: 2.9,
