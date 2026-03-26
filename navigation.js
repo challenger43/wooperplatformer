@@ -8,7 +8,7 @@ export default class Navigation{
     preload(){
         this.load.image('bomb', 'assets/bomb.png');
     }
-    addNode(x, y) {
+    addNode(x, y, connections) {
         this.nodes.push({
             x: x,
             y: y,
@@ -20,13 +20,11 @@ export default class Navigation{
         }
        
     }
-    generateNodesFromPlatform(platforms) {
+    generateNodesFromPlatform(platforms) { //basically for platform nodes put it in immediately instead of after
         platforms.children.iterate(platform => {
             if (!platform) return
             let left = platform.x - platform.displayWidth / 2 - 20
-            console.log(left)
             let right = platform.x + platform.displayWidth / 2
-            console.log(right)
             let y = platform.y - platform.displayHeight / 2
             this.addNode(left, y)
             this.addNode(right, y)
