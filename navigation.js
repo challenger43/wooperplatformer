@@ -1,39 +1,46 @@
 import { trials } from './testCoords.js'
-export default class Navigation{
+export default class Navigation {
     constructor(scene) {
         this.scene = scene;
         this.nodes = []
     }
     nodeRepresentations;
-    preload(){
+    preload() {
         this.load.image('bomb', 'assets/bomb.png');
     }
     addNode(x, y, connections) {
-        this.nodes.push({
+        const newNode = ({
             x: x,
             y: y,
             connections: []
         })
-        console.log("Nodes:", this.nodes);   
-        for (let node of this.nodes){
-            this.scene.add.text(node.x, node.y, "YO") 
-        }
-       
+        this.nodes.push(newNode)
+        console.log("Nodes:", this.nodes, this.nodes.connections);
+        this.scene.add.text(newNode.x, newNode.y, "YO")
+        return newNode
     }
     generateNodesFromPlatform(platforms) { //basically for platform nodes put it in immediately instead of after
         platforms.children.iterate(platform => {
             if (!platform) return
-            let left = platform.x - platform.displayWidth / 2 - 20
-            let right = platform.x + platform.displayWidth / 2
-            let y = platform.y - platform.displayHeight / 2
-            this.addNode(left, y)
-            this.addNode(right, y)
+            let left = platform.x - platform.displayWidth / 2 - 20;
+            let right = platform.x + platform.displayWidth / 2;
+            let y = platform.y - platform.displayHeight / 2;
+            let leftNode = this.addNode(left, y)
+            let rightNode = this.addNode(right, y)
+            leftNode.connections.push({
+                node: rightNode,
+                type: "platform"
+            })
+            rightNode.connections.push({
+                node: leftNode,
+                type: "platform"
+            })
         })
-    } 
-
-    test(nodes){
     }
-    create(){
+
+    test(nodes) {
+    }
+    create() {
     }
     connectNodes() {
         //1): walk from node to node on the same platform
@@ -45,13 +52,13 @@ export default class Navigation{
         //     connect nodesOnPlatform[i] <-> nodesOnPlatform[i+1]
         //when you .push(), nodeA.connections.push({node: nodeB, type: "same platform"})
         //2): do parkour
-            //for each node, look at every other node in the scene
-            //if the distance is within jump range and there are no obstructions, add a connection (for no obstructions, make separate function that when returns true will call)
-            // for each nodeA:
-            //      for each nodeB (nodeB != nodeA):
-            //         dx = nodeB.x - nodeA.x
-            //         dy = nodeB.y - nodeA.y
-            //         if dx is within max horizontal jump AND dy is within max vertical jump:
-            //             nodeA.connections.push(nodeB)
+        //for each node, look at every other node in the scene
+        //if the distance is within jump range and there are no obstructions, add a connection (for no obstructions, make separate function that when returns true will call)
+        // for each nodeA:
+        //      for each nodeB (nodeB != nodeA):
+        //         dx = nodeB.x - nodeA.x
+        //         dy = nodeB.y - nodeA.y
+        //         if dx is within max horizontal jump AND dy is within max vertical jump:
+        //             nodeA.connections.push(nodeB)
     }
 }
