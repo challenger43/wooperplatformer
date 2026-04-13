@@ -8,10 +8,11 @@ export default class Navigation {
     preload() {
         this.load.image('bomb', 'assets/bomb.png');
     }
-    addNode(x, y, connections) {
+    addNode(x, y, nodeType, connections) {
         const newNode = ({
             x: x,
             y: y,
+            nodeType: nodeType,
             connections: []
         })
         this.nodes.push(newNode)
@@ -25,18 +26,19 @@ export default class Navigation {
             let left = platform.x - platform.displayWidth / 2 - 20;
             let right = platform.x + platform.displayWidth / 2;
             let y = platform.y - platform.displayHeight / 2;
-            let leftNode = this.addNode(left, y)
-            let rightNode = this.addNode(right, y)
+            let leftNode = this.addNode(left, y, "platform")
+            let rightNode = this.addNode(right, y, "platform")
             leftNode.connections.push({
                 node: rightNode,
-                type: "platform"
+                type: "walkTo"
             })
             rightNode.connections.push({
                 node: leftNode,
-                type: "platform"
+                type: "walkTo"
             })
         })
     }
+    //need to add nodes for the ground, stars
 
     test(nodes) {
     }
@@ -46,6 +48,8 @@ export default class Navigation {
     connectNodes(nodes) {
         for (let i = 0; i < this.nodes.length - 1; i++){
             for (let j = 1; j < this.nodes.length; j++){
+                let distance = Math.sqrt((this.nodes[i].x- this.nodes[j].x)**2 + (this.nodes[i].x - this.nodes[j].y)**2)
+                console.log(distance)
                 console.log(this.nodes[i] , " " , this.nodes[j])
             }
         }
