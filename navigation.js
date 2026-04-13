@@ -41,8 +41,14 @@ export default class Navigation {
     test(nodes) {
     }
     create() {
+        this.connectNodes(this.nodes)
     }
-    connectNodes() {
+    connectNodes(nodes) {
+        for (let i = 0; i < this.nodes.length - 1; i++){
+            for (let j = 1; j < this.nodes.length; j++){
+                console.log(this.nodes[i] , " " , this.nodes[j])
+            }
+        }
         //1): walk from node to node on the same platform
         //to find nodes on the same platform, filter all nodes by similar y values 
         // for each platform:
