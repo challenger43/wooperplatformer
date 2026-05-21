@@ -7,6 +7,8 @@ export default class Navigation {
     nodeRepresentations;
     preload() {
         this.load.image('bomb', 'assets/bomb.png');
+        this.load.image('platformNode', 'assets/platformNode.png')
+        this.load.image('edgeNode', 'assets/edgeNode.png')
     }
     addNode(x, y, nodeType, connections) {
         const newNode = ({
