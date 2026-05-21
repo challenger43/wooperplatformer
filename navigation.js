@@ -7,8 +7,8 @@ export default class Navigation {
     nodeRepresentations;
     preload() {
         this.load.image('bomb', 'assets/bomb.png');
-        this.load.image('platformNode', 'assets/platformNode.png')
-        this.load.image('edgeNode', 'assets/edgeNode.png')
+        this.load.image('platformNode', 'assets/platformNode.png');
+        this.load.image('edgeNode', 'assets/edgeNode.png');
     }
     addNode(x, y, nodeType, connections) {
         const newNode = ({
@@ -19,15 +19,15 @@ export default class Navigation {
         })
         this.nodes.push(newNode)
         console.log("Nodes:", this.nodes, this.nodes.connections);
-        this.scene.add.text(newNode.x, newNode.y, "YO")
+        this.scene.add.image(newNode.x, newNode.y, 'platformNode').setScale(0.5)
         return newNode
     }
     generateNodesFromPlatform(platforms) { //basically for platform nodes put it in immediately instead of after
         platforms.children.iterate(platform => {
             if (!platform) return
-            let left = platform.x - platform.displayWidth / 2 - 20;
+            let left = platform.x - platform.displayWidth / 2;
             let right = platform.x + platform.displayWidth / 2;
-            let y = platform.y - platform.displayHeight / 2;
+            let y = platform.y - platform.displayHeight - 10;
             let leftNode = this.addNode(left, y, "platform")
             let rightNode = this.addNode(right, y, "platform")
             leftNode.connections.push({
