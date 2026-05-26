@@ -26,6 +26,8 @@ class testScene extends Phaser.Scene {
         this.load.spritesheet('dude', 'assets/wooperspritesheet1a.png', { frameWidth: 32, frameHeight: 32 });
         this.load.image('star', 'assets/WooperBall.png'); //they don't actually look like stars in 'real life' 
         this.load.image('bomb', 'assets/bomb.png');
+        this.load.image("edgeNode", 'assets/edgeNode.png')
+        this.load.image('platformNode', 'assets/platformNode.png')
         this.load.spritesheet('grumpig', 'assets/grumpigsprite.png', { frameWidth: 32, frameHeight: 32 })
     }
     collectStar(player, star) {

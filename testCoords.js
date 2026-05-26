@@ -4,11 +4,11 @@ export const trials = {
             x: 400,
             y: 750,
             scaleX: 0.3,
-            scaleY: 0.1,
+            scaleY: 0.5,
 
         },
         { // a thick test platform
-            x: 150,
+            x: 180,
             y: 760,
             scaleX: 0.5,
             scaleY: 0.5,
