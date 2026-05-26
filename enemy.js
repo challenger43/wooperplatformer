@@ -22,16 +22,16 @@ export default class EnemyAI {
         if (this.keys.I.isDown && this.enemy.body.touching.down){
             this.enemy.setVelocityY(-280)
         }
-        // if (this.keys.L.isDown && this.enemy.body.touching.down){
-        //     this.enemy.setVelocityX(900)
-        //     this.enemy.setVelocityY(-280)
-        // }
+        if (this.keys.L.isDown && this.enemy.body.touching.down){
+            this.enemy.setVelocityY(-280)
+            this.enemy.setVelocityX(350)
+        }
         //see how long traveling for then find distance, fixing y/vertical (jump amount) and the horizontal determines how far they go so need to know how fast they must move to go that far
         //essentially finding time
-        if (this.keys.L.isDown){
-            this.enemy.setVelocityX(160)
-            this.enemy.setVelocityY(-280)
-        }
+        // if (this.keys.L.isDown){
+        //     this.enemy.setVelocityY(-280)
+        //     this.enemy.setVelocityX(160)
+        // }
         else if (this.keys.J.isDown){
             this.enemy.setVelocityX(-500)
         }
