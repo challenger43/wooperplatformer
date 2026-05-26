@@ -9,13 +9,35 @@ import { trials } from './testCoords.js'
 // const yLevelOne = 784
 // const yLevelTwo = 732  
 export default class EnemyAI {
+    keys;
     constructor(scene, enemySprite) {
         this.scene = scene;
         this.enemy = enemySprite;
         this.targetStar = null;
     }
-    create() { }
+    create() {
+        this.keys = this.scene.input.keyboard.addKeys('I,J,K,L,');
+     }
     update() {
+        if (this.keys.I.isDown && this.enemy.body.touching.down){
+            this.enemy.setVelocityY(-280)
+        }
+        // if (this.keys.L.isDown && this.enemy.body.touching.down){
+        //     this.enemy.setVelocityX(900)
+        //     this.enemy.setVelocityY(-280)
+        // }
+        //see how long traveling for then find distance, fixing y/vertical (jump amount) and the horizontal determines how far they go so need to know how fast they must move to go that far
+        //essentially finding time
+        if (this.keys.L.isDown){
+            this.enemy.setVelocityX(160)
+            this.enemy.setVelocityY(-280)
+        }
+        else if (this.keys.J.isDown){
+            this.enemy.setVelocityX(-500)
+        }
+        else {
+            this.enemy.setVelocityX(0)
+        }
         //if no star, find one
         //no path go make one
         //have path then follow it
