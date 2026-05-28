@@ -17,23 +17,24 @@ export default class EnemyAI {
     }
     create() {
         this.keys = this.scene.input.keyboard.addKeys('I,J,K,L,');
-     }
+    }
     update() {
-        if (this.keys.I.isDown && this.enemy.body.touching.down){
+        if (this.keys.I.isDown && this.enemy.body.touching.down) {
             this.enemy.setVelocityY(-280)
         }
-        if (this.keys.L.isDown && this.enemy.body.touching.down){
+        if (this.keys.L.isDown && this.enemy.body.touching.down) {
             this.enemy.setVelocityY(-280)
         }
-        else if (this.keys.L.isDown){
+        else if (this.keys.L.isDown) {
             this.enemy.setVelocityX(160)
         }
         //see how long traveling for then find distance, fixing y/vertical (jump amount) and the horizontal determines how far they go so need to know how fast they must move to go that far
         //essentially finding time
-        else if (this.keys.J.isDown && this.enemy.body.touching.down){
+        //to find how long to apply x velocity for, calculate distance time
+        else if (this.keys.J.isDown && this.enemy.body.touching.down) {
             this.enemy.setVelocityY(-280)
         }
-        else if (this.keys.J.isDown){
+        else if (this.keys.J.isDown) {
             this.enemy.setVelocityX(-160)
         }
         else {
@@ -107,7 +108,7 @@ export default class EnemyAI {
     //         }
     //     }
     //     else {
-            
+
     //     }
     //     console.log("target:", closestStar.x, closestStar.y)
     //     // console.log("enemy:", this.enemy.x, this.enemy.y)
