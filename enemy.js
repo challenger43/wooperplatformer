@@ -1,10 +1,17 @@
 import { trials } from './testCoords.js'
+import Navigation from './navigation.js'
 export default class EnemyAI {
     keys;
     constructor(scene, enemySprite) {
         this.scene = scene;
         this.enemy = enemySprite;
         this.targetStar = null;
+    }
+    init(data){
+        this.navigation = data.navigation
+        console.log(data.navigation)
+        this.nodes = data.nodes
+        console.log("TEST " + this.nodes)
     }
     create() {
         this.keys = this.scene.input.keyboard.addKeys('I,J,K,L,');

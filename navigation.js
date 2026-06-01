@@ -15,7 +15,7 @@ export default class Navigation {
             connections: []
         })
         this.nodes.push(newNode)
-        console.log("Nodes:", this.nodes, this.nodes.connections);
+        // console.log("Nodes:", this.nodes, this.nodes.connections);
         this.scene.add.image(newNode.x, newNode.y, 'platformNode').setScale(0.1)
         this.scene.add.text(newNode.x, newNode.y-50, `${newNode.x}, ${newNode.y}`, {fontSize: 10})
         return newNode
@@ -49,7 +49,7 @@ export default class Navigation {
         for (let i = 0; i < this.nodes.length - 1; i++){
             for (let j = 1; j < this.nodes.length; j++){
                 let distance = Math.sqrt((this.nodes[i].x- this.nodes[j].x)**2 + (this.nodes[i].x - this.nodes[j].y)**2)
-                console.table("The Distance is " + distance + " between " + this.nodes[i] + " and " , this.nodes[j])
+                // console.log("The Distance is " + distance + " between " + this.nodes[i] + " and " , this.nodes[j])
             }
         }
         //1): walk from node to node on the same platform

@@ -109,6 +109,9 @@ class testScene extends Phaser.Scene {
         this.navigation = new Navigation(this, this.nodes)
         this.enemyAI.create()
         this.navigation.create()
+        this.enemyAI.init({
+            navigation: this.navigation
+        })
         this.stars = this.physics.add.group();
         for (let starData of trials.stars) {
             let star = this.stars.create(starData.x, starData.y, 'star')
