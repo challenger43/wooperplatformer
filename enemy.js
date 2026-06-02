@@ -1,12 +1,53 @@
 import { trials } from './testCoords.js'
 import Navigation from './navigation.js'
+//enemy states so far: searchingForPlatform, movingToPlatform
 export default class EnemyAI {
     keys;
     constructor(scene, enemySprite) {
         this.scene = scene;
         this.enemy = enemySprite;
+        this.enemyState = "searchingForPlatform"; //various states: e.g. searching for platform, searching for star, collecting star, bringing star back, etc needa work this out later
         this.targetStar = null;
     }
+    // constructor(scene, enemySprite) {
+    //     this.scene = scene;
+    //     this.enemy = enemySprite;
+    //     this.targetStar = null;
+    // }
+    // update() {
+    //     //if no star, find one
+    //     //no path go make one
+    //     //have path then follow it
+    //     if (!this.targetStar) {
+    //         this.targetStar = this.searchForStar()
+    //     }
+    //     if (this.targetStar) {
+    //         this.enemyCollectStar(this.targetStar)
+    //     }
+    // }
+    // create() { }
+    // searchForStar() {
+    //     if ((this.scene.stars.children.entries.filter((star) => star.collected == false)).length == 0) {
+    //         // console.log("no more stars rip")
+    //     }
+    //     this.enemy.setVelocityX(0)
+    //     this.enemy.anims.play('turn')
+    //     let viewArray = this.scene.stars.children.entries.filter((star) =>
+    //         (star.collected == false) &&
+    //         Math.abs(star.x - this.enemy.x) <= rangeOfViewX &&
+    //         Math.abs(star.y - this.enemy.y) <= rangeOfViewY
+    //     ) //checks if star is in grumpig's supposed range of view
+    //     if (viewArray.length == 0) {
+    //         // this.sweep()
+    //     }
+    //     console.log("stars left:", viewArray.length)
+    //     viewArray.sort((a, b) => this.distance(a) - this.distance(b))
+    //     console.log(viewArray)
+    //     let closestStar = viewArray.shift()
+    //     return closestStar
+    // }
+
+
     init(data) {
         this.navigation = data.navigation
         this.nodes = data.navigation.nodes
@@ -15,7 +56,11 @@ export default class EnemyAI {
         this.keys = this.scene.input.keyboard.addKeys('I,J,K,L,');
     }
     update() {
-        this.distanceToNearestNode(this.nodes)
+        if (this.enemyState == "searchingForPlatform") {
+            let closestNode = this.distanceToNearestNode(this.nodes)
+            // this.enemyState == "movingToPlatform"
+            this.moveToNearestPlatform(closestNode)
+        }
         if (this.keys.I.isDown && this.enemy.body.touching.down) {
             this.enemy.setVelocityY(-280)
         }
@@ -37,19 +82,21 @@ export default class EnemyAI {
         else {
             this.enemy.setVelocityX(0)
         }
-
-        // for (let i = 0; i < this.nodes.length - 1; i++){
-        //     for (let j = 1; j < this.nodes.length; j++){
-        //         let distance = Math.sqrt((this.nodes[i].x- this.nodes[j].x)**2 + (this.nodes[i].x - this.nodes[j].y)**2)
-        //         // console.log("The Distance is " + distance + " between " + this.nodes[i] + " and " , this.nodes[j])
-        //     }
-        // }
     }
     distanceToNearestNode(nodes) {
+        let tempClosestDistance = Math.sqrt((this.nodes[0].x - this.enemy.x) ** 2 + (this.nodes[0].y - this.enemy.y) ** 2)
+        let closestNode = [this.nodes[0], tempClosestDistance]
         for (let i = 0; i < this.nodes.length; i++) {
             let distanceToEnemy = Math.sqrt((this.nodes[i].x - this.enemy.x) ** 2 + (this.nodes[i].y - this.enemy.y) ** 2)
+            if (distanceToEnemy < closestNode[1]) {
+                closestNode = [this.nodes[i], distanceToEnemy]
+            }
         }
-
+        return closestNode;
+    }
+    moveToNearestPlatform(closestNode){
+        // console.log("MOVE TO NEAREST PLATFORM IS RUNNING ")
+        // this.enemy.setVelocityX(-180)
     }
     // distance(star) {
     //     return Math.sqrt(Math.pow((star.x - this.enemy.x), 2) + Math.pow((star.y - this.enemy.y), 2))
