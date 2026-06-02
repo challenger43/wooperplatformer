@@ -7,7 +7,7 @@ export default class EnemyAI {
         this.enemy = enemySprite;
         this.targetStar = null;
     }
-    init(data){
+    init(data) {
         this.navigation = data.navigation
         this.nodes = data.navigation.nodes
     }
@@ -15,6 +15,7 @@ export default class EnemyAI {
         this.keys = this.scene.input.keyboard.addKeys('I,J,K,L,');
     }
     update() {
+        this.distanceToNearestNode(this.nodes)
         if (this.keys.I.isDown && this.enemy.body.touching.down) {
             this.enemy.setVelocityY(-280)
         }
@@ -36,6 +37,19 @@ export default class EnemyAI {
         else {
             this.enemy.setVelocityX(0)
         }
+
+        // for (let i = 0; i < this.nodes.length - 1; i++){
+        //     for (let j = 1; j < this.nodes.length; j++){
+        //         let distance = Math.sqrt((this.nodes[i].x- this.nodes[j].x)**2 + (this.nodes[i].x - this.nodes[j].y)**2)
+        //         // console.log("The Distance is " + distance + " between " + this.nodes[i] + " and " , this.nodes[j])
+        //     }
+        // }
+    }
+    distanceToNearestNode(nodes) {
+        for (let i = 0; i < this.nodes.length; i++) {
+            let distanceToEnemy = Math.sqrt((this.nodes[i].x - this.enemy.x) ** 2 + (this.nodes[i].y - this.enemy.y) ** 2)
+        }
+
     }
     // distance(star) {
     //     return Math.sqrt(Math.pow((star.x - this.enemy.x), 2) + Math.pow((star.y - this.enemy.y), 2))
