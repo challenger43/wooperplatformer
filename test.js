@@ -105,13 +105,6 @@ class testScene extends Phaser.Scene {
         for (let playerData of trials.player) {
             this.player = this.physics.add.sprite(playerData.x, playerData.y, 'dude')
         }
-        this.enemyAI = new EnemyAI(this, this.enemy);
-        this.navigation = new Navigation(this, this.nodes)
-        this.enemyAI.create()
-        this.navigation.create()
-        this.enemyAI.init({
-            navigation: this.navigation
-        })
         this.stars = this.physics.add.group();
         for (let starData of trials.stars) {
             let star = this.stars.create(starData.x, starData.y, 'star')
@@ -151,10 +144,16 @@ class testScene extends Phaser.Scene {
         this.physics.add.collider(this.enemy, this.movingPlatforms)
         this.physics.add.overlap(this.player, this.stars, this.collectStar, null, this);
         this.physics.add.overlap(this.enemy, this.stars, this.collectStar, null, this);
-        this.navigation = new Navigation(this)
-        this.navigation.generateNodesFromPlatform(this.platforms)
-        this.navigation.connectNodes()
         this.cameras.main.startFollow(this.player)
+        this.enemyAI = new EnemyAI(this, this.enemy);
+        this.navigation = new Navigation(this, this.nodes)
+        this.enemyAI.create() 
+        this.navigation.create()
+        this.enemyAI.init({
+            navigation: this.navigation
+        })
+        this.navigation.generateNodesFromPlatform(this.platforms)
+        // this.navigation.connectNodes()
     }
     update() {
         this.enemyAI.update()
