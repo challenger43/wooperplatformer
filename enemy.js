@@ -9,9 +9,7 @@ export default class EnemyAI {
     }
     init(data){
         this.navigation = data.navigation
-        console.log(data.navigation)
-        this.nodes = data.nodes
-        console.log("TEST " + this.nodes)
+        this.nodes = data.navigation.nodes
     }
     create() {
         this.keys = this.scene.input.keyboard.addKeys('I,J,K,L,');
