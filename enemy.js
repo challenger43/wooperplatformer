@@ -70,6 +70,8 @@ export default class EnemyAI {
         else if (this.keys.L.isDown) {
             this.enemy.setVelocityX(160)
         }
+        //tester to find max vertical distance
+       
         //see how long traveling for then find distance, fixing y/vertical (jump amount) and the horizontal determines how far they go so need to know how fast they must move to go that far
         //essentially finding time
         //to find how long to apply x velocity for, calculate distance time
@@ -87,15 +89,23 @@ export default class EnemyAI {
         let tempClosestDistance = Math.sqrt((this.nodes[0].x - this.enemy.x) ** 2 + (this.nodes[0].y - this.enemy.y) ** 2)
         let closestNode = [this.nodes[0], tempClosestDistance]
         for (let i = 0; i < this.nodes.length; i++) {
-            let distanceToEnemy = Math.sqrt((this.nodes[i].x - this.enemy.x) ** 2 + (this.nodes[i].y - this.enemy.y) ** 2)
-            if (distanceToEnemy < closestNode[1]) {
-                closestNode = [this.nodes[i], distanceToEnemy]
+            let xDistance = this.nodes[i].x - this.enemy.x
+            let yDistance = this.nodes[i].y - this.enemy.y
+            let distanceToEnemy = Math.sqrt((xDistance) ** 2 + (yDistance) ** 2)
+            if (distanceToEnemy < closestNode[1] && yDistance <= 84) {
+                closestNode = [this.nodes[i], distanceToEnemy, xDistance, yDistance]
             }
         }
         return closestNode;
     }
     moveToNearestPlatform(closestNode){
-        // console.log("MOVE TO NEAREST PLATFORM IS RUNNING ")
+        let yDistance = closestNode[3]
+        let xDistance = closestNode[2]
+        if (xDistance < 15){
+            let idkyet = 0
+        }
+        console.log("x distance is: " + xDistance + " " + yDistance)
+
         // this.enemy.setVelocityX(-180)
     }
     // distance(star) {
