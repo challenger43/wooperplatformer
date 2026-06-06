@@ -125,7 +125,7 @@ export const trials = {
     enemy: [
         {
             x: 700,
-            y: 700,
+            y: 784,
             tint: 0x0000FF,
         }
     ]
