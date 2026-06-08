@@ -393,7 +393,7 @@ export class GrumpigBoss extends BossBattle {
         // console.log('[DEBUG] grumpig texture exists:', this.textures.exists('grumpig'));
         this.sensor = this.physics.add.sprite(190, 400, 'grumpig').setScale(2).setAlpha(0)
         this.jumpSensors = this.physics.add.group()
-        this.jumpInterval = 20
+        this.jumpInterval = 20 
         this.hasSpawnedJumpSensors = false
         this.physics.add.collider(this.sensor, this.platforms);
         this.physics.add.collider(this.grumpig, this.platforms);

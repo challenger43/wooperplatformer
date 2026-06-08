@@ -6,6 +6,7 @@ const GRAVITY_QUAGSIRE = 500
 class testScene extends Phaser.Scene {
     player;
     enemy;
+    sensor;
     stars;
     bombs;
     platforms;
@@ -102,6 +103,13 @@ class testScene extends Phaser.Scene {
             this.enemy = this.physics.add.sprite(enemyData.x, enemyData.y, 'dude')
                 .setTint(enemyData.tint)
         }
+        for (let sensorData of trials.sensor){
+            this.sensor = this.physics.add.sprite(sensorData.x, sensorData.y, 'dude')
+            .setTint(sensorData.tint)
+            .setAlpha(sensorData.alpha)
+        }
+        // .setTint(0x0000FF)
+        // .setAlpha(0.5)
         for (let playerData of trials.player) {
             this.player = this.physics.add.sprite(playerData.x, playerData.y, 'dude')
         }
@@ -137,15 +145,17 @@ class testScene extends Phaser.Scene {
         this.physics.add.collider(this.stars, this.platforms);
         // this.physics.add.collider(this.bombs, this.platforms);
         this.physics.add.collider(this.enemy, this.platforms);
+        this.physics.add.collider(this.sensor, this.platforms)
         this.physics.add.collider(this.player, this.grounds)
         this.physics.add.collider(this.enemy, this.grounds)
+        this.physics.add.collider(this.sensor, this.grounds)
         this.physics.add.collider(this.stars, this.grounds)
         this.physics.add.collider(this.player, this.movingPlatforms);
         this.physics.add.collider(this.enemy, this.movingPlatforms)
         this.physics.add.overlap(this.player, this.stars, this.collectStar, null, this);
         this.physics.add.overlap(this.enemy, this.stars, this.collectStar, null, this);
         this.cameras.main.startFollow(this.player)
-        this.enemyAI = new EnemyAI(this, this.enemy);
+        this.enemyAI = new EnemyAI(this, this.enemy, this.sensor);
         this.navigation = new Navigation(this, this.nodes)
         this.enemyAI.create() 
         this.navigation.create()
