@@ -145,7 +145,7 @@ export default class EnemyAI {
                     isJumping = true
                 }
                 if (isJumping) {
-                    this.sensor.setVelocityX(-direction == "left" ? -280: 280)
+                    this.sensor.setVelocityX(-direction == "left" ? 280: -280)
                 }
             this.verifyTestJump(closestNode, this.sensor.x, this.sensor.y)
             break;
