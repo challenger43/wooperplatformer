@@ -32,11 +32,11 @@ export default class EnemyAI {
             this.currentTargetNode = this.distanceToNearestNode(this.nodes);
 
             if (this.currentTargetNode) {
-                this.enemyFunction = "movingToPlatform";
+                this.enemyFunction = "calculatingJump";
             }
         }
-        else if (this.enemyFunction === "movingToPlatform" && !this.enemyHasDoneThis) {
-            this.moveToJumpRangeOfNearestPlatform(this.currentTargetNode)
+        else if (this.enemyFunction === "calculatingJump" && !this.enemyHasDoneThis) {
+            this.calculateJump(this.currentTargetNode)
             this.enemyHasDoneThis = true;
         }
         // if (this.keys.I.isDown && this.enemy.body.touching.down) {
@@ -95,23 +95,20 @@ export default class EnemyAI {
         console.log(closestNode)
         return closestNode;
     }
-    moveToJumpRangeOfNearestPlatform(closestNode) {
+    calculateJump(closestNode) {
         let currentNode = closestNode
-        let xDistance = closestNode.xDistance
-        let yDistance = closestNode.yDistance
-        let doneJumping = false;
-        if (xDistance > 226 && closestNode.node.x - this.enemy.x < 0) {
+        let xDistance = currentNode.xDistance
+        let yDistance = currentNode.yDistance
+        let direction;
+        if (xDistance > 226 && currentNode.node.x - this.enemy.x < 0) {
             let duration = (xDistance - 226) / 180 * 1000
             this.enemy.setVelocityX(-180)
             this.sensor.setVelocityX(-180)
             let timer = this.scene.time.delayedCall(duration, () => {
                 this.sensor.setVelocityX(0)
                 this.enemy.setVelocityX(0)
-                doneJumping = true
+                this.testJump(currentNode, direction)
             })
-            if (doneJumping) {
-                this.testJump(currentNode, "left")
-            }
         }
         else if (xDistance > 226 && closestNode.node.x - this.enemy.x >= 0) {
             let duration = (226 - xDistance) / 180 * 1000
@@ -120,24 +117,27 @@ export default class EnemyAI {
             let timer = this.scene.time.delayedCall(duration, () => {
                 this.enemy.setVelocityX(0)
                 this.sensor.setVelocityX(0)
-                doneJumping = true
+                this.testJump(currentNode, direction)
             })
-            // if (closest)
-            if (doneJumping) {
-                this.testJump(currentNode, "right")
-            }
-        }
+            // //    doneJumping = true
+            // }
+            // if (doneJumping){
+            //     this.testJump(currentNode, direction)
+            // }
 
-        // distance(star) {
-        //     return Math.sqrt(Math.pow((star.x - this.enemy.x), 2) + Math.pow((star.y - this.enemy.y), 2))
-        // }
+            // distance(star) {
+            //     return Math.sqrt(Math.pow((star.x - this.enemy.x), 2) + Math.pow((star.y - this.enemy.y), 2))
+            // }
+        }
     }
     testJump(closestNode, direction) {
+        console.log("this happened")
         if (this.sensor.body.touching.down) {
             this.sensor.setVelocityY(-280)
-        }
-        else if (!this.sensor.body.touching.down) {
-            this.sensor.setVelocityX(direction == "left" ? -180 : 180)
+
+            if (!this.sensor.body.touching.down) {
+                this.sensor.setVelocityX(direction == "left" ? -180 : 180)
+            }
         }
     }
 }

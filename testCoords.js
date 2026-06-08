@@ -131,7 +131,7 @@ export const trials = {
     ],
     sensor: [
         {
-            x:700,
+            x: 700,
             y: 784,
             tint: 0x0000FF,
             alpha: 0.5
