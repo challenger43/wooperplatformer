@@ -107,7 +107,7 @@ export default class EnemyAI {
             let timer = this.scene.time.delayedCall(duration, () => {
                 this.sensor.setVelocityX(0)
                 this.enemy.setVelocityX(0)
-                this.testJump(currentNode, direction)
+                this.testJump(currentNode, direction, 1)
             })
         }
         else if (xDistance > 226 && closestNode.node.x - this.enemy.x >= 0) {
@@ -117,7 +117,7 @@ export default class EnemyAI {
             let timer = this.scene.time.delayedCall(duration, () => {
                 this.enemy.setVelocityX(0)
                 this.sensor.setVelocityX(0)
-                this.testJump(currentNode, direction)
+                this.testJump(currentNode, direction, 1)
             })
             // //    doneJumping = true
             // }
@@ -130,14 +130,27 @@ export default class EnemyAI {
             // }
         }
     }
-    testJump(closestNode, direction) {
-        console.log("this happened")
-        if (this.sensor.body.touching.down) {
-            this.sensor.setVelocityY(-280)
-
-            if (!this.sensor.body.touching.down) {
-                this.sensor.setVelocityX(direction == "left" ? -180 : 180)
-            }
+    verifyTestJump(nearestNode, sensorX, sensorY){
+        //cases: if y is the same, likely collided with something and fell, walk forward continuing to test jumps
+        // if x is the same, wall.
+        //if x is beyond what it was supposed to be and y is still below the platform, = applied x velocity too early
+    }
+    testJump(closestNode, direction, iteration) {
+        //most basic test
+        let isJumping = false;
+        switch (iteration) {
+            case 1:
+                if (this.sensor.body.touching.down) {
+                    this.sensor.setVelocityY(-280)
+                    isJumping = true
+                }
+                if (isJumping) {
+                    this.sensor.setVelocityX(-280)
+                }
+            this.verifyTestJump(closestNode, this.sensor.x, this.sensor.y)
+            break;
         }
+
+
     }
 }
