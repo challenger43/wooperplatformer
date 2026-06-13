@@ -130,24 +130,37 @@ export default class EnemyAI {
             // }
         }
     }
-    verifyTestJump(nearestNode, sensorX, sensorY){
+    verifyTestJump(nearestNode, prevSensorX, prevSensorY, iteration){
+        console.log(this.sensor.x)
+        if (nearestNode.x == this.sensor.x && nearestNode.y == this.sensor.y){
+            console.log("yes jump worked")
+        }
+        else if (Math.abs(nearestNode.x - this.sensor.x >=220)){
+
+        }
         //cases: if y is the same, likely collided with something and fell, walk forward continuing to test jumps until below roof, then proceed to czs
         // if x is the same, wall.
         //if x is beyond what it was supposed to be and y is still below the platform, = applied x velocity too early, experiment with different x velocity applications
     }
     testJump(closestNode, direction, iteration) {
         //most basic test
+        let prevSensorX = this.sensor.x
+        let prevSensorY = this.sensor.y
         let isJumping = false;
         switch (iteration) {
             case 1:
                 if (this.sensor.body.touching.down) {
                     this.sensor.setVelocityY(-280)
-                    isJumping = true
+                    isJumping == false
                 }
                 if (isJumping) {
-                    this.sensor.setVelocityX(-direction == "left" ? 280: -280)
+                    this.sensor.setVelocityX(direction == "left" ? 280: -280)
                 }
-            this.verifyTestJump(closestNode, this.sensor.x, this.sensor.y)
+                if (this.jumping == false){
+                     this.verifyTestJump(closestNode, prevSensorX, prevSensorY, 1)
+                }
+                // console.log(closestNode, this.sensor.x, this.sensor.y, prevSensorX, prevSensorY,)
+                
             break;
         }
 
